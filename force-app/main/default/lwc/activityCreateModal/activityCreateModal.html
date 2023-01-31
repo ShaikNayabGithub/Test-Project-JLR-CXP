@@ -1,0 +1,46 @@
+<!--
+ - Created by caleb on 8/07/2020.
+ -->
+
+<!-- Activity Create Modal -->
+<template>
+    <template if:true={doShowModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hadleCloseModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+
+                    <h2 style="font-size: large;">Create Activity</h2>
+                    <div class="slds-text-heading_small">This opportunity appears to have no open activities please create a new activity.</div>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+                        <div class="slds-col slds-size--12-of-12" if:true={nextMilestones}>
+                            <c-milestone-next-activity
+                                    class="next-activity"
+                                    milestones={nextMilestones}>
+                            </c-milestone-next-activity>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_brand" onclick={handelCreateNewActivity}>Create Activity</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!--Loading-->
+    <template if:true={isLoading}>
+        <div class="slds-col slds-size--4-of-12">
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </template>
+</template>

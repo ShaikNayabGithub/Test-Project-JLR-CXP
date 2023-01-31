@@ -1,0 +1,22 @@
+<design:component>
+	<design:attribute name="image900_452Url1" label="Image 900x452 Url 1" />
+    <design:attribute name="image740_372Url1" label="Image 740x372 Url 1" />
+    <design:attribute name="titleQuestion1" label="Question 1 Title"/>
+    <design:attribute name="descriptionQuestion1" label="Question 1 Description"/>
+    <design:attribute name="image900_452Url2" label="Image 900x452 Url 2" />
+    <design:attribute name="image740_372Url2" label="Image 740x372 Url 2" />
+    <design:attribute name="titleQuestion2" label="Question 2 Title"/>
+    <design:attribute name="descriptionQuestion2" label="Question 2 Description"/>
+    <design:attribute name="image900_452Url3" label="Image 900x452 Url 3" />
+    <design:attribute name="image740_372Url3" label="Image 740x372 Url 3" />
+    <design:attribute name="titleQuestion3" label="Question 3 Title"/>
+    <design:attribute name="descriptionQuestion3" label="Question 3 Description"/>
+	<design:attribute name="image900_452Url4" label="Image 900x452 Url 4" />
+    <design:attribute name="image740_372Url4" label="Image 740x372 Url 4" />
+    <design:attribute name="titleQuestion4" label="Question 4 Title"/>
+    <design:attribute name="descriptionQuestion4" label="Question 4 Description"/>
+    <design:attribute name="image900_452Url5" label="Image 900x452 Url 5" />
+    <design:attribute name="image740_372Url5" label="Image 740x372 Url 5" />
+    <design:attribute name="titleQuestion5" label="Question 5 Title"/>
+    <design:attribute name="descriptionQuestion5" label="Question 5 Description"/>
+</design:component>

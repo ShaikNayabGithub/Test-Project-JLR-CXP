@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="relatedList">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="recordId" type="String"/>
+            <property label="Reference Field Name" name="refFieldName" type="String" default=""/>
+            <property label="SObjectName" name="sobjectName" type="String"/>
+            <property label="Icon Name (https://www.lightningdesignsystem.com/icons/ eg. standard:event)" name="icon" type="String" default=""/>
+            <property label="Field Names (Comma Separated)" name="fieldsNamesCommaSeparated" type="String" default=""/>
+            <property label="Field Labels (Comma Separated)" name="fieldsLabelsCommaSeparated" type="String" default=""/>
+            <property label="Field Types (Comma Separated, can be text, number, phone, url)" name="fieldsTypesCommaSeparated" type="String" default=""/>
+            <property label="Where Clause" name="whereClause" type="String" default=""/>
+        </targetConfig>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String"/>
+            <property label="Reference Field Name" name="refFieldName" type="String" default=""/>
+            <property label="SObjectName" name="sobjectName" type="String"/>
+            <property label="Icon Name (https://www.lightningdesignsystem.com/icons/ eg. standard:event)" name="icon" type="String" default=""/>
+            <property label="Field Names (Comma Separated)" name="fieldsNamesCommaSeparated" type="String" default=""/>
+            <property label="Field Labels (Comma Separated)" name="fieldsLabelsCommaSeparated" type="String" default=""/>
+            <property label="Field Types (Comma Separated, can be text, number, phone, url)" name="fieldsTypesCommaSeparated" type="String" default=""/>
+            <property label="Where Clause" name="whereClause" type="String" default=""/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,301 @@
+<aura:component controller="PdiQuotaBoardController"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" />
+    <aura:attribute name="num1" type="Integer"/>
+    <aura:attribute name="num2" type="Integer"/>
+    <aura:attribute name="num3" type="Integer"/>
+    <aura:attribute name="num4" type="Integer"/>
+    <aura:attribute name="num5" type="Integer"/>
+    <aura:attribute name="num6" type="Integer"/>
+    <aura:attribute name="num7" type="Integer"/>
+    <aura:attribute name="num8" type="Integer"/>
+    <aura:attribute name="num9" type="Integer"/>
+    <aura:attribute name="num10" type="Integer"/>
+    <aura:attribute name="num11" type="Integer"/>
+    <aura:attribute name="num12" type="Integer"/>
+    <aura:attribute name="num13" type="Integer"/>
+    <aura:attribute name="num14" type="Integer"/>
+    <aura:attribute name="num15" type="Integer"/>
+    <aura:attribute name="num16" type="Integer"/>
+    <aura:attribute name="num17" type="Integer"/>
+    <aura:attribute name="num18" type="Integer"/>
+    <aura:attribute name="num19" type="Integer"/>
+    <aura:attribute name="num20" type="Integer"/>
+    <aura:attribute name="num21" type="Integer"/>
+    <aura:attribute name="num22" type="Integer"/>
+    <aura:attribute name="num23" type="Integer"/>
+    <aura:attribute name="num24" type="Integer"/>
+    <aura:attribute name="num25" type="Integer"/>
+    <aura:attribute name="num26" type="Integer"/>
+    <aura:attribute name="num27" type="Integer"/>
+    <aura:attribute name="num28" type="Integer"/>
+    <aura:attribute name="num29" type="Integer"/>
+    <aura:attribute name="num30" type="Integer"/>
+    <aura:attribute name="num31" type="Integer"/>
+
+
+    <!-- <aura:attribute name="Allocation_Day_1__c" type="Integer" default=""/> -->
+    <aura:attribute name="PageHeading" type="String" default="PDI Quota" />
+    <aura:attribute name="pdiData" type="List" />
+    <aura:attribute name="calendarValuesMonth" type="Map" />
+    <aura:attribute name="holidaylist" type="Map" />
+    <!-- DaysofMonth is declared to track number of days in the month and use it hide columns -->
+    <aura:attribute name="DaysInMonth" type="Integer" />
+    <aura:attribute name="pdiViewPermissionCheck" type="boolean" default = "true"  />
+    <aura:attribute name="totalDay1" type="Integer" default="0" />
+    <aura:attribute name="totalDay2" type="Integer" default="0" />
+    <aura:attribute name="totalDay3" type="Integer" default="0" />
+    <aura:attribute name="totalDay4" type="Integer" default="0" />
+    <aura:attribute name="totalDay5" type="Integer" default="0" />
+    <aura:attribute name="totalDay6" type="Integer" default="0" />
+    <aura:attribute name="totalDay7" type="Integer" default="0" />
+    <aura:attribute name="totalDay8" type="Integer" default="0" />
+    <aura:attribute name="totalDay9" type="Integer" default="0" />
+    <aura:attribute name="totalDay10" type="Integer" default="0" />
+    <aura:attribute name="totalDay11" type="Integer" default="0" />
+    <aura:attribute name="totalDay12" type="Integer" default="0" />
+    <aura:attribute name="totalDay13" type="Integer" default="0" />
+    <aura:attribute name="totalDay14" type="Integer" default="0" />
+    <aura:attribute name="totalDay15" type="Integer" default="0" />
+    <aura:attribute name="totalDay16" type="Integer" default="0" />
+    <aura:attribute name="totalDay17" type="Integer" default="0" />
+    <aura:attribute name="totalDay18" type="Integer" default="0" />
+    <aura:attribute name="totalDay19" type="Integer" default="0" />
+    <aura:attribute name="totalDay20" type="Integer" default="0" />
+    <aura:attribute name="totalDay21" type="Integer" default="0" />
+    <aura:attribute name="totalDay22" type="Integer" default="0" />
+    <aura:attribute name="totalDay23" type="Integer" default="0" />
+    <aura:attribute name="totalDay24" type="Integer" default="0" />
+    <aura:attribute name="totalDay25" type="Integer" default="0" />
+    <aura:attribute name="totalDay26" type="Integer" default="0" />
+    <aura:attribute name="totalDay27" type="Integer" default="0" />
+    <aura:attribute name="totalDay28" type="Integer" default="0" />
+    <aura:attribute name="totalDay29" type="Integer" default="0" />
+    <aura:attribute name="totalDay30" type="Integer" default="0" />
+    <aura:attribute name="totalDay31" type="Integer" default="0" />
+    <aura:attribute name="totalTotal" type="Integer" default="0" />
+    <aura:attribute name="lineTotal" type="List" />
+    <aura:attribute name="YearSelected" type="String"/>
+    <aura:attribute name="MonthSelected" type="Integer"/>
+    <aura:attribute name="yearMonthPickList" type="List"/>
+    <aura:attribute name="targetType" type="String"/>
+    <aura:attribute name="getDaysHolidayWrapper" type="object"/>
+    <aura:attribute name="rowCnt" type="String" default="1" />
+    <aura:attribute name="CurrentMonthYr" type="String" />
+    
+    <div class=" slds-page-header slds-text-heading--large slds-align--absolute-center">
+        {!v.PageHeading}
+    </div>
+    <div class="slds-section slds-is-open ">
+        <!-- <h2 id="element-with-table-label" class="slds-text-heading_medium slds-m-bottom_xx-small">PDI Daily Capacity</h2> -->
+      
+        <lightning:select aura:id="YearMonth" name="YearMonth" label="Year-Month" required="true" value="{!v.YearSelected}" onchange= "{!c.doinit}" >
+          
+            <aura:iteration items="{!v.yearMonthPickList}" var="rowYearMonth" >  
+                <option value="{!rowYearMonth}" selected="{!rowYearMonth == v.CurrentMonthYr}">{!rowYearMonth}</option>
+              
+          
+        </aura:iteration>
+        </lightning:select>
+        <br />
+    </div>
+    <br />
+
+    <!--<article class="slds-card">-->
+    <div class="slds-card__body slds-card__body_inner">    
+        <div class="slds-p-around_x-large ">
+           
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered  slds-border_left slds-border_right" padding-right="0">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Retailer Name">Retailer Name</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="%">%</div>
+                    </th>
+                    <aura:iteration items="{!v.calendarValuesMonth}" var="rowCalendar" indexVar="index">    
+                    <th class="" scope="col">
+                        <div class="slds-truncate" >{!rowCalendar.value}</div>
+                    </th> 
+                    </aura:iteration>          
+                    <th class="" scope="col">
+                        <div class="slds-truncate ">{!$Label.c.Total}</div>
+                    </th>
+                </tr> 
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col"></th>
+                    <th class="" scope="col"></th> 
+                     <aura:iteration items="{!v.calendarValuesMonth}" var="rowCalendar" indexVar="index">    
+                    <th class="" scope="col" >
+                        <div class="slds-truncate" >{!rowCalendar.key}</div>
+                    </th> 
+                    </aura:iteration>   
+                    <th class="" scope="col">
+                        <div class="slds-truncate "></div>
+                    </th>  
+
+                </tr> 
+                </thead>
+
+                <tbody>
+                <tr class="slds-hint-parent sldr-border_right ">
+                    <th class="" scope="col">
+                        <div class="slds-truncate">PDI Daily Capacity</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"></div>
+                    </th>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num1}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[1] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num2}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[2] ,!v.pdiViewPermissionCheck)}" /></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num3}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[3] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num4}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[4] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num5}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[5] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num6}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[6] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num7}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[7] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num8}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[8] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num9}" onchange="{!c.capacityPercentage}"  disabled="{!!and(!v.holidaylist[9] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num10}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[10] ,!v.pdiViewPermissionCheck)}" /></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num11}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[11] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num12}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[12] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num13}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[13] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num14}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[14] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num15}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[15] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num16}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[16] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num17}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[17] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num18}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[18] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num19}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[19] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" value="{!v.num20}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[20] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num21}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[21] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num22}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[22] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num23}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[23] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num24}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[24] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num25}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[25] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num26}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[26] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num27}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[27] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num28}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[28] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    <aura:if isTrue="{!v.DaysInMonth>=29}">
+                        <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num29}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[29] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    </aura:if>
+                    <aura:if isTrue="{!v.DaysInMonth>=30}">
+                        <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num30}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[30] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    </aura:if>
+                    <aura:if isTrue="{!v.DaysInMonth==31}">
+                        <td ><div class="slds-truncate sldr-border_right"><lightning:input variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" value="{!v.num31}" onchange="{!c.capacityPercentage}" disabled="{!!and(!v.holidaylist[31] ,!v.pdiViewPermissionCheck)}"/></div></td>
+                    </aura:if>
+
+                        <th class="" scope="col">
+                        <div class="slds-truncate "></div>
+                    </th> 
+                </tr>
+
+              <aura:iteration items="{!v.pdiData}" var="row" indexVar="index">
+               
+                  <tr>
+                    <!-- <td rowspan="{!item.teamIterator}" class="customrow" style="{!if(item.managerName == '0', 'display: none;', 'width:10%')}"><ui:outputText value="{!item.managerName}"/></td> -->
+                    <!-- <td rowspan="{!item.teamIterator}" class="customrow" style="{!if(item.displayManagerName == false, 'display: none;', 'width:10%')}"><ui:outputText value="{!item.managerName}"/></td> -->
+                    <td class="slds-truncate" ><ui:outputText value="{!row.Retailer__r.Name}"/></td>
+                    <td class="slds-truncate"><lightning:input variant="label-hidden" aura:id="PercentageID" pattern="([0-9]{1}|[0-9]{2})" onchange="{!c.capacityPercentage}" disabled= "{!v.pdiViewPermissionCheck}"  /></td>
+                    <!-- <td class="slds-truncate"><lightning:formattedNumber value="{!v.Allocation_Day_1__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})"/></td> -->
+                    <td class="slds-p-right_none"  style="width:auto" ><lightning:input value="{!row.Allocation_Day_1__c}" onchange="{!c.calcTotals}" variant="label-hidden"  pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[1] ,!v.pdiViewPermissionCheck)}" /></td>
+                    <td class="slds-p-right_none" ><lightning:input value="{!row.Allocation_Day_2__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[2] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none" ><lightning:input value="{!row.Allocation_Day_3__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[3] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none" ><lightning:input value="{!row.Allocation_Day_4__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[4] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_5__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[5] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_6__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[6] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_7__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[7] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_8__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[8] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_9__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[9] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_10__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[10] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_11__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[11] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_12__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[12] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_13__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[13] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_14__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[14] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_15__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[15] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_16__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[16] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_17__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[17] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_18__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[18] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_19__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[19] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_20__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[20] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_21__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[21] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_22__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[22] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_23__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})|[0-9]{3}" disabled= "{!!and(!v.holidaylist[23] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_24__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[24] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_25__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[25] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_26__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[26] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_27__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2}|[0-9]{3})" disabled= "{!!and(!v.holidaylist[27] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <td class="slds-p-right_none sldr-border_right"><lightning:input value="{!row.Allocation_Day_28__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" disabled= "{!!and(!v.holidaylist[28] ,!v.pdiViewPermissionCheck)}"/></td>
+                    <aura:if isTrue="{!v.DaysInMonth>=29}">
+                    <td class="slds-p-right_none sldr-border_right"><lightning:input value="{!row.Allocation_Day_29__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" disabled= "{!!and(!v.holidaylist[29] ,!v.pdiViewPermissionCheck)}"/></td>
+                    </aura:if>
+                    <aura:if isTrue="{!v.DaysInMonth>=30}">
+                    <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_30__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" disabled= "{!!and(!v.holidaylist[30] ,!v.pdiViewPermissionCheck)}"/></td>
+                    </aura:if>
+                    <aura:if isTrue="{!v.DaysInMonth==31}">
+                        <td class="slds-p-right_none"><lightning:input value="{!row.Allocation_Day_31__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" disabled= "{!!and(!v.holidaylist[31] ,!v.pdiViewPermissionCheck)}"/></td>
+                    </aura:if>
+                    <td class="slds-p-right_none" ><ui:outputText value="{!row.lineTotal}"/></td>
+
+                    <!-- <td class="customrow boldText"><lightning:input value="{!item.salesTotal}" variant="label-hidden" disabled="true" /></td> -->
+                </tr>  	
+                </aura:iteration>
+             
+              
+                <tr class="slds-p-right_none">
+                    <td colspan="1" class="slds-truncate">{!$Label.c.Total}</td>
+                     <td></td>   
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay1}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay2}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay3}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay4}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay5}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay6}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay7}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay8}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay9}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay10}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay11}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay12}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay13}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay14}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay15}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay16}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay17}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay18}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay19}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay20}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay21}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay22}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay23}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay24}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay25}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay26}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay27}" variant="label-hidden" disabled="true" /></td>
+                    <td class="slds-p-right_none"><lightning:input value="{!v.totalDay28}" variant="label-hidden" disabled="true" /></td>
+                    <aura:if isTrue="{!v.DaysInMonth>=29}">
+                    <td class="slds-p-right_none  "><lightning:input value="{!v.totalDay29}" variant="label-hidden" disabled="true" /></td>
+                    </aura:if>
+                    <aura:if isTrue="{!v.DaysInMonth>=30}">
+                    <td class="slds-p-right_none "><lightning:input value="{!v.totalDay30}" variant="label-hidden" disabled="true" /></td>
+                    </aura:if>
+                    <aura:if isTrue="{!v.DaysInMonth==31}">
+                        <td class="slds-p-right_none "><lightning:input value="{!v.totalDay31}" variant="label-hidden" disabled="true" /></td>
+                    </aura:if>
+                    <td class="slds-p-right_none "><lightning:input value="{!v.totalTotal}" variant="label-hidden" disabled="true" /></td> 
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <footer class="slds-card__footer slds-align_absolute-center ">
+        <!-- <lightning:button variant="brand" label="{!$Label.c.Reset}" title="{!$Label.c.Reset}" onclick="{!c.doInit}"/> -->
+        <lightning:button variant="brand" label="{!$Label.c.Save}" title="{!$Label.c.Save}" onclick="{!c.saveRecords}" disabled= "{!v.pdiViewPermissionCheck}"/>
+    </footer>
+<!--</article>--> 
+
+    <aura:if isTrue="{!v.show}">
+        <div class="slds-section slds-is-open"> </div>
+            <h3 class="slds-section__title slds-theme_shade"> </h3>
+    </aura:if>
+</aura:component>

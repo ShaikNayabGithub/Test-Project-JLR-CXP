@@ -1,0 +1,92 @@
+<aura:component
+  controller="KORMessageServiceController"
+  implements="force:hasRecordId,flexipage:availableForAllPageTypes"
+  access="global"
+>
+  <!-- <aura:handler event="aura:waiting" action="{!c.showSpinner}" /> -->
+  <!-- <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" /> -->
+  <lightning:utilityBarAPI aura:id="utilitybar" />
+  <aura:import library="lightning:confirm" property="LightningConfirm" />
+  <aura:attribute name="record" type="sObject" />
+  <aura:attribute name="content" type="String" />
+  <aura:attribute name="toNumber" type="String" />
+  <!-- <aura:attribute name="spinner" type="boolean" default="FALSE" /> -->
+
+  <div class="exampleHolder">
+    <lightning:spinner aura:id="mySpinner" class="slds-hide" />
+  </div>
+
+  <!--loading spinner start-->
+
+  <!-- Loading spinner end-->
+
+  <div class="slds-grid slds-gutters slds-m-around_small">
+    <div class="slds-col slds-size_4-of-4">
+      <lightning:combobox
+        name="fromNumber"
+        label="발신번호"
+        placeholder="080-894-1000"
+      />
+    </div>
+  </div>
+  <!-- <div class="slds-grid slds-gutters slds-m-around_small">
+    <div class="slds-col slds-size_4-of-4">
+      <lightning:combobox
+        name="template"
+        label="자동메세지"
+        placeholder="직접입력합니다"
+      />
+    </div>
+  </div> -->
+  <div class="slds-grid slds-gutters slds-m-horizontal_small">
+    <div class="slds-col">
+
+      <span class="slds-form-element__label">수신 번호</span>
+      <div class="slds-form-element__control">
+        <div class="slds-form-element__static" >{!v.toNumber}</div>
+      </div>
+    </div>
+
+    <div class="slds-col slds-text-align_right">
+
+      <lightning:button
+        class=""
+        variant="brand"
+        label="번호 불러오기"
+        onclick="{!c.changePhoneNumber}"
+      />
+    </div>
+
+  </div>
+
+  <div>
+    <lightning:textarea
+      class="slds-m-horizontal_large content_area"
+      aura:id="messagebox"
+      maxlength="2000"
+      minlength="1"
+      messageWhenTooLong="최대 2,000자를 넘을 수 없습니다."
+      messageWhenValueMissing="메시지를 입력해 주세요."
+      placeholder="메시지를 입력해 주세요."
+      name="input5"
+      label="메세지"
+      required="required"
+      value="{!v.content}"
+    />
+  </div>
+
+  <div class="slds-m-around_medium" slot="footer">
+    <lightning:button
+      class="slds-float_right slds-m-horizontal_x-small"
+      variant="neutral"
+      label="Cancel"
+      onclick="{! c.cancel }"
+    />
+    <lightning:button
+      class="slds-float_right"
+      variant="brand"
+      label="Send Message"
+      onclick="{! c.sendMessage }"
+    />
+  </div>
+</aura:component>

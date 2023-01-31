@@ -1,0 +1,125 @@
+<!-- 
+ *  Name        : VME_Model_Adjustment
+ *  
+ *  Company     : ETMarlabs
+ *    
+ *  Purpose     : This component used to Edit the QMSP record by fetching it based on the filter conditions
+ *
+ *  Developer   : Tejashree J
+ *
+ *  Created Date: 15/04/2019
+ -->
+<aura:component controller="VME_Model_Adjustment_Ctrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId">
+    <aura:handler name="filterCmpEvent" event="c:VME_QMSP_Filter_Event" action="{!c.handlefilterCmpEvent}" />
+    <aura:attribute name="chosenRegion" type="String" />
+    <aura:attribute name="chosenCountry" type="String" />
+    <aura:attribute name="chosenYear" type="String" />
+    <aura:attribute name="chosenQuarter" type="String" />
+    <aura:attribute name="chosenBrand" type="String" />
+    <aura:attribute name="chosenModel" type="String" />
+    <aura:attribute name="isEdit" type="Boolean" default="false" />
+    <aura:attribute name="isRecord" type="Boolean" default="false" />
+    <aura:attribute name="requestedQMSPRecord" type="Campaign" />
+    <aura:attribute name="requestedQMSPId" type="Id" />
+    <aura:attribute name="uorun" type="Boolean" />
+    <aura:attribute name="UO" type="Boolean" default="false" />
+    <aura:attribute name="BudgetAmountCon" type="Decimal" />
+    <aura:attribute name="UserCurrency" type="String" />    
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <!--create a component attributs -->
+    <aura:attribute name="Spinner" type="boolean" default="false"/>    
+    <div class="slds-text-align_center slds-text-heading_large" style="color: rgb(255, 255, 255); background-color:#1b5297;line-height: 1.45;">L1 QMSP Adjustment </div>
+    <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+        <c:VME_QMSP_Filter_Component />
+    </div>
+    <ul class="slds-list_horizontal" style="background-color: rgb(48, 138, 218);padding:5px"></ul>
+    <aura:if isTrue="{!v.isRecord}">        
+        <aura:if isTrue="{!v.Spinner}">
+            <div aura:id="spinnerId" class="slds-spinner_container">
+                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>        
+        <div class=" slds-text-heading_medium slds-text-align_center" style="color: rgb(255, 255, 255); background-color: #1b5297;line-height: 2;">L1 QMSP Details {!v.requestedQMSPRecord.Name}</div>
+        <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+             <lightning:layout> <lightning:layoutItem size="2" class="AlignName">
+               <lightning:input name="Name" title="{!v.requestedQMSPRecord.Name}" label="Name" value="{!v.requestedQMSPRecord.VME_QMSP_Code__c}" disabled="true" /></lightning:layoutItem>
+                <lightning:layoutItem size="2"><lightning:input name="Model" label="Model" value="{!v.requestedQMSPRecord.QMSP_Model__r.Model_Alternative__c}" disabled="true" /></lightning:layoutItem>
+                <lightning:layoutItem size="2"><lightning:input name="Quarter" label="Quarter" value="{!v.requestedQMSPRecord.QMSP_Quarter__c}" disabled="true" /></lightning:layoutItem>
+                 <lightning:layoutItem size="2">
+
+
+ <lightning:input name="Actual Spent" label="{!'Actual Spent ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Actual_Spent}" disabled="true" type="number" formatter="currency" />
+                   </lightning:layoutItem>
+<lightning:layoutItem size="2">
+ <lightning:input name="U/O" label="{!'U/O ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Under_Over_Run}" disabled="true" type="number" formatter="currency" />
+      </lightning:layoutItem>  <lightning:layoutItem size="1">
+       <div class="IOiconCSS">
+                        <aura:if isTrue="{!v.UO}">
+                            <aura:if isTrue="{!v.uorun}">
+                                <aura:if isTrue="{!$Browser.isFIREFOX}">
+                                    <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_32.png'}" class="iconFireForCSSFirefox"  />
+                                </aura:if>
+                                <aura:if isTrue="{!$Browser.isWEBKIT}">
+                                    <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_32.png'}"/>
+                                </aura:if>
+                                <aura:set attribute="else">
+                                    <aura:if isTrue="{!$Browser.isFIREFOX}">
+                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_32.png'}" class="iconFireForCSSFirefox"/></aura:if>
+                                    <aura:if isTrue="{!$Browser.isWEBKIT}">
+                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_32.png'}" /></aura:if>
+                                </aura:set>
+                            </aura:if>
+                        </aura:if>
+                    </div>
+
+</lightning:layoutItem>         
+              </lightning:layout>
+        </div>        <ul class="slds-list_horizontal" style="background-color: rgb(48, 138, 218);padding:1px"></ul>
+
+        <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right " >
+            <lightning:layout> 
+                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                <lightning:layoutItem size="2" class="Ali">
+                 <lightning:input name="Approved P/U Amount" label="{!'Approved P/U Amount ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Approved_P_U_Amount}" type="number" formatter="currency" disabled="true" />
+                 <lightning:input name="Approved Volume" label="Approved Volume " value="{!v.requestedQMSPRecord.VME_Approved_Volume__c}" type="number"  disabled="true" /> 
+                 <lightning:input name="Approved Budget" label="{!'Approved Amount ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Approved_Budget}" type="number" formatter="currency" disabled="true" />
+
+            </lightning:layoutItem>
+             <lightning:layoutItem size="2">
+                <lightning:input name="P/U Amount" label="{!'Planned P/U Amount('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Planned_P_U_Amount}" disabled="true" type="number" formatter="currency" />
+                <lightning:input name="PlannedVolume" label="Planned Volume" value="{!v.requestedQMSPRecord.VME_Planned_Volume__c}" type="number" disabled="true" />
+                <lightning:input name="Planned Budget" label="{!'Planned Amount ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Planned_Budget}" type="number" formatter="currency" disabled="true" />  
+             </lightning:layoutItem>
+              <lightning:layoutItem size="2">
+                <lightning:input name="AdjustedPUAmount" aura:id="adjustedPU" label="{!'Adjust P/U Amount ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Adjust_P_U_Amount}" type="number" formatter="currency" step="0.01" disabled="{!(!v.isEdit)}" minlength="1" maxlength="16"/>
+                 <lightning:input name="AdjustedVolume" label="Adjusted Volume" aura:id="AdjustedVolume" value="{!v.requestedQMSPRecord.VME_Adjust_volume__c}" minlength="1" maxlength="16" step="0" disabled="{!(!v.isEdit)}"/>
+                      <lightning:input name="AdjustedBudget" label="{!'Adjusted Amount ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Adjust_Budget}" disabled="true" type="number" formatter="currency"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <!--lightning:input name="L1 QMSP Reason" label="L1 QMSP Reason" aura:id="reason" value="{!v.requestedQMSPRecord.VME_L1_Adjustment_Reason__c}" type="text" disabled="{!(!v.isEdit)}" required="true"/-->  
+                    <lightning:input name="RetailVolume" aura:id="retailVol" label="Retail Volume" min="0" value="{!v.requestedQMSPRecord.VME_Retail_Volume__c}" disabled="{!(!v.isEdit)}" type="number"/>
+                    <lightning:input name="Retail P/U " label="{!'Retail P/U Amount ('+v.UserCurrency+')'}" value="{!v.requestedQMSPRecord.VME_Retail_P_U}" type="number" formatter="currency" disabled="true"/>
+                </lightning:layoutItem>
+              <lightning:layoutItem size="3">
+                    <div class="EditCSS">
+                        <aura:if isTrue="{!(!v.isEdit)}">
+                        <lightning:button variant="brand" name="Edit" label="Edit" iconName="action:edit" onclick="{! c.editQMSPRecord }" class="editButtonCSS"/>
+                    </aura:if>
+                    </div>
+                    <aura:if isTrue="{!v.isEdit}">
+                    <lightning:button variant="success" name="Save" label="Save" onclick="{! c.saveQMSPRecord }" class="savebutton"/>
+                    <lightning:button variant="destructive" name="Cancel" label="Cancel" onclick="{! c.cancelQMSPEditRecord }" />
+                    </aura:if>
+                </lightning:layoutItem>
+
+        </lightning:layout>
+        </div>
+    </aura:if>
+   
+    
+</aura:component>

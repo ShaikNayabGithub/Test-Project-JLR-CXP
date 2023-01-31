@@ -1,0 +1,102 @@
+<apex:component layout="none" >
+    <apex:attribute name="metaEnabled" type="Boolean" description="" default="true" />
+    <apex:attribute name="IsJaguar" type="Boolean" description=""/>
+    <apex:attribute name="market" type="string" description=""/>
+<!-- <apex:includeScript value="https://code.jquery.com/jquery-3.3.1.min.js" />  Commented by Tcs : 29_may-->
+    <!--<apex:stylesheet value="{!URLFOR($Resource.overrides, 'dist_jagaur/css/main.css')}" />-->
+    <apex:stylesheet value="{!URLFOR($Resource.overrides, 'dist_landrover/css/main.css')}" />
+    
+    <!-- Google Tag Manager -->
+    
+   
+   
+    <script>
+    if('{!$CurrentPage.Parameters.market}' == 'sg' || '{!$CurrentPage.Parameters.market}' == 'hk' || '{!$CurrentPage.Parameters.market}' == 'th')
+        {
+            <apex:variable var="googlesg" value="{!if(IsJaguar, 'GTM-P47G58', 'GTM-TQ5L9J' )}"  />
+            <!-- Google Tag Manager -->
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'}
+            );var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer', '{!googlesg}');
+            <!-- End Google Tag Manager -->
+        }
+    else
+    { 
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                                                                  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                    '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                                        })(window,document,'script','dataLayer','{! IF(IsJaguar, "GTM-5WRF6QQ", "GTM-5WRF6QQ")}');
+        }
+        </script>
+    <!-- End Google Tag Manger -->
+    
+    
+    <!-- A/B Test -->
+    
+    <script async="async" type="text/javascript" src="{!IF(IsJaguar, "//try.abtasty.com/41c0b3e8b1ef733dc0af56b3ac371ea5.js", "//try.abtasty.com/a0cbac1d1f8985b1dd94eaa25d069695.js")}"></script>
+    
+    <!-- End of A/B Test -->
+    <!----Start of Crazy tag--->
+    <script type="text/javascript" src="//script.crazyegg.com/pages/scripts/0025/7074.js" async="async"></script>
+    <!---End of crazy tag--->
+    
+   
+        
+    <!-- Lightning Bolt Begins -->     
+     <script async="async" type="text/javascript" id="lightning_bolt" src="{!IF($CurrentPage.parameters.market == 'sg', "//cdn-akamai.mookie1.com/LB/LightningBolt.js", "")}"></script>
+     <!-- Lightning Bolt Ends -->  
+     
+    
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <title>{!IF(IsJaguar, $Label.udaan_title_j, $Label.udaan_title_lr)}</title>
+    <meta name="description" content="{!IF(IsJaguar, $Label.udaan_description_j, $Label.udaan_description_lr)}"/>
+    <meta name="keywords" content="{!$Label.udaan_keywords}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+    <link rel="shortcut icon preload" href="{!IF(IsJaguar, URLFOR($Resource.j_favicon), URLFOR($Resource.lr_favicon))}"/>
+    <link rel="apple-touch-icon preload" href="{!IF(IsJaguar, URLFOR($Resource.j_favicon), URLFOR($Resource.lr_favicon))}"/>
+    <meta name="apple-mobile-web-app-title" content="Udaan"/>
+    <meta name="theme-color" content="__SITE_THEME_COLOUR__"/>
+    <apex:outputPanel rendered="{!metaEnabled}">
+        <meta name="title" content="{!IF(IsJaguar, $Label.udaan_title_j, $Label.udaan_title_lr)}" />
+        <meta name="description" content="{!IF(IsJaguar, $Label.udaan_description_j, $Label.udaan_description_lr)}" />
+        <meta property="og:title" content="{!IF(IsJaguar, $Label.udaan_title_j, $Label.udaan_title_lr)}"/>
+        <meta property="og:description" content="{!IF(IsJaguar, $Label.udaan_description_j, $Label.udaan_description_lr)}"/>
+        <meta property="og:site_name" content="Jaguar Global"/>
+        <meta property="og:type" content="Article"/>
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:image:width" content="1300" /> 
+        <meta property="og:image:height" content="650" />
+        <meta name="twitter:image" content="{!IF(IsJaguar, URLFOR($Resource.jaguarThumbnail),URLFOR($Resource.landroverthumbnail))}"/>
+        <meta property="og:image" content="{!IF(IsJaguar, URLFOR($Resource.jaguarThumbnail),URLFOR($Resource.landroverthumbnail))}" />
+        
+    </apex:outputPanel>
+    
+     <apex:outputPanel rendered="{!IsJaguar}">
+        <style type="text/css" id="vCXPUD672">
+
+            @media screen and (max-width: 68.74em) {
+                .site-header__logo {
+                    background-image: url("{!URLFOR($Resource.dist_jaguar, '/img/logo.svg')}") !important;
+                }
+            }
+
+        </style>
+    </apex:outputPanel>
+    
+    <style type="text/css" id="vTCRM3157">
+    
+      @media screen and (min-width: 1100px) and (max-width: 1390px) {
+    
+          .site-header .site-header__title {
+              display: none;
+          }
+    
+      }
+    
+    </style>
+    
+    
+</apex:component>

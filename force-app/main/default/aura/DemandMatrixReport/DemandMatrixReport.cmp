@@ -1,0 +1,96 @@
+<aura:component controller="DemandMatrixReportController" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    
+    <aura:attribute name="selectedCountry" type="string"/>
+    <aura:attribute name="startDate" type="string"/>
+    <aura:attribute name="endDate" type="string"/>
+    <aura:attribute name="countryOptions" type="List"/>
+    <aura:attribute name="columnsList" type="List"/>
+    <aura:attribute name="brandModelCountMap" type="Object"/>
+    <aura:attribute name="PortalPermission" type="Boolean" default="false"/>
+    <aura:attribute name="CXPPermission" type="Boolean" default="false"/>
+    <aura:attribute name="show" type="Boolean" default="false"/>
+    <aura:handler name="init" action="{!c.doInIt}" value="{!this}" />
+    
+    <div class="slds-m-around_small">
+        
+        <!-- Header -->
+        <div class="slds-page-header--object-home slds-page-header slds-shrink-none panel-header" role="banner"
+             style="height:10%">
+            <div class="slds-grid">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="uiImage">
+                            <lightning:icon iconName="standard:lead_list" alternativeText="Event" />
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate">Demand Matrix</span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                
+                <aura:if isTrue="{!or(v.PortalPermission, v.CXPPermission)}">
+                    <div class="slds-col slds-m-left_large slds-form_horizontal"> 
+                        <lightning:input type="date" name="start" value="{!v.startDate}" label="Start Date"/>
+                    </div>
+                    <div class="slds-col slds-m-left_medium slds-form_horizontal">                                
+                        <lightning:input type="date" name="start" value="{!v.endDate}" label="End Date"/> 
+                    </div>
+                    <aura:if isTrue="{!or(!v.PortalPermission, v.CXPPermission)}">
+                        <div class="slds-col slds-m-left_medium slds-form_horizontal">
+                            <lightning:select name="country" label="Market" aura:id="country" value="{!v.selectedCountry}">
+                                <aura:iteration items="{!v.countryOptions}" var="option">
+                                    <option text="{!option.label}" value="{!option.value}" selected="{!option.selected}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>
+                    </aura:if>
+                    <lightning:buttonIcon class="slds-m-horizontal_medium" iconName="utility:search" variant="bare" onclick="{! c.Search }" alternativeText="Search" title="Search" size="large"/>
+                    <lightning:buttonIcon class="slds-m-horizontal_medium" iconName="utility:loop" variant="bare" onclick="{! c.clear }" alternativeText="Search" title="Search" size="large"/>
+                </aura:if>
+            </div>
+        </div>
+        
+        <div aura:id="modalspinnerLookup" class="slds-hide">
+            <lightning:spinner variant="brand" size="medium" alternativeText="Loading"/>
+        </div>
+        
+        <aura:If isTrue="{!v.show}">
+            <div class="slds-scrollable" style="height:67vh" >
+                <table class="cust slds-table--fixed-layout slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-no-row-hover">
+                    <thead>
+                        <tr class="" bgcolor="#BF9000">
+                            <th class="slds-text-align_center" scope="col" style="width:220px;">
+                                <div class="slds-cell-wrap"></div>
+                            </th>
+                            <aura:iteration items="{!v.columnsList}" var="column">
+                                <th class="slds-text-align_center" scope="col" style="font-weight: bold; color:white; width:140px;">
+                                    <div class="slds-cell-wrap" title="{!column}">{!column}</div>
+                                </th>
+                            </aura:iteration>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <aura:iteration items="{!v.brandModelCountMap}" var="brandVar" indexVar="brandIndex">
+                            <tr class="" style="padding-left:5px; font-weight: bold; color:white;" bgcolor="{!brandIndex==0 ? '#FF0000' : '#00B050'}">
+                                <td class="" scope="col" style="{!brandIndex==0 ? 'background-color: #FF0000;' : 'background-color: #00B050;'+ ' font-weight: bold; width:220px;'}">
+                                    <div class="slds-truncate" title="{!brandVar.Brand}">{!brandVar.Brand}</div>
+                                </td>
+                                <aura:iteration items="{!v.columnsList}" var="column">
+                                    <c:ColumnWiseCount map="{!brandVar.brandMap}" key="{!column}"/>
+                                </aura:iteration>
+                            </tr>
+                            <c:Models map="{!brandVar.ModelCountMap}" columnsList="{!v.columnsList}"/>
+                        </aura:iteration>
+                        <c:GrandTotal brandModelCountMap="{!v.brandModelCountMap}" columnsList="{!v.columnsList}"/>
+                    </tbody>
+                </table>
+            </div>
+        </aura:If>
+    </div>
+    
+</aura:component>

@@ -1,0 +1,218 @@
+<aura:component controller="AssetWithOpportunityTableController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="vistaStatus" type="List" default="[{'label': 'Holding Pool', 'value': 'Holding Pool'},
+                                                            {'label': 'Awaiting Approval', 'value': 'Awaiting Approval'},
+                                                            {'label': 'Order Created', 'value': 'Order Created'},
+                                                            {'label': 'Order Confirmed', 'value': 'Order Confirmed'},
+                                                            {'label': 'Submitted', 'value': 'Submitted'},
+                                                            {'label': 'Order Committed', 'value': 'Order Committed'},
+                                                            {'label': 'Order Being Built', 'value': 'Order Being Built'},
+                                                            {'label': 'Order Built', 'value': 'Order Built'},
+                                                            {'label': 'Accepted by Sales', 'value': 'Accepted by Sales'},
+                                                            {'label': 'Despatched', 'value': 'Despatched'},
+                                                            {'label': 'Into Port of Exit or Local Compound', 'value': 'Into Port of Exit or Local Compound'},
+                                                            {'label': 'Shipped', 'value': 'Shipped'},
+                                                            {'label': 'Into Port of Entry or Receiving Compound', 'value': 'Into Port of Entry or Receiving Compound'},
+                                                            {'label': 'In Transit to Dealer', 'value': 'In Transit to Dealer'},
+                                                            {'label': 'Arrived at Dealer', 'value': 'Arrived at Dealer'},
+                                                            {'label': 'Customer Handover', 'value': 'Customer Handover'}]" />
+    <aura:attribute name="commonQuickSalesTypesList" type="List" default="[{'label': 'Employee - Dealer/Importer', 'value': 'Employee - Dealer/Importer'},
+                                                                          {'label': 'Employee - JLR', 'value': 'Employee - JLR'},
+                                                                          {'label': 'Fleet of 1-4 vehicles', 'value': 'Fleet of 1-4 vehicles'},
+                                                                          {'label': 'Fleet of 100+ vehicles', 'value': 'Holding Pool'},
+                                                                          {'label': 'Fleet of 25-100 vehicles', 'value': 'Fleet of 25-100 vehicles'},
+                                                                          {'label': 'Leasing Company', 'value': 'Leasing Company'},
+                                                                          {'label': 'Rental with Buy Back', 'value': 'Rental with Buy Back'},
+                                                                          {'label': 'Government', 'value': 'Government'},
+                                                                          {'label': 'Embassy', 'value': 'Embassy'},
+                                                                          {'label': 'Pre-Order', 'value': 'Pre-Order'},
+                                                                          {'label': 'Private Individual', 'value': 'Private Individual'},
+                                                                          {'label': 'Private Lease', 'value': 'Private Lease'},
+                                                                          {'label': 'Affinity', 'value': 'Affinity'},
+                                                                          {'label': 'Fleet of 1-24 vehicles', 'value': 'Fleet of 1-24 vehicles'},
+                                                                          {'label': 'Fleet of 5-24 Vehicles', 'value': 'Fleet of 5-24 Vehicles'},
+                                                                          {'label': 'Dealer Based Rental', 'value': 'Dealer Based Rental'},
+                                                                          {'label': 'Tax Free Sales', 'value': 'Tax Free Sales'},
+                                                                          {'label': 'Job Related Cars', 'value': 'Job Related Cars'},
+                                                                          {'label': 'Tax Free Sales', 'value': 'Tax Free Sales'},
+                                                                          {'label': 'Training', 'value': 'Training'},
+                                                                          {'label': 'Tax Free Sales', 'value': 'Tax Free Sales'},
+                                                                          {'label': 'VIP - Individual', 'value': 'VIP - Individual'},
+                                                                          {'label': 'VIP - Lease', 'value': 'VIP - Lease'},
+                                                                          {'label': 'Pool Cars', 'value': 'Pool Cars'},
+                                                                          {'label': 'Marketing Operations', 'value': 'Marketing Operations'},
+                                                                          {'label': 'Public Relations', 'value': 'Public Relations'},
+                                                                          {'label': 'Sales Operations', 'value': 'Sales Operations'},
+                                                                          {'label': 'Public Relations', 'value': 'Public Relations'},
+                                                                          {'label': 'Press Cars', 'value': 'Press Cars'},
+                                                                          {'label': 'Retail Stock', 'value': 'Retail Stock'},
+                                                                          {'label': 'Showroom', 'value': 'Showroom'},
+                                                                          {'label': 'Protected', 'value': 'Protected'},
+                                                                          {'label': 'Floorplan Stock', 'value': 'Floorplan Stock'},
+                                                                          {'label': 'Stock', 'value': 'Stock'},
+                                                                          {'label': 'Launch Stock', 'value': 'Launch Stock'},
+                                                                          {'label': 'New Retailer Launch Stock', 'value': 'New Retailer Launch Stock'},
+                                                                          {'label': 'Buffer Stock Floorplan', 'value': 'Buffer Stock Floorplan'}]"/>
+    <aura:attribute name="createdFromDate" type="Date" />
+    <aura:attribute name="createdToDate" type="Date" />
+    <aura:attribute name="regionList" type="List" default="[{'label': 'APIO', 'value': 'APIO'},{'label': 'LACRO', 'value': 'LACRO'},{'label': 'MENA', 'value': 'MENA'},{'label': 'Japan', 'value': 'Japan'}]"/>
+    <aura:attribute name="selectedRegion" type="String" />
+    <aura:attribute name="salesTypesList" type="List" default="[{'label': 'Retailer Sold Sale Types', 'value': 'SalesTypes'}]"/>
+    <aura:attribute name="selectedsalesType" type="List"/>
+    <aura:attribute name="selectedCommonSalesType" type="List"/>
+    <aura:attribute name="selectedVistaStatus" type="List" />
+    <aura:attribute name="selectedyear" type="String" />
+    <aura:attribute type="List" name="assetList"/>
+    <aura:attribute name="oppWithProdColumns" type="List"/>
+    <aura:attribute name="oppWithoutProdColumns" type="List"/>
+    <aura:attribute name="countryIsoCodeList" type="List"/>
+    <aura:attribute name="selectedCountryIsoCodeList" type="List"/>
+    <aura:attribute name="assetWithOppList" type="List"/>
+    <aura:attribute name="assetWithOutOppList" type="List"/>
+    <aura:attribute name="assetWithOppCount" type="integer" />
+    <aura:attribute name="assetWithoutOppCount" type="integer" />
+    <aura:attribute name="selectedRetailerId" type="String"/>
+    <aura:attribute name="selectedRetailerName" type="String"/>
+    <aura:attribute name="yearList" type="List" default="[
+                                                         {'label': '2019', 'value': '2019'},
+                                                         {'label': '2020', 'value': '2020'},
+                                                         {'label': '2021', 'value': '2021'},
+                                                         {'label': '2022', 'value': '2022'},
+                                                         {'label': '2023', 'value': '2023'},
+                                                         {'label': '2024', 'value': '2024'}
+                                                         ]"/>
+    <aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="showFirst" type="Boolean" default="true" />
+    <aura:attribute name="showLast" type="Boolean" default="false" />
+    <aura:attribute name="selectedTabId" type="String" default="AssetWtpp"/>
+    <aura:attribute name="iterableList" type="List"/>
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" />
+    <aura:attribute name="maxPageNumber" type="Integer"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:layout horizontalAlign="space" class="slds-grid_vertical">
+        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+            <lightning:card class="layoutBgcolor" iconName="standard:product">
+                <aura:set attribute="title">
+                    Asset Search
+                </aura:set>
+                <div class="slds-grid slds-wrap slds-box slds-box_x-small slds-m-around_x-small">
+                    <div class="slds-card slds-size_1-of-3">
+                        <lightning:dualListbox name="VistaStatus"
+                                               label= "Select Vista Status"
+                                               sourceLabel="Available"
+                                               selectedLabel="Selected"
+                                               options="{!v.vistaStatus}"
+                                               value="{!v.selectedVistaStatus}" 
+                                               size="5"
+                                               onchange="{! c.handleStatusChange }"/>
+                        <!-- <lightning:combobox name="VistaStatus" label="Vista Status" value="{!v.selectedStatus}" placeholder="Select Vista Status" options="{! v.vistaStatus }" onchange="{! c.handleStatusChange }"/> -->
+                    </div>
+                    <div class="slds-size_1-of-3">
+                        <lightning:dualListbox name="commonsalestypes"
+                                               label= "Select Common Sale Type"
+                                               sourceLabel="Available"
+                                               selectedLabel="Selected"
+                                               options="{!v.commonQuickSalesTypesList}"
+                                               size="5"
+                                               value="{!v.selectedCommonSalesType}" 
+                                               onchange="{! c.handleStatusChange }"/>
+                        <center> 
+                            <lightning:checkboxGroup name="Checkbox_Group"
+                                                     options="{! v.salesTypesList }"
+                                                     value="{! v.selectedsalesType }"
+                                                     onchange="{! c.handleSalesTypeQuickChange }"/>
+                        </center> 
+                    </div>
+                    <div class="slds-card slds-size_1-of-3">
+                        <lightning:dualListbox name="countryIsoCode"
+                                               label= "Select Country ISO Code"
+                                               sourceLabel="Available"
+                                               selectedLabel="Selected"
+                                               options="{!v.countryIsoCodeList}" 
+                                               value="{!v.selectedCountryIsoCodeList}" 
+                                               size="5"
+                                               />
+                    </div>
+                    
+                </div>
+                <div class="slds-grid slds-wrap slds-box slds-box_x-small slds-m-around_x-small">
+                    <div class="slds-size_1-of-4">
+                        <lightning:input type="date" name="createdFromDate" label="Created From Date" value="{!v.createdFromDate}"/>
+                    </div> 
+                    <div class="slds-size_1-of-4">
+                        <lightning:input type="date" name="createdToDate" label="Created To Date" value="{!v.createdToDate}"/>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        <lightning:combobox name="regionList" label="Select Region" value="{!v.selectedRegion}" placeholder="Select Region" options="{! v.regionList }" onchange="{! c.handleRegionChange }"/>
+                        
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        <c:LookupSearchComponent objectName="Account" fieldName="Name" Label="Select Retailer" 
+                                                 selectRecordId="{!v.selectedRetailerId}" selectRecordName="{!v.selectedRetailerName}" 
+                                                 required="false" iconName="utility:user"/>
+                    </div>
+                </div>
+                <aura:set attribute="footer"><br/>
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="brand" iconName="utility:search"  label="Search" onclick="{!c.handleSearch}" /> 
+                        &nbsp;&nbsp;<lightning:button variant="destructive" iconName="utility:clear"  label="Clear" onclick="{!c.clearSearch}" /> 
+                    </div>
+                </aura:set>
+            </lightning:card>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner size="large" variant="brand" alternativeText="Loading" />
+    </aura:if>
+    <br/>
+    <lightning:layout horizontalAlign="space" class="slds-grid_vertical">
+        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+            <lightning:tabset variant="scoped" onselect="{!c.handleTabSelect}" selectedTabId="AssetWtpp">
+                <lightning:tab label="Asset With Opportunity" id="AssetWtpp">
+                    <aura:if isTrue="{!not(empty(v.iterableList))}"> 
+                        <lightning:card>
+                            <aura:set attribute="actions">                           
+                                <lightning:badge label="{!v.assetWithOppCount}"/>
+                            </aura:set>
+                            <div class="slds-align_absolute-center">
+                                &nbsp;&nbsp;<lightning:button variant="destructive"  label="First" title="First" onclick="{! c.firstPage }" iconName="utility:jump_to_left" iconPosition="left"  />
+                                &nbsp;&nbsp;<lightning:button label="Previous" variant="brand" title="Previous" onclick="{! c.prevPage }" iconName="utility:chevronleft" iconPosition="left"  />
+                                &nbsp;&nbsp;<button class="slds-button slds-button--neutral">{!v.currentPageNumber} / {!v.maxPageNumber}</button>         
+                                &nbsp;&nbsp;<lightning:button label="Next" variant="success" title="Next" onclick="{! c.nextPage }" iconName="utility:chevronright" iconPosition="right" />
+                                &nbsp;&nbsp;<lightning:button variant="destructive"  label="Last" title="Last" onclick="{! c.lastPage }" iconName="utility:jump_to_right" iconPosition="right"/>
+                            </div><br/>
+                            <lightning:datatable data="{! v.iterableList }" 
+                                                 columns="{! v.oppWithProdColumns }" 
+                                                 keyField="id"
+                                                 hideCheckboxColumn="true"/>
+                        </lightning:card>
+                    </aura:if>
+                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                </lightning:tab>
+                <lightning:tab label="Asset Without Opportunity" id="AssetWoOpp">
+                    <aura:if isTrue="{!not(empty(v.iterableList))}"> 
+                        <lightning:card>
+                            <aura:set attribute="actions">                           
+                                <lightning:badge label="{!v.assetWithoutOppCount}"/>
+                            </aura:set>
+                            <div class="slds-align_absolute-center">
+                                &nbsp;&nbsp;<lightning:button variant="destructive"  label="First" title="First" onclick="{! c.firstPage }" iconName="utility:jump_to_left" iconPosition="left"/>
+                                &nbsp;&nbsp;<lightning:button label="Previous" variant="brand" title="Previous" onclick="{! c.prevPage }" iconName="utility:chevronleft" iconPosition="left"/>
+                                &nbsp;&nbsp;<button class="slds-button slds-button--neutral">{!v.currentPageNumber} / {!v.maxPageNumber}</button>         
+                                &nbsp;&nbsp;<lightning:button label="Next" variant="success" title="Next" onclick="{! c.nextPage }" iconName="utility:chevronright" iconPosition="right" />
+                                &nbsp;&nbsp;<lightning:button variant="destructive"  label="Last" title="Last" onclick="{! c.lastPage }" iconName="utility:jump_to_right" iconPosition="right"/>
+                            </div><br/>
+                            <div>
+                                <lightning:datatable data="{! v.iterableList }" 
+                                                     columns="{! v.oppWithoutProdColumns }" 
+                                                     keyField="id"
+                                                     hideCheckboxColumn="true"/>
+                            </div>
+                        </lightning:card>
+                    </aura:if>
+                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                </lightning:tab>
+            </lightning:tabset>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

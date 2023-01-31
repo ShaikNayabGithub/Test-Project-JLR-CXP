@@ -1,0 +1,184 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="TransferServicePlanController" access="global" >
+    <aura:attribute name="ServicePlan" type="Object"/>
+    <aura:attribute name="vehicleResults" type="Object[]"/>
+    <aura:attribute name="assetFound" type="Object"/>
+    <aura:attribute name="servicePlanContracts" type="Object[]" />
+    <aura:attribute name="searchVin" type="String" default=""/>
+    <aura:attribute name="showResults" type="Boolean" default="false" />
+    <aura:attribute name="openNewVehDropDown" type="Boolean" default="false" />
+    <aura:attribute name="startDate" type="Date" />
+    <aura:attribute name="inputSearchNewVeh" type="Object" />
+    <aura:attribute name="showTransferSP" type="Boolean" default="false" />
+    <aura:attribute name="showTransferMsg" type="Boolean" default="false" />
+    <aura:attribute name="refund" type="Boolean" default="false" />
+    
+    <aura:attribute name="isTransferConfirmModelOpen" type="boolean" default="false"/>
+    <aura:attribute name="existingServicePlanPrice" type="Decimal" />
+    <aura:attribute name="newServicePlanPrice" type="Decimal" />
+    <aura:attribute name="upliftChargeAmount" type="Decimal" />
+    <aura:attribute name="currencyIsoCode" type="String"/>
+    <aura:attribute name="newServicePlanId" type="String"/>
+    <aura:attribute name="existingServicePlanId" type="String"/>
+    <aura:registerEvent name="Actionname" type="c:Actionevent"></aura:registerEvent>
+    <lightning:layout multipleRows="true" class="slds-form">
+        <lightning:layoutItem padding="around-small" size="12">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div class="{! v.openNewVehDropDown ? 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'}"
+                             aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                
+                                <lightning:input label="{!$Label.c.SPC_Full_VIN_Search}" variant="label-hidden" placeholder="{!$Label.c.SPC_Full_VIN_Search}" aura:id="newVehVin" value="{!v.searchVin}" onchange="{!c.getNewVehVinJs}"/>
+                                <aura:if isTrue="{! empty(v.searchVin)}">
+                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                                        <lightning:icon iconName="utility:search" size="x-small" />
+                                    </span>
+                                    <aura:set attribute="else">
+                                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                                title="Clear the text input" onclick="{!c.clearOption}">
+                                            <lightning:icon iconName="utility:clear" size="x-small" />
+                                        </button>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                            <div id="listbox-id-11" style="left: 33.5%;z-index:10;" class="slds-dropdown slds-size_8-of-12 slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                    <aura:iteration items="{!v.vehicleResults}" var="result" indexVar="index">
+                                        <li role="presentation" class="slds-listbox__item" data-id="{!result.Id}"
+                                            data-value="{!result.Name}" onclick="{!c.onVehicleSelect}">
+                                            <div
+                                                 class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                 role="option">
+                                                <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                <span class="slds-media__body">
+                                                    <span class="slds-truncate" style="width:100%">
+                                                        <span>{!result.Name}</span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </li>
+                                    </aura:iteration>
+                                </ul>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>                      
+        </lightning:layoutItem>
+        <aura:if isTrue="{!v.showResults == true}">  
+            <aura:if  isTrue="{!v.showTransferMsg}">
+                <center>
+                    <lightning:icon iconName="utility:warning" alternativeText="Warning!" variant="warning"
+                                    title="warning variant" /> 
+                    <div class="slds-text-heading_medium">{!$Label.c.Transfer_Vehicle_Message}</div>
+                </center>
+            </aura:if>
+            <lightning:card title="{!$Label.c.SPC_Asset_Results}">
+                <div><p></p></div>
+                <lightning:layout>
+                    <lightning:layoutItem size="12">
+                        <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid">
+                            <tbody>
+                                <tr></tr>                      
+                            </tbody>
+                        </table>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <!-- Asset Search Results -->
+                
+                <lightning:layout multipleRows="true" class="slds-form">  
+                    <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">   <div style=" font-weight: bold; ">{!$Label.c.Vehicle}:&nbsp; {!v.assetFound.Name}</div>  </span></lightning:layoutItem>
+                    
+                    
+                    <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Asset+': &lt;/b&gt;'}"/></b>  <lightning:formattedText value="{!v.assetFound.Name}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Stock_Search_Brand+': &lt;/b&gt;'}"/></b>   <lightning:formattedText value="{!v.assetFound.Brand__r.Name}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Stock_Search_Model+': &lt;/b&gt;'}"/></b>  <lightning:formattedText value="{!v.assetFound.Model__r.Name}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Registration+': &lt;/b&gt;'}"/></b>  <lightning:formattedText value="{!v.assetFound.Registration_Number__c}" /></lightning:layoutItem>
+                    <!-- -->
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Model_Year+': &lt;/b&gt;'}"/></b>     <lightning:formattedText value="{!v.assetFound.Model_Year__c}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Transmission+': &lt;/b&gt;'}"/></b>    <lightning:formattedText value="{!v.assetFound.Transmission__c}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Stock_Search_Derivative+': &lt;/b&gt;'}"/></b>   <lightning:formattedText value="{!v.assetFound.Derivative__r.Name}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Colour_FB+': &lt;/b&gt;'}"/></b>   <lightning:formattedText value="{!v.assetFound.AccountCountryCode__c}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Warranty_Start_Date+': &lt;/b&gt;'}"/></b>   <lightning:formattedDateTime value="{!v.assetFound.Warranty_Start_Date__c}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Warranty_End_Date+': &lt;/b&gt;'}"/></b>    <lightning:formattedDateTime value="{!v.assetFound.Warranty_End_Date__c}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                    <aura:if isTrue="{!and(v.servicePlanContracts != null, v.servicePlanContracts.length > 0)}">
+                        <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title"><div style=" font-weight: bold; ">{!$Label.c.SPC_Existing_Service_Plan}</div> </span></lightning:layoutItem>
+                        <aura:iteration items="{!v.servicePlanContracts}" var="spc" indexVar="index">
+                            <aura:if isTrue="{!not(empty(spc.Country_ISO_Code__c))}">
+                                <lightning:layoutItem padding="around-small" size="12"><span class="slds-text-heading_small"><div style=" font-weight: bold; ">{!index+1}) {!spc.Assignment_Type__c}&nbsp;{!$Label.c.SPC_Service_Plan} {!spc.Country_ISO_Code__c}    <aura:if isTrue="{!spc.Is_Active__c}"><lightning:badge label="{!$Label.c.SPC_Active}" size="small" class="slds-m-left_small" iconName="utility:success"/></aura:if><aura:if isTrue="{!and(spc.Cancellation_Date__c != null, spc.Is_Active__c == false)}"><lightning:badge label="{!$Label.c.SPC_Canceled}" class="slds-badge slds-theme_error Red" iconName="utility:ban"/></aura:if>
+                                    </div></span></lightning:layoutItem>
+                            </aura:if>
+                            
+                            <!-- <lightning:layoutItem padding="around-small" size="6"> <lightning:formattedRichText value="&lt;b&gt;Reference: &lt;/b&gt; "/><lightning:formattedText value="{!spc.Service_Plan_Reference__c}" /></lightning:layoutItem> -->
+                            <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.SPC_Service_Plan_Number+': &lt;/b&gt;'}"/></b><lightning:formattedText value="{!spc.Name}" /></lightning:layoutItem>
+                            <!--lightning:layoutItem padding="around-small" size="6">     Is Active:<lightning:formattedText value="{!spc.Is_Active__c}" /></lightning:layoutItem-->
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Assignment_Type+': &lt;/b&gt;'}"/></b> <lightning:formattedText value="{!spc.Assignment_Type__c}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b> <lightning:formattedRichText value="{!$Label.c.SPC_Service_Plan_Type+': &lt;/b&gt;'}"/></b> <lightning:formattedText value="{!spc.Service_Plan_Product__r.Name}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Start_Date+': &lt;/b&gt;'}"/></b>  <lightning:formattedDateTime value="{!spc.Start_Date__c}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.SPC_End_Date+': &lt;/b&gt;'}"/></b> <lightning:formattedDateTime value="{!if(spc.Actual_End_Date__c !=null,spc.Actual_End_Date__c,spc.Start_Date__c)}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Months+': &lt;/b&gt;'}"/></b><lightning:formattedNumber value="{!spc.Months__c}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Asset_Mileage+': &lt;/b&gt;'}"/></b><lightning:formattedText value="{!spc.Mileage__c}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="12"></lightning:layoutItem>
+                            
+                        </aura:iteration>
+                        <aura:set attribute="else">
+                            <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.SPC_No_Existing_Service_Plans} </span></lightning:layoutItem>
+                        </aura:set>
+                    </aura:if>
+                    <aura:if  isTrue="{!AND(v.showTransferSP,!v.showTransferMsg)}">
+                        <lightning:layoutItem padding="around-small" size="12">
+                            <div style="text-align:center">
+                                <lightning:button name="{!v.assetFound.Id}" label="{!$Label.c.SPC_Transfer_Service_Plan}" onclick="{!c.transferSP}" />
+                            </div>
+                        </lightning:layoutItem>                        
+                    </aura:if>
+                </lightning:layout> 
+            </lightning:card>
+        </aura:if>
+        <!-- SHOW LOADING SPINNER--> 
+        <div aura:id="Id_spinner" class="slds-hide">
+            <lightning:spinner variant="brand" size="large"/>
+        </div> 
+        <aura:if isTrue="{!v.isTransferConfirmModelOpen}">
+            <section role="dialog" style="width: 1500px;margin-left: -400px;" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!$Label.c.Confirm_Service_Plan_Transfer}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p>{!$Label.c.Transfer_Message}</p>
+                        <br/><table>
+                        <tr>
+                            <td>{!$Label.c.Existing_service_plan_price}&nbsp;&nbsp;</td>
+                            <td><b><lightning:formattedNumber value="{!v.existingServicePlanPrice}" style="currency" currencyCode="{!v.currencyIsoCode}"/></b></td>                                
+                        </tr>
+                        <tr>
+                            <td>{!$Label.c.New_service_plan_price}</td>
+                            <td><b><lightning:formattedNumber value="{!v.newServicePlanPrice}" style="currency" currencyCode="{!v.currencyIsoCode}"/></b></td>                                
+                        </tr>
+                        <tr>
+                            <td>{!$Label.c.Uplift_charge_amount}</td>
+                            <td><b><lightning:formattedNumber value="{!v.upliftChargeAmount}" style="currency" currencyCode="{!v.currencyIsoCode}"/></b></td>                                
+                        </tr><tr></tr><tr></tr>
+                        </table>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <center>
+                            <lightning:button variant="brand"
+                                              label="{!$Label.c.Transfer_Service_Plan}"
+                                              title="{!$Label.c.Transfer_Service_Plan}"
+                                              onclick="{!c.transferSP}"/>
+                            <lightning:button variant="brand"
+                                              label="{!$Label.c.SPC_Cancel}"
+                                              title="{!$Label.c.SPC_Cancel}"
+                                              onclick="{!c.clearOption}"/>
+                        </center>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </lightning:layout>
+</aura:component>

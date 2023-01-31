@@ -1,0 +1,43 @@
+<!--
+ - Created by caleb on 11/02/2021.
+ -->
+
+<!-- Milestone Asset Already Assigned -->
+<template>
+    <div class="slds-p-bottom_medium">
+        This asset is currently associated to another opportunity that has not had an RDA processed:
+    </div>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+        <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Opportunity Name">Opportunity Name</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Account Name">Opportunity Close Date</div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" title="Close Date">Opportunity Sales Owner</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <template for:each={opportunityList} for:item="row" for:index="i">
+            <tr class="slds-hint-parent" key={row.OpportunityName}>
+                <th data-label="Opportunity Name" scope="row">
+                    <div class="slds-truncate" title={row.OpportunityName}>{row.OpportunityName}</div>
+                </th>
+                <td data-label="Account Name">
+                    <div class="slds-truncate" title={row.OpportunityCloseDate}>{row.OpportunityCloseDate}</div>
+                </td>
+                <td data-label="Close Date">
+                    <div class="slds-truncate" title={row.OpportunitySalesOwnerName}>{row.OpportunitySalesOwnerName}</div>
+                </td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+    <div class="slds-p-top_medium">
+        If you wish to proceed, the asset will be removed from the above opportunities, the Opportunity Owner will receive an email notifying them that their asset has been removed.
+    </div>
+</template>

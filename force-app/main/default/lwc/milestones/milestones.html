@@ -1,0 +1,237 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 14/10/2019.
+ -->
+
+<!-- Milestones -->
+<template>
+    <c-activity-create-modal opportunity-id={opportunityId}
+                             do-show-modal={showCreateActivityModal}
+                             onactivitycreated={handelActivityCreated}
+                             onmodalclosed={handleModalClosed}>
+    </c-activity-create-modal>
+    <div class="slds-grid slds-wrap jlr-milestones-container-wrapper">
+        <template if:true={shouldCreateActivity}>
+            <div style="color: red; padding: 10px;" class="slds-col slds-size--12-of-12"><strong>There are no open activities for this opportunity</strong></div>
+            <div class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours" onclick={handelOpenCreateActivityModal}>
+                Create Activity
+            </div>
+        </template>
+
+        <div class="slds-col slds-size--12-of-12 milestones-title">
+            <h2>New Sale Checklist</h2>
+        </div>
+
+        <!-- Qualification -->
+        <div class="slds-col slds-size--12-of-12">
+            <c-milestone-item
+                    record-id={qualificationId}
+                    related-milestone="Qualified"
+                    milestone-display-name="Qualification"
+                    milestone-api-name="qualification"
+                    is-in-progress={isQualificationInProgress}
+                    is-checked={isQualificationChecked}
+                    onmilestoneclicked={handleMilestoneClicked}
+                    onmilestonecheckboxclicked={handelMilestoneCheckboxClicked}>
+            </c-milestone-item>
+        </div>
+
+        <!-- Test Drive -->
+        <div class="slds-col slds-size--12-of-12">
+            <c-milestone-item
+                    record-id={testDriveId}
+                    related-milestone="Test_Drive"
+                    milestone-display-name="Test Drive"
+                    milestone-api-name="testDrive"
+                    is-in-progress={isTestDriveInProgress}
+                    is-checked={isTestDriveChecked}
+                    onmilestoneclicked={handleMilestoneClicked}
+                    onmilestonecheckboxclicked={handelMilestoneCheckboxClicked}>
+            </c-milestone-item>
+        </div>
+
+        <!-- Vehicle Selection -->
+        <div class="slds-col slds-size--12-of-12">
+            <c-milestone-item
+                    record-id={vehicleSelectionId}
+                    related-milestone="Select Vehicle"
+                    milestone-display-name="Select Vehicle"
+                    milestone-api-name="vehicleSelection"
+                    is-in-progress={isVehicleSelectionInProgress}
+                    is-checked={isVehicleSelectionChecked}
+                    onmilestoneclicked={handleMilestoneClicked}
+                    onmilestonecheckboxclicked={handelMilestoneCheckboxClicked}>
+            </c-milestone-item>
+        </div>
+
+        <!-- Appraisal -->
+        <div class="slds-col slds-size--12-of-12">
+            <c-milestone-item
+                    record-id={appraisalId}
+                    related-milestone="Appraisal"
+                    milestone-display-name="Appraisal"
+                    milestone-api-name="appraisal"
+                    is-in-progress={isAppraisalInProgress}
+                    is-checked={isAppraisalChecked}
+                    onmilestoneclicked={handleMilestoneClicked}
+                    onmilestonecheckboxclicked={handelMilestoneCheckboxClicked}>
+            </c-milestone-item>
+        </div>
+
+        <!-- Negotiation -->
+        <div class="slds-col slds-size--12-of-12">
+            <c-milestone-item
+                    record-id={negotiationId}
+                    related-milestone="Negotiation"
+                    milestone-display-name="Negotiation"
+                    milestone-api-name="negotiation"
+                    is-in-progress={isNegotiationInProgress}
+                    is-checked={isNegotiationChecked}
+                    onmilestoneclicked={handleMilestoneClicked}
+                    onmilestonecheckboxclicked={handelMilestoneCheckboxClicked}>
+            </c-milestone-item>
+        </div>
+
+        <!-- Order Taken -->
+        <div class="slds-col slds-size--12-of-12">
+            <c-milestone-item
+                    record-id={orderTakenId}
+                    related-milestone="Order_Taken"
+                    milestone-display-name="Order Taken"
+                    milestone-api-name="orderTaken"
+                    is-in-progress={isOrderTakenInProgress}
+                    is-checked={isOrderTakenChecked}
+                    onmilestoneclicked={handleMilestoneClicked}
+                    onmilestonecheckboxclicked={handelMilestoneCheckboxClicked}>
+            </c-milestone-item>
+        </div>
+
+
+        <!-- Handover -->
+        <div class="slds-col slds-size--12-of-12">
+            <c-milestone-item
+                    record-id={handoverId}
+                    related-milestone="Handover_RDA"
+                    milestone-display-name="Handover"
+                    milestone-api-name="handover"
+                    is-in-progress={isHandoverInProgress}
+                    is-checked={isHandoverChecked}
+                    onmilestoneclicked={handleMilestoneClicked}
+                    onmilestonecheckboxclicked={handelMilestoneCheckboxClicked}>
+            </c-milestone-item>
+        </div>
+
+        <!-- buttons -->
+
+        <!--
+        Sync To Dms
+        <div class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours"
+             onclick={handleSyncToDmsClick}>Sync To Dms
+        </div>
+
+        Validate FF Number
+        <div class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours"
+             onclick={handleValidateClick}>Validate Frequent Flyer No.
+        </div>
+        -->
+        <template if:false={disabled}>
+            <template if:true={isPersonAccount}>
+                <!-- Convert To Corporate Account -->
+                <div class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours" onclick={handelConvertToCorpAccountLink}>
+                    Convert To Corporate Account
+                </div>
+            </template>
+
+            <template if:false= {isPersonAccount}>
+                <!-- Convert To Person Account -->
+                <div class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours" onclick={handelConvertToPersonAccountLink}>
+                    Convert To Person Account
+                </div>
+            </template>
+
+
+            <!-- Validate Eligibility for Corporate Service Plan -->
+            <div class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours"
+                 onclick={verifyEligibilityCorporate}>Validate Corporate Eligibility
+            </div>
+        </template>
+    </div>
+
+
+    <!-- Modal -->
+
+    <template if:true={showModal}>
+        <div class="jlr-modal-background">
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open"
+                     aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container jlr-modal-container">
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size--11-of-12">
+                            </div>
+                            <div class="slds-col slds-size--1-of-12 jlr-is-clickable" onclick={handleCloseModal}>
+                                <lightning-icon icon-name="utility:close"></lightning-icon>
+                            </div>
+                        </div>
+
+                        <!-- QFF -->
+                        <template if:true={showValidateQff}>
+                            <c-verify-qff last-name={lastName}></c-verify-qff>
+                        </template>
+
+                        <!-- Corporate Service Plan -->
+                        <template if:true={showCorporateEligibility}>
+                            <c-verify-corporate-service-plan-eligibility
+                                    if:true={corporateEligibilityEnabled}
+                                    opportunity-id={opportunityId}
+                                    variant-id={selectedVariantId}
+                                    pricebook-id={pricebookId}
+                                    oncorporateaccountupdated={handleCorporateAccountUpdated}
+                            >
+
+                            </c-verify-corporate-service-plan-eligibility>
+                            <div class="slds-border_top slds-border_bottom slds-p-around_small slds-border_top" if:false={corporateEligibilityEnabled}>
+                                {corporateEligibilityMessage}
+                            </div>
+                        </template>
+
+                        <!-- Milestone Modal -->
+                        <template if:true={showMilestoneModal}>
+                            <c-milestone-modal milestone-api-name={milestoneApiName}
+                                               milestone-display-name={milestoneDisplayName}
+                                               onmilestonecreatetaskclicked={handleMilestoneCreateTaskClicked}
+                                               onmilestonecreateeventclicked={handleMilestoneCreateEventClicked}>
+                            </c-milestone-modal>
+                        </template>
+                        <template if:true={showMilestoneTask}>
+                            <c-create-task
+                                    related-milestone={relatedMilestone}
+                                    milestone-api-name={milestoneApiName}
+                                    milestone-display-name={milestoneDisplayName}
+                                    opportunity-id={opportunityId}
+                                    onmilestonecancelled={handleCloseModal}
+                                    onactivitycreated={handleActivityCreated}>
+                            </c-create-task>
+                        </template>
+                        <template if:true={showMilestoneEvent}>
+                            <c-create-event
+                                    related-milestone={relatedMilestone}
+                                    milestone-api-name={milestoneApiName}
+                                    milestone-display-name={milestoneDisplayName}
+                                    opportunity-id={opportunityId}
+                                    onmilestonecancelled={handleCloseModal}
+                                    onactivitycreated={handleActivityCreated}>
+                            </c-create-event>
+                        </template>
+
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+
+    <!-- Activity Timeline Component -->
+    <template if:true={showActivitiesTimeLine}>
+        <c-activity-time-line opportunity-id={opportunityId}></c-activity-time-line>
+    </template>
+</template>

@@ -1,0 +1,162 @@
+/**
+ * Created by GrantMillgate-EasyTe on 10/09/2019.
+ */
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Regular.ttf');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Bold.ttf');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Medium.ttf');
+    font-style: normal;
+    font-weight: 500;
+}
+
+/* Removes the default dropdown icon from input tags */
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+/* Removes the default up down icon from calendar picker */
+input::-webkit-inner-spin-button {
+    display: none;
+}
+/* Set Placeholder text properties */
+input::-webkit-input-placeholder {
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+input::-moz-placeholder {
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+input:-ms-input-placeholder {
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+body{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+    padding: 5px;
+    margin: 5px;
+}
+
+h2{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 40px;
+}
+
+.modal-form-label{
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    color: #444444;
+    letter-spacing: 0.85px;
+    line-height: 24px;
+}
+
+.jlr-button-brand{
+    color: white;
+    background-color: #4CCA80;
+    border: #4CCA80;
+    width: 100%;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+}
+
+.jlr-modal-background{
+    height : 100%;
+}
+
+.jlr-modal-container{
+    max-width: 400px;
+}
+
+.jlr-modal-footer{
+    background-color: white;
+}
+
+.jlr-form-element{
+    margin-top : 20px;
+}
+
+.jlr-dropdown{
+    position: relative;
+    display: inline-block;
+
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+.jlr-dropdown::before{
+    position: absolute;
+    content: " \2193";
+    top: 0px;
+    right: -8px;
+    height: 20px;
+    width: 20px;
+}
+
+.jlr-is-clickable{
+    cursor:pointer;
+}
+
+.jlr-button-cell{
+    text-transform: uppercase;
+    border-style: solid;
+    border-color: black;
+    border-width: thin;
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+    width: available;
+    cursor: pointer;
+}
+
+.jlr-button-cell-inverse-colours{
+    background-color: black;
+    color: white;
+}
+
+.jlr-errors{
+    color: red;
+}
+
+.slds-col{
+    padding: 5px;
+}

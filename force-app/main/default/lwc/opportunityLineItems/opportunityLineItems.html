@@ -1,0 +1,20 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 21/11/2019.
+ -->
+
+<!-- Opportunity Line Items -->
+<template>
+    <!-- Opportunity Line Items ************************************************************************************************************************************ -->
+    <div class="slds-grid slds-wrap jlr-left-spacer">
+
+        <!-- Product List -->
+        <div class="slds-col slds-size--10-of-12 jlr-bottom-border "><span class="jlr-h4">Product Name</span></div>
+        <div class="slds-col slds-size--1-of-12 jlr-bottom-border"><span class="jlr-h4">Qty</span></div>
+        <div class="slds-col slds-size--1-of-12 jlr-bottom-border"><span>&nbsp;</span></div>
+        <div class="slds-col slds-size--12-of-12">
+        <template for:each={products} for:item="product">
+            <c-opportunity-line-item key={product.Id} product={product} onopitemcleared={handleOpItemCleared}></c-opportunity-line-item>
+        </template>
+        </div>
+    </div>
+</template>

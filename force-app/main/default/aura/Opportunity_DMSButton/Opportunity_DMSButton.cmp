@@ -1,0 +1,11 @@
+<aura:component description="Opportunity_DMSButton" implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="OpportunityControllerDMSExtension">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="communityRecordId" type="String" />
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    
+    <lightning:button label="{!$Label.c.Send_To_DMS_Button}" onclick="{!c.sendToDMS}" disabled="{!v.disabled == true}" />
+
+</aura:component>
+<!--
+  - Created by lbrindle on 09/07/2018.
+-->

@@ -1,0 +1,10 @@
+.THIS.c-container {
+    border: 1px solid #d8dde6;
+    margin: 10px 0 20px 0;
+}
+.THIS .page-section {
+    border: solid 1px #ccc;
+}
+.THIS .page-main {
+    background: #f8f8f8;
+}

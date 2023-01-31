@@ -1,0 +1,20 @@
+.THIS .ModalCss{
+    max-width: 70rem !important;
+    width:95% !important;
+   /* overflow-y: scroll !important;*/
+}
+
+.THIS .requiredCss label:before {
+    color: #e32;
+    content: ' *  ';
+    display:inline;
+}
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}
+
+.THIS .slds-dropdown-trigger .slds-dropdown {
+  max-height: 200px;
+   overflow: auto;
+}

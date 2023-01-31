@@ -1,0 +1,17 @@
+.slds-input_border {
+    border-color: #D4D4D4;
+}
+
+.lgc-bg {
+    background-color: rgb(242, 242, 242);
+}
+
+.lgc-bg-inverse {
+    background-color: rgb(22, 50, 92);
+}
+.box-border {
+    border-color: rgb(201, 201, 201);
+}
+div.shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }

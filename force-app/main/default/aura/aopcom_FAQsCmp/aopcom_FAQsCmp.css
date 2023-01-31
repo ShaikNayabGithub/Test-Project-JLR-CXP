@@ -1,0 +1,39 @@
+.THIS .section{
+    padding:0px;
+    padding-bottom:30px;
+}
+
+.THIS .left {
+    width: 100px;
+}
+
+.THIS .right {
+    width: 1200px;
+    text-align: right;
+}
+
+.THIS .center {
+    flex: 1;    
+    color: #778899;
+    font-size: 1.1rem;
+    font-family: 'Yanone Kaffeesatz', 'Open Sans', sans-serif;    
+    text-align: center;
+	align-self: center;
+}
+
+.THIS button {
+    font-size: 0.8rem;
+    color: #000000;
+    background: #EFEFEF;
+    border: solid 1px #000000;
+    border-radius: 2px;
+    padding: 5px 6px 6px 6px;
+}
+
+.THIS button:focus {
+    outline:0;
+}
+
+.THIS button:active {
+	border: solid 1px #BBBBBB;
+}

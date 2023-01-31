@@ -1,0 +1,10 @@
+<aura:component controller="COOP_MarketingPlanMainController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <aura:attribute name="campaignId" type="String"/> 
+    <aura:attribute name="approverName" type="String" default="null"/> 
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:if isTrue="{!  and(v.approverName != 'null', v.approverName != null)}">
+    <p class="slds-card__header">Approver Name: {!v.approverName}</p> 
+        </aura:if>
+</aura:component>

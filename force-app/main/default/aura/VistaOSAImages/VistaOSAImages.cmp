@@ -1,0 +1,35 @@
+<aura:component controller="VistaOSAImageController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:attribute name="baseUrl" type="String"/>
+    <aura:attribute name="notAvailableUrl" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="interiorImageList" type="List"/>
+    <aura:attribute name="exteriorImageList" type="List"/>
+    <aura:attribute name="activeSections" type="List" default="['Interior','Exterior']" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:layout HorizontalAlign="space" class="slds-grid_vertical">
+        <lightning:tabset selectedTabId="Exterior" variant="scoped">
+            <lightning:tab label="Exterior Images" id="Exterior">
+                <aura:if isTrue="{!not(empty(v.exteriorImageList))}">
+                    <lightning:layoutItem padding="horizontal-small" flexibility="auto">
+                        <lightning:carousel disableAutoRefresh="false" disableAutoScroll="false">
+                            <aura:iteration items="{!v.exteriorImageList}" var="item">
+                                <lightning:carouselImage header="{!item.header}" src="{!item.imageUrl}"> </lightning:carouselImage>
+                            </aura:iteration>
+                        </lightning:carousel>
+                    </lightning:layoutItem>
+                </aura:if>
+            </lightning:tab>
+            <lightning:tab label="Interior Images" id="Interior">
+                <aura:if isTrue="{!not(empty(v.interiorImageList))}">
+                    <lightning:layoutItem padding="horizontal-small" flexibility="auto">
+                        <lightning:carousel disableAutoRefresh="false" disableAutoScroll="false">
+                            <aura:iteration items="{!v.interiorImageList}" var="item">
+                                <lightning:carouselImage header="{!item.header}" src="{!item.imageUrl}" alternative-text="{!item.imageUrl}"> </lightning:carouselImage>
+                            </aura:iteration>
+                        </lightning:carousel>
+                    </lightning:layoutItem>
+                </aura:if>
+            </lightning:tab>
+        </lightning:tabset>
+    </lightning:layout>
+</aura:component>

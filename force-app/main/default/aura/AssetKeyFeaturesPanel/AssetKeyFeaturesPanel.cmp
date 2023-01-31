@@ -1,0 +1,28 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+	
+	<lightning:recordEditForm aura:id="editAsset" recordId="{!v.recordId}" objectApiName="Asset" onsuccess="{!c.handleSuccess}">
+    	<lightning:card title="{!$Label.c.Asset_Key_Features}" iconName="custom:custom31" class="slds-p-around_xx-small">
+        	<aura:set attribute="actions">
+            	<lightning:button label="{!$Label.c.sfSave}" type="submit" name="save" variant="brand" />
+        	</aura:set>
+    		<p class="slds-p-horizontal_small">
+            	<div class="slds-grid slds-wrap">
+    				<div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Exterior_Colour_Group__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Body_Style__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Exterior_Colour__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Engine__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Exterior_colour_code__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Transmission__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Interior_Color__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Wheels_Driven__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Interior_colour_code__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Wheel_Base__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Exterior_Detail_Color_Image__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Colour__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Colour2__c" /></div>
+                </div>
+	        </p>
+    	</lightning:card>
+    </lightning:recordEditForm>
+    
+</aura:component>

@@ -1,0 +1,19 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="LCConvertAccountType_Controller" >
+    <aura:attribute name="isRetailer" type="boolean" />
+    <aura:attribute name="isCompany" type="boolean" />
+    <aura:attribute name="hasOneContact" type="boolean" />
+    <aura:attribute name="accountStatus" type="String" />
+    <aura:attribute name="accountType" type="String" />
+    <aura:attribute name="currentAccount" type="Account" />
+    <aura:attribute name="currentPrimaryAccount" type="Account" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+   
+       <aura:if isTrue="{!v.currentAccount.RecordType.DeveloperName == 'Corporate' || v.currentAccount.RecordType.DeveloperName == 'Corporate_Golden_Record'}">
+    		<lightning:button label="{!$Label.c.Ind_Convert_Button}" onclick="{!c.convertCorporate}" />
+        </aura:if>
+        <aura:if isTrue="{!v.currentAccount.RecordType.DeveloperName == 'Individual' || v.currentAccount.RecordType.DeveloperName == 'Individual_Golden_Record'}">
+            <lightning:button label="{!$Label.c.Corp_Convert_Button}" onclick="{!c.convertIndividual}" />
+        </aura:if>
+
+
+</aura:component>

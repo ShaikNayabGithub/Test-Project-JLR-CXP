@@ -1,0 +1,28 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+	 <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="saved" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="true" />
+   
+    <aura:if isTrue="{!!v.saved}">
+        <lightning:recordEditForm
+               
+            objectApiName="Campaign_Activity_Evidence__c">
+            <!-- the messages component is for error messages -->
+            <lightning:messages />
+
+    <lightning:inputField fieldName="Name"   />
+    <lightning:inputField fieldName="Activity_Value__c" />
+    <lightning:inputField fieldName="Comments__c"/>
+    <lightning:inputField fieldName="Evidence_Type__c"/>
+    <lightning:inputField fieldName="Status__c"/>
+    <lightning:inputField fieldName="Campaign_Activity__c"/>
+            <div class="slds-m-top_medium">
+                <lightning:button disabled="{!v.disabled}" variant="brand" type="submit" name="save" label="Save" />
+            </div>
+        </lightning:recordEditForm>
+        <aura:set attribute="else">
+            <p>Saved!</p>
+        </aura:set>
+    </aura:if>
+
+</aura:component>

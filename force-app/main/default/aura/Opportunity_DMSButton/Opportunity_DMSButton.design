@@ -1,0 +1,3 @@
+<design:component>
+    <design:attribute name="communityRecordId" label="Community Record Id" description="The Record Id within the Community" />
+</design:component>

@@ -1,0 +1,32 @@
+.THIS .ModalCss{
+    max-width: 70rem !important;
+    width:95% !important;
+   /* overflow-y: scroll !important;*/
+}
+.THIS .radioBtnCss{
+	padding-left: 46%!important;
+}
+/*.THIS .customRequired{
+ font-weight: 400; 
+}*/
+
+ /* .THIS .customRequired:before{    
+ content: "*";
+ margin: 0 .125rem;
+ color: rgb(194, 57, 52);
+ float: left; 
+}*/
+.THIS .requiredCss label:before {
+    color: #e32;
+    content: ' *  ';
+    display:inline;
+}
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}
+
+.THIS .slds-dropdown-trigger .slds-dropdown {
+  max-height: 200px;
+   overflow: auto;
+}

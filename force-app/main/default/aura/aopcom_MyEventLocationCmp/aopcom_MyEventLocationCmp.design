@@ -1,0 +1,6 @@
+<design:component>
+	<design:attribute name="location_label" label="Location Label" />
+    <design:attribute name="time_label" label="Time Label" />
+    <design:attribute name="date_label" label="Date label" />
+    <design:attribute name="link_label" label="Link label" />
+</design:component>

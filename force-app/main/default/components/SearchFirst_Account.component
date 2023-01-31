@@ -1,0 +1,49 @@
+<apex:component controller="SearchFirst_AccountController">
+    <apex:attribute name="host" type="SearchFirst_HostController" assignTo="{!pageController}"  required="true" description="The controller for the page." />
+    <apex:outputPanel id="resultPanel">
+        <apex:form id="resultForm">
+            <apex:actionFunction action="{!CreateRecord}" name="apexCreateAccount"/>
+            <apex:pageBlock id="knownaccountresultPanel" title="{!$Label.SfKnownAccounts + ' [' + text(knownAccounts.size) + ']'}" tabStyle="Account">
+            <apex:pageMessage strength="2" severity="warning" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+            <apex:pageMessage strength="2" severity="info" summary="{!$Label.sfNoAccountResultWarning}" rendered="{!AND(knownAccounts.size == 0, NOT(moreRecords))}" />
+            <apex:pageBlockSection title="{!$Label.sfMatchingAccounts}" collapsible="true" columns="1" rendered="{!(knownAccounts.size != 0)}">
+                <apex:pageBlockTable value="{!knownAccounts}" var="accountItem">
+                    <apex:column >
+                        <apex:facet name="header">{!$Label.sfAccountName}</apex:facet>
+                        <apex:outputLink value="{!URLFOR($Action.Account.View, accountItem.Id)}">{!accountItem.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{!accountItem.Phone}"/>
+                    <apex:column value="{!accountItem.BillingCity}"/>
+                    <apex:column value="{!accountItem.Site__c}"/>
+                    <apex:column value="{!accountItem.ntt_Jaguar_Status__c}" headerValue="Jaguar Status"/>
+                    <apex:column value="{!accountItem.ntt_Land_Rover_Status__c}" headerValue="Land Rover Status"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:commandButton id="createNewAccount" value="{!$Label.btnNew}" onclick="SearchFirst.createAccount();return false;"/>
+        </apex:pageBlock>
+        <apex:pageBlock id="unknownaccountresultPanel" title="{!$Label.sfUnknownAccounts + ' [' + text(unknownAccounts.size) + ']'}" tabStyle="Account">
+            <apex:pageMessage strength="1" severity="warning" summary="{!$Label.sfAccountSearchUnavailable}" />
+            <!--<apex:pageMessage strength="2" severity="warning" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+            <apex:pageMessage strength="2" severity="info" summary="{!$Label.sfNoAccountResultWarning}" rendered="{!AND(unknownAccounts.size == 0, NOT(moreRecords))}" />
+            <apex:pageBlockSection title="{!$Label.sfMatchingAccounts}" collapsible="true" columns="1" rendered="{!(unknownAccounts.size != 0)}">
+                <apex:pageBlockTable value="{!unknownAccounts}" var="accountItem">
+                    <apex:column >
+                        <apex:facet name="header">{!$Label.sfUnknownAccountName}</apex:facet>
+                        <apex:commandLink value="{!accountItem.Name}" action="{!popupController.ShowPopup}"  rerender="acctpopup">
+                            <apex:param name="accId" value="{!accountItem.Id}"/>
+                            <apex:param name="accName" value="{!accountItem.Name}"/>
+                            <apex:param name="accPhone" value="{!accountItem.Phone}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:column headerValue="Phone"/>
+                    <apex:column value="{!accountItem.BillingCity}"/>
+                    <apex:column value="{!accountItem.Site__c}"/>
+                    <apex:column value="{!accountItem.ntt_Jaguar_Status__c}" headerValue="Jaguar Status"/>
+                    <apex:column value="{!accountItem.ntt_Land_Rover_Status__c}" headerValue="Land Rover Status"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>-->
+        </apex:pageBlock>
+        </apex:form>
+    </apex:outputPanel>
+    <!--<c:SearchFirst_AccountPopup id="acctpopup" host="{!This}"/>-->
+</apex:component>

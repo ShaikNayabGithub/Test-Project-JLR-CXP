@@ -1,0 +1,177 @@
+<aura:component controller="VME_Category_Adjustment_Ctrl">
+    <aura:attribute name="isOpen" type="Boolean" />
+    <aura:attribute name="showConfigure" type="Boolean"  default="false"/>
+    <aura:attribute name="hideNewCreationbutton" type="boolean" default="false" />
+    <aura:attribute name="userCurrency" type="String" />
+    <aura:attribute name="recordTypeMap" type="Map" />
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="parentRecordType" type="String" />
+    <aura:registerEvent name="CancelSplitSchemeEvt" type="c:VME_OpenModel" />
+    <aura:handler name="statusEvent1" event="c:VME_Confirm_Event" action="{!c.handleConfirm}" />
+    <aura:registerEvent name="savedRecordDetailsEvt" type="c:VME_SavedRecordDetailsEvent" />
+    <aura:registerEvent name="configureBtnEvt" type="c:VME_SavedRecordDetailsEvent" />
+        <aura:registerEvent name="callDealerMixDiscType" type="c:VME_SavedRecordDetailsEvent" />
+    <aura:attribute name="vmeCampaignResult" type="VME_Category_Adjustment_Ctrl.VMECampaignWrapper" access="public" />
+    <aura:registerEvent name="refreshCmpEvt" type="c:VME_OpenModel" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+     <aura:handler event="aura:waiting" action="{!c.showSpinnerApex}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinnerApex}"/>
+  <!--create a component attributs -->
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    <aura:handler name="reviseBtnEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.closeModel}" />
+    <aura:handler name="SplitSchemeEvt" event="c:VME_OpenModel" action="{!c.closeModel}" />
+    <aura:if isTrue="{!v.isOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container ModalCss">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">L3 VME Campaign Adjustment</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-align--absolute-center" style="position: relative;">
+                        <div aura:id="ModalDialogPlaceholder" />
+                        <div aura:id="ModalRevisePlaeholder" />
+                        <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large"  style="position: fixed !important;"/>
+                    </div>
+                    <aura:if isTrue="{!or((v.vmeCampaignResult.schemeList==null),empty(v.vmeCampaignResult.schemeList))}">
+                        <p class="paraCss">There is no active L3 VME Campaign related to this L2 VME Category.</p>
+                    </aura:if>
+
+                    <aura:if isTrue="{!and(not(empty(v.vmeCampaignResult.schemeList)),v.vmeCampaignResult.schemeList != null)}">
+                        <div style="padding: 0.5%;">
+                        <div style="border: 1px solid rgb(48, 138, 218)">
+                        <div class="slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color: #1b5297;line-height: 1.5;">  
+                             <lightning:icon iconName="utility:summarydetail" iconPosition="left" alternativeText="Related L2 VME Category" size="small" style="padding-left: 3%;" variant="inverse"/>&nbsp;&nbsp; Related L2 VME Category ( {!v.vmeCampaignResult.vmeCampaignWrap.VME_External_ID__c} ) 
+                         </div>
+                        <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right slds-align_absolute-center">
+
+                            <lightning:input label="Start Date" disabled="true" value="{!v.vmeCampaignResult.vmeCampaignWrap.VME_Start_Date__c}" type="text" variant="standard"></lightning:input>
+
+                             <lightning:input label="End Date" disabled="true" value="{!v.vmeCampaignResult.vmeCampaignWrap.VME_End_Date__c}" type="text" variant="standard"></lightning:input>
+
+                            <lightning:input label="Category" disabled="true" value="{!v.vmeCampaignResult.vmeCampaignWrap.VME_Category__c}" type="text" variant="standard"></lightning:input>
+
+                            <lightning:input label="Sub Category" disabled="true" value="{!v.vmeCampaignResult.vmeCampaignWrap.VME_Sub_Category__c}" type="text" variant="standard"></lightning:input>
+
+                            <lightning:input label="{!'Planned Amount  ('+v.userCurrency+')'}" disabled="true" value="{!v.vmeCampaignResult.vmeCampaignWrap.VME_Planned_Budget__c}" type="number" variant="standard" formatter="currency"></lightning:input>
+
+                            <lightning:input label="{!'Adjusted Amount ('+v.userCurrency+')'}" disabled="true" value="{!v.vmeCampaignResult.vmeCampaignWrap.VME_Adjusted_Budget__c}" type="number" variant="standard" formatter="currency"></lightning:input>
+                        </div>
+                    </div>
+                        </div> 
+                        <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+                            <aura:iteration items="{!v.vmeCampaignResult.schemeList}" var="schWrapperObj">
+                                           <aura:if isTrue="{!schWrapperObj.VME_Scheme_Type__c=='Base'}">
+                                            <div style="padding: 0.5%;">
+                                             <div style="border: 1px solid rgb(48, 138, 218)">
+                                                <div class="slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color: rgb(48, 138, 218);line-height: 1.5;padding: 3px 25px;" >
+                                                     <lightning:icon iconName="utility:standard_objects" iconPosition="left" alternativeText="Base L3 VME Campaign" size="small" style="padding-left: 3%;" variant="inverse"/>&nbsp;&nbsp;Base L3 VME Campaign
+                                                </div>
+                                                <lightning:layout>
+                                                    <lightning:layoutItem size="2" class="firstColCss">
+                                                        <lightning:input label="L3 Start Date" disabled="true" value="{!schWrapperObj.VME_Start_Date__c}" variant="standard" type="Date"></lightning:input>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="2" class="colCss">
+                                                        <lightning:input label="L3 End date" disabled="true" value="{!schWrapperObj.VME_End_Date__c}" type="date" variant="standard"></lightning:input>
+                                                    </lightning:layoutItem>
+
+                                                    <lightning:layoutItem size="2" class="colCss">
+                                                        <lightning:input label="{!'P/U Amount ('+v.userCurrency+')'}" disabled="true" type="number" variant="standard" value="{!schWrapperObj.VME_PU_Amount__c}" formatter="currency"></lightning:input>
+                                                        <lightning:input label="Volume" disabled="true" value="{!schWrapperObj.VME_Volume__c}" variant="standard" type="number"></lightning:input>
+                                                    </lightning:layoutItem>
+
+                                                    <lightning:layoutItem size="2" class="colCss">
+                                                        <lightning:input label="JLR Share" disabled="true" type="percentage" variant="standard" value="{!schWrapperObj.VME_JLR_Share__c +'%'}"></lightning:input>
+                                                        <lightning:input label="{!'Retailer Contribution ('+v.userCurrency+')'}" disabled="true" type="number" value="{!schWrapperObj.VME_Retailer_Contribution__c}" formatter="currency"></lightning:input>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="2" class="colCss">
+
+                                                        <lightning:button variant="brand" value="{!schWrapperObj.Id}" label="End L3" onclick="{!c.endScheme}" disabled="{!schWrapperObj.VME_InActive__c}" iconName="action:remove" iconPosition="left" class="BaseEndBtnCss"></lightning:button>
+
+                                                        <lightning:button variant="brand" value="{!schWrapperObj.Id}" label="Revise L3" onclick="{!c.endAndSplitScheme}" disabled="{!schWrapperObj.VME_InActive__c}" iconName="utility:rotate" iconPosition="left" class="BaseReviseBtnCss"  ></lightning:button>
+                                                    </lightning:layoutItem>
+
+                                                </lightning:layout>
+                                            </div>
+                                        </div>
+                                            </aura:if>
+                                             <aura:if isTrue="{!schWrapperObj.VME_Scheme_Type__c!='Base'}">
+                                                <aura:if isTrue="{!schWrapperObj.RecordTypeId==v.parentRecordType}">
+                                                    <div style="padding: 0.5%;">
+                                                <div style="border: 1px solid rgb(48, 138, 218)">
+                                                    <div class="slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color: rgb(48, 138, 218);line-height: 1.5;padding: 3px 25px;" >                                
+                                                          <lightning:icon iconName="utility:quote" iconPosition="left" alternativeText="Detail" size="small" style="padding-left: 1%;" variant="inverse"/>&nbsp;&nbsp;{!schWrapperObj.VME_Level_3_Description__c}
+                                                          <span class="slds-badge" style="float: right;margin: 2px;color: #244a8c;">Configured:
+                                                                <aura:if isTrue="{!not(empty(schWrapperObj.VME_Bundlings__r))}"><lightning:icon iconName="utility:success" alternativeText="Configured"  size="x-small" variant="success"/>
+                                                                    <aura:set attribute="else"><lightning:icon iconName="utility:clear" alternativeText="Not-Configured"   size="x-small" variant="error"/>
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                            </span>
+                                                    </div>
+                                                    <lightning:layout >
+                                                        <lightning:layoutItem size="2" class="firstColCss">
+                                                            <lightning:input label="L3 Start Date" disabled="true" value="{!schWrapperObj.VME_Start_Date__c}" variant="standard" type="Date"></lightning:input>
+                                                        </lightning:layoutItem>
+
+                                                        <lightning:layoutItem size="2" class="colCss">
+                                                            <lightning:input label="L3 End date" disabled="true" value="{!schWrapperObj.VME_End_Date__c}" type="date" variant="standard"></lightning:input>
+                                                        </lightning:layoutItem>
+
+                                                        <lightning:layoutItem size="2" class="colCss">
+
+                                                            <lightning:input label="{!'P/U Amount ('+v.userCurrency+')'}" disabled="true" type="number" variant="standard" value="{!schWrapperObj.VME_PU_Amount__c}" formatter="currency"></lightning:input>
+                                                            <lightning:input label="Volume" disabled="true" value="{!schWrapperObj.VME_Volume__c}" variant="standard" type="number"></lightning:input>
+                                                        </lightning:layoutItem>
+                                                        <lightning:layoutItem size="2" class="colCss">
+                                                            <lightning:input label="JLR Share" disabled="true" type="percentage" variant="standard" value="{!schWrapperObj.VME_JLR_Share__c +'%'}"></lightning:input>
+                                                            <lightning:input label="{!'Retailer Contribution ('+v.userCurrency+')'}" disabled="true" type="number" value="{!schWrapperObj.VME_Retailer_Contribution__c}" formatter="currency"></lightning:input>
+                                                        </lightning:layoutItem>
+                                                        <lightning:layoutItem size="2" class="colCss">
+                                                                  <aura:if isTrue="{!schWrapperObj.VME_Child_Schemes__r.length>0}">
+                                                                <lightning:button class="showRetailerCss" variant="brand" value="{!schWrapperObj.Id}" label="Show Retailers" onclick="{!c.showRetailer}" disabled="{!or(schWrapperObj.VME_InActive__c,empty(schWrapperObj.VME_Bundlings__r))}" iconName="utility:people"  ></lightning:button>
+                                                                <lightning:button class="endOtherBtnCss" variant="brand" value="{!schWrapperObj.Id}" label="End L3" onclick="{!c.endScheme}" disabled="{!schWrapperObj.VME_InActive__c}" iconName="action:remove"></lightning:button>
+                                                                   </aura:if>
+                                                                  <aura:if isTrue="{!empty(schWrapperObj.VME_Child_Schemes__r)}">
+                                                                  <lightning:button class="endOtherSchemeBtnCss" variant="brand" value="{!schWrapperObj.Id}" label="End L3" onclick="{!c.endScheme}" disabled="{!schWrapperObj.VME_InActive__c}" iconName="action:remove"></lightning:button>
+                                                            </aura:if>
+                                                            <aura:if isTrue="{!if(or(greaterthan(schWrapperObj.VME_Start_Date__c,v.today),v.showConfigure),true,false)}">
+                                                                <lightning:button class="configueButtonCss" iconPosition="left" variant="brand" value="{!schWrapperObj.Id}" label="Configure" onclick="{!c.configureScheme}"  disabled="{!schWrapperObj.VME_InActive__c}" iconName="utility:settings"></lightning:button>
+                                                            </aura:if>
+                                                            <aura:if isTrue="{!v.vmeCampaignResult.vmeCampaignWrap.RecordType.Name!='Discretionary'}" >
+                                                            <aura:if isTrue="{!if(and(lessthanorequal(schWrapperObj.VME_Start_Date__c,v.today),not(v.showConfigure)),true,false)}">
+                                                                <lightning:button class="reviseotherBtnCSS" value="{!schWrapperObj.Id}" label="Revise L3" onclick="{!c.reviseScheme}" disabled="{!schWrapperObj.VME_InActive__c}" iconName="utility:rotate" variant="brand" ></lightning:button>
+                                                            </aura:if> 
+                                                        </aura:if>
+                                                        </lightning:layoutItem>
+                                                    </lightning:layout>
+                                                      </div>
+                                                </div>
+                                            </aura:if>
+                                        </aura:if>
+                                         
+                                    </aura:iteration>
+                        </div>
+                    </aura:if>
+                        <aura:if isTrue="{!(!v.hideNewCreationbutton)}">
+                    <lightning:layout>
+                        <lightning:layoutItem size="9">
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="3" class="ButtonRightCss">
+                            <lightning:button class="slds-theme_brand" iconPosition="right" variant="success" label="Add L3 VME Campaign" onclick="{!c.addScheme}" iconName="action:new"></lightning:button>
+                        </lightning:layoutItem>
+                            <lightning:layoutItem size="1">
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:if>
+                    <ul class="slds-list_horizontal"></ul>
+
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,111 @@
+<aura:component controller="COOP_MarketingPlanMainController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction">
+    <aura:attribute name="activityList" type="List" />   
+    <aura:attribute name="campaignId" type="String"/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+   <aura:if isTrue="{!and(v.activityList != null,not(empty(v.activityList)))}">     
+    <div class="slds-grid slds-gutters" style="font-weight: bold;">
+        <div class="slds-col slds-size_2-of-12 activitybackground" >
+            Activity Name
+        </div>
+                <div class="slds-col slds-size_2-of-12 activitybackground" >Status
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >
+            Business Type
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >
+            Activity Type
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Planned Spends
+        </div>
+         <div class="slds-col slds-size_2-of-12 activitybackground" >Actual Spends
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Start Date
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >End Date
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Activity Description
+        </div>
+        <!-- <div class="slds-col slds-size_2-of-12 activitybackground" >Brand
+        </div> -->
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Name Plate
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Retailer Experience Target
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Leads Target &amp; Achievements
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Penalties
+        </div>
+        <div class="slds-col slds-size_2-of-12 activitybackground" >Funnel Category
+        </div>
+
+    </div>
+    
+    <div style="height:20rem;">
+        <aura:iteration items="{!v.activityList}" var="act">
+            <div style="padding-top:1rem;">
+                <lightning:recordEditForm recordId="{!act.Id}" objectApiName="CooP_Campaign_Activity__c" aura:id="activity">
+                    <lightning:messages />
+                    <div class="slds-grid slds-gutters"  style="">
+                        <div class="slds-col slds-size_2-of-12">
+                            <a href="javascript:void(0);" class="" title="{!act.Name}">
+                                <span onclick="{!c.redirectTorecord}" class="slds-has-flexi-truncate" id = "{!act.Id}"> {!act.Name}</span>
+                            </a>
+                        </div>
+                         <div class="slds-col slds-size_2-of-12"> <lightning:outputField   fieldName="Status__c" variant="label-hidden" />
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12">
+                            <lightning:outputField   fieldName="Business_Type__c" variant="label-hidden" />                                        
+                        </div>
+                        <div class="slds-col slds-size_2-of-12" > 
+                            <lightning:outputField   fieldName="Media_Type__c" variant="label-hidden" />	
+                            
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12"> 
+                            <lightning:outputField   fieldName="PlannedspendforActivity__c" variant="label-hidden" />
+                            
+                        </div>
+                          <div class="slds-col slds-size_2-of-12"> 
+                            <lightning:outputField   fieldName="ActualspendforActivity__c" variant="label-hidden" />
+                            
+                        </div>
+                        
+                        <div class="slds-col slds-size_2-of-12">
+                            <lightning:outputField   fieldName="Start_Date__c" variant="label-hidden" />
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12"> 
+                            <lightning:outputField   fieldName="End_Date__c" variant="label-hidden" />
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12"> 
+                            <lightning:outputField   fieldName="Description__c" variant="label-hidden" />
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12"> <lightning:outputField   fieldName="Model__c" variant="label-hidden" />
+                            
+                        </div>
+                       <!-- <div class="slds-col slds-size_3-of-12"> <lightning:outputField   fieldName="Status__c" variant="label-hidden" />
+                            
+                        </div> -->
+                        <div class="slds-col slds-size_2-of-12"> <lightning:outputField   fieldName="Experiences_Target__c" variant="label-hidden" />
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12"> <lightning:outputField   fieldName="Leads_Target__c" variant="label-hidden" />
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12"> <lightning:outputField   fieldName="Penalty__c" variant="label-hidden" />
+                            
+                        </div>
+                        <div class="slds-col slds-size_2-of-12"> <lightning:outputField   fieldName="Funnel_Category__c" variant="label-hidden" />
+                            
+                        </div>
+                    </div>
+                </lightning:recordEditForm>
+            </div>
+        </aura:iteration>
+        
+    </div>
+    </aura:if>
+</aura:component>

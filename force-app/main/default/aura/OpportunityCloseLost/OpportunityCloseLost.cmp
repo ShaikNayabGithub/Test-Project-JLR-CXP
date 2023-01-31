@@ -1,0 +1,24 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="lostdisabled" type="Boolean" default="false" />
+    <aura:attribute name="saved" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <lightning:notificationsLibrary aura:id="notifLib" />
+
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    
+    <lightning:recordEditForm aura:id="mylostform" onsubmit="{!c.handleLost}" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}" recordId="{!v.recordId}" objectApiName="Opportunity">
+        <lightning:layout multipleRows="true">
+           
+            <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Retailer_Loss_Category__c" disabled="{!v.lostdisabled}" /></lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Retailer_Loss_Type__c" disabled="{!v.lostdisabled}" /></lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="12"><lightning:inputField fieldName="Retailer_Loss_Description__c" disabled="{!v.lostdisabled}" /></lightning:layoutItem>
+               <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Retarget_Date__c" disabled="{!v.lostdisabled}" /></lightning:layoutItem>
+			<div style="width:100%;text-align:right">
+    	    	<lightning:button disabled="{!v.lostdisabled}" variant="brand" type="submit" name="save" label="Opportunity Lost" />
+        	</div>
+        </lightning:layout>
+    </lightning:recordEditForm>
+     
+</aura:component>

@@ -1,0 +1,11 @@
+<aura:event type="COMPONENT" description="Event template" >
+<aura:attribute name="selectedRegion" type="String" default=" "/>
+<aura:attribute name="selectedMarket" type="String" default=" "/>
+<aura:attribute name="selectedYear" type="String" default=" "/>
+<aura:attribute name="selectedBrand" type="String" default=" "/>
+<aura:attribute name="selectedQuarter" type="String" default=" "/>
+<aura:attribute name="selectedModel" type="String" default=" "/>
+<!--aura:attribute name="startDate" type="Date" />
+<aura:attribute name="endDate" type="Date" /-->
+<aura:attribute name="validated" type="Boolean" default="false" />
+</aura:event>

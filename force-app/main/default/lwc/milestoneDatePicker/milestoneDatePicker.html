@@ -1,0 +1,16 @@
+<!--
+ - Created by caleb on 30/01/2020.
+ -->
+
+<!-- Milestone Date Picker -->
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size--4-of-12">{datePickerName}</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-input class="input-date" variant="label-hidden" type="date" onchange={handleDateChange}></lightning-input>
+            <template for:each={errors} for:item="item">
+                <span key={item.id} class="jlr-errors">{item.message}</span>
+            </template>
+        </div>
+    </div>
+</template>

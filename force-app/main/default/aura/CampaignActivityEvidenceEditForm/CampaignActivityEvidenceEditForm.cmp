@@ -1,0 +1,39 @@
+<aura:component >
+    <aura:attribute name="parentId" type="Id" />
+    <aura:attribute name="evidencerecordId" type="Id" />
+    <aura:attribute name="evidencerecordName" type="String" />
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg', '.txt', '.zip', '.pdf', '.png']"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="show" type="Boolean" default="false"/>
+    <aura:registerEvent name="evidanceCreated" type="c:EvidenceSuccessEvent"/>
+    
+    <div aura:id="Id_spinner" class="slds-spinner_container slds-hide">
+        <lightning:spinner variant="brand" size="large" />
+    </div>
+    
+    <!--<aura:handler name="init" value="{!this}" action="{!c.loadForm}" />-->   	 
+    <lightning:recordEditForm onload="{!c.loadForm}" onerror="{!c.hideSpinner}" onsubmit="{!c.showSpinner}" recordId="{!v.evidencerecordId}" objectApiName="Campaign_Activity_Evidence__c" onsuccess="{!c.handleSuccess}">
+                
+        <div class="slds-card__body slds-card__body_inner">
+            <aura:if isTrue="{!v.evidencerecordId !=null}">
+                <a onclick="{!c.navToRecord}" id="{!v.evidencerecordId}">
+                    <h3 class="slds-text-heading_small slds-m-bottom_xx-small">{!v.evidencerecordName}</h3>
+                </a>
+            </aura:if>
+            <lightning:inputField fieldName="Name" disabled="{!not(v.show)}" required="true" />
+            <lightning:inputField aura:id="statusValue" fieldName="Status__c" disabled="true"/> 
+            <lightning:inputField fieldName="Campaign_Activity__c" value="{!v.parentId}" disabled="true"/>
+            <lightning:inputField fieldName="Evidence_Type__c" disabled="{!not(v.show)}" required="true"/>
+            <lightning:inputField fieldName="Claim_Value__c" disabled="{!not(v.show)}" required="true"/>
+            <lightning:inputField fieldName="Invoice_Number__c" disabled="{!not(v.show)}"/>
+            <aura:if isTrue="{!v.show}">
+            <lightning:button class="slds-m-top_small" variant="brand" type="submit" name="Save" label="Save" /> 
+            </aura:if>
+            <!--<lightning:button class="slds-m-top_small" variant="brand" type="submit" name="approval" label="Submit" />-->
+            <!--<c:SubmitRecordForApproval recordId="{!v.activity.Id}" enableApproval="{!v.show}"  />--> <!--JOE PUT FORMULA DETERMINING ELIGIBLE FOR APPROVAL-->
+        </div>
+    </lightning:recordEditForm> 
+    <aura:if isTrue="{!if(v.evidencerecordId !=null, true,false)}">
+    <c:ComponentCampaignActivityEvidenceFileList campaignActivityId="{!v.evidencerecordId}" campaignActivityName="{!v.evidencerecordName}" accept="{!v.accept}" multiple="{!v.multiple}" show="{!v.show}" />
+	</aura:if>
+    </aura:component>

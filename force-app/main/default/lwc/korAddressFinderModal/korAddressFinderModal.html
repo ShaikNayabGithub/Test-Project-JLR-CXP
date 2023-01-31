@@ -1,0 +1,17 @@
+<template>
+    <div class="modal_container">
+        <lightning-modal-header label="주소 검색"></lightning-modal-header>
+        <lightning-modal-body>
+            <div class="slds-form-element slds-p-around_medium lgc-bg">
+                <label class="slds-form-element__label" for="text-input-id-1">예시 : 도로명(반포대로 58), 건물명(독립기념관), 지번(삼성동 25)</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <lightning-icon size="x-small" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" icon-name="utility:search"></lightning-icon>
+                    <input type="text" id="text-input-id-1" placeholder="" class="slds-input" value={keyword} onkeypress={handleEnter}/>
+                </div>
+            </div>
+            <div class="slds-p-around_medium lgc-bg">
+                <lightning-tree items={items} onselect={handleSelect} header="검색 결과"></lightning-tree>
+            </div>
+        </lightning-modal-body>
+    </div>
+</template>

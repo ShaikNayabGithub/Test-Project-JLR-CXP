@@ -1,0 +1,10 @@
+<design:component>
+    <design:attribute name="isFollowupsEnable" label="isFollowupsEnable" />
+    <design:attribute name="isOverDuesEnable" label="isOverDuesEnable" />
+    <design:attribute name="isSoldNewVehiclesEnable" label="isSoldNewVehiclesEnable" />
+    <design:attribute name="isTestDrivesEnable" label="isTestDrivesEnable" />
+    <design:attribute name="isApprovalsEnable" label="isApprovalsEnable" />
+    <design:attribute name="isLeadsEnable" label="isLeadsEnable" />    
+    <design:attribute name="salesmanager" label="Is a Manager" />
+    <design:attribute name="showOppsXDaysOld" label="Number of days old Aus Opp to show"  />
+</design:component>

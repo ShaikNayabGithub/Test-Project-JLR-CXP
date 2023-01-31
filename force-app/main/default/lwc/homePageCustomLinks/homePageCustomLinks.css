@@ -1,0 +1,22 @@
+.linksHeader{
+    padding-left: 15px;
+}
+
+.linksBody{
+    display: flex;
+    flex-direction: column;
+}
+
+.linksBodyChild{
+    display: flex;
+    flex-direction: row;
+}
+
+.bodyLinks{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.h1 {
+    font-weight: bold;
+}

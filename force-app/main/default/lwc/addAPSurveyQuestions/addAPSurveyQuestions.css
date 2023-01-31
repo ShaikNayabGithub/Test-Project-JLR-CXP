@@ -1,0 +1,9 @@
+.modal-header{ 
+  
+    background: whitesmoke; 
+    border-radius:5px;
+  } 
+
+  .slds-checkbox{
+    margin-top: -17px;
+  }

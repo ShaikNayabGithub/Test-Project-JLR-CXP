@@ -1,0 +1,382 @@
+/* .formcontainer{
+     
+    background-repeat: no-repeat; 
+    background-attachment: fixed;
+    background-image: url('https://cxp--techmatrix--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0681w000001NANj&operationContext=DELIVERY&contentId=05T1w000004iaRH&page=0&d=/a/1w0000004Pm7/Rp9S43gDu46HM9ObUJmDfqbM2I0Nt6Fv.1H5yUO9tD0&oid=00D1w0000000epw&dpt=null&viewId=');      
+    background-size: 100vw auto;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow:scroll;
+    overflow-y: scroll; 
+    overflow-x: hidden;
+    z-index:-1;
+} */
+
+/* 
+.formcontainersmall{
+     
+    background-repeat: no-repeat; 
+    background-attachment: fixed;
+    background-image: url('https://cxp--techmatrix--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0681w000001NANj&operationContext=DELIVERY&contentId=05T1w000004iaRH&page=0&d=/a/1w0000004Pm7/Rp9S43gDu46HM9ObUJmDfqbM2I0Nt6Fv.1H5yUO9tD0&oid=00D1w0000000epw&dpt=null&viewId=');
+    -webkit-background-size: cover;   
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;   
+}  */
+
+
+
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.formbody {
+    padding-left: 22%;
+    padding-right: 22%;
+    padding-top: 3%;
+    position: relative;
+    padding-bottom: 1%;
+}
+/* @media(max-width:992px){
+    .formbody {padding:0px;}
+    .formtitle {padding:34px 10px 10px !important;}
+    .formmainsmall,.formmain {padding:10px !important;}
+    .questionsectioncontent,.questionsectioncontentsmall {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+      
+    }
+   
+} */
+
+
+.formbodySmall {
+    position: relative;
+}
+
+.formtitle {
+    word-break: break-word;
+    font-size: 3rem;
+    font-weight: 100;
+    background: #008272;
+    margin-top: -24px;
+    color: white;
+    padding: 3rem;
+    font-family: wf_segoe-ui_light, Segoe UI Light, Segoe WP Light, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+}
+
+.formtitlesmall {
+    word-break: break-word;
+    font-size: 2rem;
+    font-weight: 100;
+    background: #008272;
+    margin-top: -24px;
+    color: white;
+    padding: 25px;
+    font-family: wf_segoe-ui_light, Segoe UI Light, Segoe WP Light, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+}
+
+
+.formmain {
+    padding: 20px 30px 70px;
+    background: #fff;
+    opacity: 0.97;
+    zoom: 1.2;
+}
+.formmainsmall {
+    
+    padding-bottom: 30px;
+    background: #fff;
+    opacity: 0.97;
+
+}
+.headingsection {
+    display: block;
+}
+
+.headingsectionsmall{
+    padding: 10px;
+}
+
+
+.heading1 {
+    color: #004B50;
+    font-size: 21px;
+    font-family: wf_segoe-ui_light, Segoe UI Light, Segoe WP Light, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+}
+
+.heading2 {
+    font-size: 14px;
+    font-family: wf_segoe-ui_normal, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+    line-height: 1.42857143;
+    margin-top: 10px;
+    color: #333;
+}
+
+.heading3 {
+    font-size: 24px;
+    line-height: 1.4;
+    color: #004B50;
+    margin-left: 20px;
+    max-width: 100%;
+   
+    margin-bottom: 10px;
+    font-family: wf_segoe-ui_light, Segoe UI Light, Segoe WP Light, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+}
+.heading4  {
+    font-family: wf_segoe-ui_normal, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+    display: inline-block;
+    position: relative;
+    font-size: 17px;
+    line-height: 1.3;
+    color: #333;
+    white-space: pre-wrap;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    margin-left: 20px;
+    max-width: 100%;
+    margin-bottom: 30px;
+}
+
+.slds-box {
+    margin-left: 20px;
+  
+    width: 97%;
+}
+
+.pillSpan{ 
+    font-family: wf_segoe-ui_normal, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+    display: inline-block;
+    position: relative;
+    font-size: 17px;
+    line-height: 1.3;
+    color: #333;
+    white-space: pre-wrap;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    margin-left: 2px;
+    max-width: 100%;
+}
+
+.formfooter {
+    text-align: left;
+    background: rgba(244, 244, 244, .8);
+}
+
+.formfootersmall {
+   display: none;
+}
+
+.footersection1 {
+    padding: 15px;
+    width: 100%;
+    line-height: 1.3;
+    font-size: 12px;
+    color: #333;
+}
+
+.footersection2 {
+    padding: 15px;
+    width: 100%;
+    line-height: 1.3;
+    font-size: 12px;
+    color: #333;
+}
+
+.countryslot {
+    width: 23%;
+    float: right;
+    margin-top: -4px;
+}
+
+.countryslotsmall {
+    width: 23%;
+    float: right;
+    margin-top: 21px;
+}
+
+.slds-combobox__input {
+    background: whitesmoke;
+}
+
+.questionsection {
+    padding-top: 35px;
+    padding-bottom: 35px;
+    position: relative;
+
+}
+
+.questionsectioncontent {
+    padding-left: 20px;
+    padding-right: 20px;
+  
+}
+
+.questionsectioncontentsmall {
+    padding-left: 20px;
+    padding-right: 20px;
+    zoom: 1.5;
+}
+
+.questiontitle {
+    font-family: wf_segoe-ui_normal, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+    display: inline-block;
+    position: relative;
+    font-size: 17px;
+    line-height: 1.3;
+    color: #333;
+    white-space: pre-wrap;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    margin-left: 20px;
+    max-width: 100%;
+}
+
+
+.slds-slds-radio_faux{
+    white-space: nowrap;
+}
+.starratesmall{
+    zoom: 0.7;
+}
+
+.questionelement {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.anselement {
+    font-size: 15px;
+    line-height: 3;
+    font-weight: 400;
+    color: #333;
+}
+
+.ordernumber {
+    position: absolute;
+    right: 100%;
+    padding-right: 3px;
+}
+
+.requiredstar:after {
+    color: #ae1515;
+    content: " * ";
+}
+
+.navigationbarcontainer {
+    display: flex;
+    padding-top: 4rem;
+    width: 100%;
+}
+
+.navigationbarcontainersmall {   
+    padding-top: 4rem;
+    width: 100%;
+}
+
+.buttoncontainer {
+    display: inline-block;
+    overflow: hidden;
+    flex-shrink: 0;
+    width: 50%;
+}
+
+.buttoncontainersmall {
+    text-align: center;
+}
+
+
+.nextbtn {
+    color: white;
+    background: #03787C;
+    width: 117px;
+    height: 43px;
+}
+
+.backbtn {
+    color: #014446;
+    background: #c8c8c8;
+    width: 117px;
+    height: 43px;
+
+}
+
+.progressbarcontainer {
+    display: flex;
+    width: 50%;
+}
+
+.progressbarcontainersmall {
+margin-left: 19px;
+    display: flex;
+    /* text-align: -webkit-match-parent; */
+    width: 90%;
+    padding-top: 22px;
+}
+
+.progressbardiv {
+    margin: 0;
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+.progressbarbackground {
+    background: #0082720D;
+    display: flex;
+    height: 40px;
+    position: relative;
+    vertical-align: middle;
+    justify-content: center;
+}
+
+.bartext {
+    font-family: wf_segoe-ui_normal, Segoe UI, Segoe WP, Tahoma, Arial, sans-serif;
+    display: inline-block;
+    margin: 10px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.progressbar {
+    float: none;
+    margin: 19px 10px 17px 0;
+    height: 4px;
+    width: 60%;
+    border-radius: 2px;
+    background-color: #d9d9d9;
+    transition: none;
+    box-shadow: none;
+}
+
+.progressbarcontrol {
+
+    background: #008272;
+    color: #FFFFFF;
+    height: 4px;
+    border-radius: 2px;
+}
+
+.confirmation {
+    display: block;
+    font-size: large;
+    padding: 4rem;
+}
+
+.error {
+    display: block;
+    font-size: x-large;
+    padding: 4rem;
+    text-align: left;
+}
+.ansothers {
+    width: 50%;
+}
+@media(max-width:702px){ .slds-scope .anselement .slds-radio_button-group{flex-wrap:wrap !important;}
+.radioset .slds-radio_button .slds-radio_faux{ padding: 0 3px !important; }}

@@ -1,0 +1,33 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="videoURL" type="String" />
+    <aura:attribute name="videoType" type="String"/>
+    <aura:attribute name="subtitles" type="String"/>
+    <aura:attribute name="AWSUrl" type="String"/>
+  	<aura:attribute name="CommunityUrl" type="String"/>
+    <aura:attribute name="VideoText" type="String" default="Scroll Down"/>
+    <aura:attribute name="ImageURL" type="String"/>
+    <aura:attribute name="paneImage" type="boolean"/>
+    <aura:attribute name="caption" type="String" default="This is a caption video"/>
+    <aura:attribute name="browserNotSupport" type="String" default="Your browser does not support the video tag"/>
+    <div class="content-wrapper"> 
+    	<div class="media-container-wrapper">
+    		<div class="media-container">
+            	<a href="#" class="media-container__media-play-button js-play-button  media-play-button--with-caption " >Play video</a>
+                <aura:if isTrue="{!v.paneImage}">
+                <img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}"/>
+                	<aura:set attribute="else">
+                        <img src="{!v.AWSUrl+v.ImageURL}"/>
+    				</aura:set>
+                </aura:if>
+                   <div class="video-player-wrapper">
+                     <video controls="autoplay" src="{!v.AWSUrl+v.videoURL}" class="video-player" preload="auto"  style="width: 100%; height: 100%;" width="100%" height="100%" aura:id="{!globalId+'videoId'}" id="video-1" >  
+                      <track label="English" kind="subtitles" srclang="en" src="{!v.AWSUrl+v.subtitles}"/>
+                        {!v.browserNotSupport}
+                    </video> 
+                </div>
+            </div>
+            <p class="media-container__media-caption media-caption--center-caption  hidden--medium hidden--small  media-caption--media-scroll js-auto-scroll ">{!v.caption}</p>
+        </div>
+	</div>    
+</aura:component>

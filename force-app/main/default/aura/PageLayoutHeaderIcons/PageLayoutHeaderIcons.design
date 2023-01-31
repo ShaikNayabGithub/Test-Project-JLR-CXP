@@ -1,0 +1,15 @@
+<design:component>
+    <design:attribute name="recordType" label="Record Object Type" default="Campaign" />
+    <design:attribute name="standardField1" label="Standard Field 1" description="First field to display with standard heading" />
+    <design:attribute name="standardField2" label="Standard Field 2" description="Second field to display with standard heading" />
+    <design:attribute name="standardField3" label="Standard Field 3" description="Third field to display with standard heading" />
+    <design:attribute name="standardField4" label="Standard Field 4" description="Fourth field to display with standard heading" />
+    <design:attribute name="iconField1" label="Icon Field 1" description="First field to display with custom icon" />
+    <design:attribute name="icon1" label="Icon Reference 1" description="Name of icon, from https://lightningdesignsystem.com/icons/ to display against first Icon Field" />
+    <design:attribute name="iconField2" label="Icon Field 2" description="Second field to display with custom icon" />
+    <design:attribute name="icon2" label="Icon Reference 2" description="Name of icon, from https://lightningdesignsystem.com/icons/ to display against second Icon Field" />
+    <design:attribute name="iconField3" label="Icon Field 3" description="Third field to display with custom icon" />
+    <design:attribute name="icon3" label="Icon Reference 3" description="Name of icon, from https://lightningdesignsystem.com/icons/ to display against third Icon Field" />
+    <design:attribute name="jlrIconBrand" label="JLR Icon in Brand field" description="Tick to display a Jaguar/Land Rover icon depending on the value in the Brand field" />
+    <design:attribute name="communityRecordId" label="Community Record Id - deprecated" />
+</design:component>

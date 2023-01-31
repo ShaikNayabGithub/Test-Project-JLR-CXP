@@ -1,0 +1,267 @@
+<template>
+
+    <template if:true={showques}>
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading--medium"><b>Add Questions for {sType} Survey ({sName})</b></h4>
+    </div>
+    <div class="custom-box slds-box" style="line-height: 1;">
+
+        <lightning-card>
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <div class="slds-page-header">Question Information</div>
+                            </lightning-layout-item>
+                <template if:true={isSurveyCreated}>
+                   
+                    <lightning-button label="Edit" slot="actions" onclick={handleEdit} class="slds-m-left_x-small"></lightning-button>
+                    <template if:false={isText}>
+                     <lightning-button label="New Question" slot="actions" onclick={handleSaveNew} class="slds-m-left_x-small"></lightning-button>
+                    </template> 
+                    <template if:true={isText}>
+                        <lightning-button label="Add Answers" slot="actions" class="slds-m-left_x-small" onclick={handleAddAnswers}></lightning-button>
+                   </template>
+                    <lightning-record-view-form
+                    record-id= {surveyQrecID}
+                    object-api-name="AP_Survey_Question__c"
+                    layout-type="Full"
+                    mode="view">
+                   
+                    <div class="c-container">
+                        <lightning-messages>
+                        </lightning-messages>
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-output-field field-name='Name' required></lightning-output-field>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-output-field field-name='Question_Type__c' required></lightning-output-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-output-field field-name='Required__c' ></lightning-output-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-output-field field-name='Primary_Dependent__c' required>
+                                </lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-output-field field-name='Status__c' required></lightning-output-field>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-output-field field-name='Answer_Type__c' required></lightning-output-field>
+                            </lightning-layout-item>
+
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                            large-device-size="3" padding="around-small">
+                            <lightning-output-field field-name='Survey_Form_Page_No__c' required></lightning-output-field>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                        large-device-size="3" padding="around-small">
+                        <lightning-output-field field-name='Sort_Order__c' required></lightning-output-field>
+                    </lightning-layout-item>
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <div class="slds-page-header">Questions</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='English__c' required>
+                                </lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='Vietnamese__c' required>
+                                </lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='French__c' required></lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='Mongolian__c' required>
+                                </lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='Chinese__c' required>
+                                </lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='Cambodian__c' required>
+                                </lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='Thai__c' required></lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='Burmese__c' required>
+                                </lightning-output-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-output-field field-name='Laos__c' required></lightning-output-field>
+
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                    <hr />
+                    
+                </lightning-record-view-form>
+
+
+
+                </template>
+
+            
+
+            <template if:true={showCreateData}>
+                <lightning-record-edit-form object-api-name="AP_Survey_Question__c" onsuccess={handleSuccess} record-id= {surveyQrecID}
+                    onsubmit={handleSubmit} density="compact">
+                    <div class="c-container">
+                        <lightning-messages>
+                        </lightning-messages>
+                        <lightning-layout multiple-rows>
+                            
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-input-field field-name='Question_Type__c' required></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-input-field field-name='Required__c'></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-input-field field-name='Primary_Dependent__c' required>
+                                </lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-input-field field-name='Status__c' required></lightning-input-field>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                                large-device-size="3" padding="around-small">
+                                <lightning-input-field field-name='Answer_Type__c' required></lightning-input-field>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                            large-device-size="3" padding="around-small">
+                            <lightning-input-field field-name='Survey_Form_Page_No__c' required></lightning-input-field>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item size="12" small-device-size="12" medium-device-size="3"
+                        large-device-size="3" padding="around-small">
+                        <lightning-input-field field-name='Sort_Order__c' required></lightning-input-field>
+                    </lightning-layout-item>
+
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <div class="slds-page-header">Add Questions</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='English__c' required>
+                                </lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='Vietnamese__c' required>
+                                </lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='French__c' required></lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='Mongolian__c' required>
+                                </lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='Chinese__c' required>
+                                </lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='Cambodian__c' required>
+                                </lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='Thai__c' required></lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='Burmese__c' required>
+                                </lightning-input-field>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" padding="around-small">
+                                <lightning-input-field field-name='Laos__c' required></lightning-input-field>
+
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                    <hr />
+                    
+                    <div class="slds-align_absolute-center">
+                        <template if:true={showcancel}>
+                        <lightning-button class="slds-m-top_small slds-m-left_x-small " label="Cancel" onclick={handleCancel}>
+                        </lightning-button>
+                        </template>
+                        <template if:true={showClose}>
+                            <lightning-button class="slds-m-top_small slds-m-left_x-small " label="Cancel" onclick={handleClose}>
+                            </lightning-button>
+                            </template>
+                        <lightning-button class="slds-m-top_small slds-m-left_x-small" variant="brand" type="submit"
+                            label="Save"> 
+                        </lightning-button>                           
+                    </div>
+                </lightning-record-edit-form>
+            </template>
+
+        </lightning-card>
+    </div>
+    </template>
+
+   
+    <template if:true={showanswers}>
+        <c-add-a-p-survey-answers surveyqid={surveyQrecID} oncancelpage={handleClose} onsavenew={handleChildCancel} onchildcancel={handleChildCancel}> </c-add-a-p-survey-answers>
+       
+</template>
+ </template>

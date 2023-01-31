@@ -1,0 +1,9 @@
+<apex:component controller="LabelRetrieverController" language="{!Language}"><apex:attribute assignTo="{!FindReferencesIn}" 
+					name="LabelValue" 
+					type="String" 
+					description="String to search for referenced labels" /> { <apex:repeat value="{!Labels}" var="LabelName" rows="{!LabelCount - 1}" rendered="{!LabelCount > 0}">
+		"{!JSENCODE(LabelName)}" : "{!JSENCODE($Label[LabelName])}",
+</apex:repeat><apex:outputPanel layout="none" rendered="{!LabelCount > 0}">
+		"{!JSENCODE(Labels[LabelCount - 1])}" : "{!JSENCODE($Label[Labels[LabelCount - 1]])}"</apex:outputPanel>
+	}
+</apex:component>

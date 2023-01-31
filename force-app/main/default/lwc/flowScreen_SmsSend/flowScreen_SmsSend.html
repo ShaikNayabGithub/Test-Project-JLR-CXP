@@ -1,0 +1,28 @@
+<!--
+ - Created by Ethan Sargent on 17/2/20.
+ -->
+
+<!-- Flow Screen Sms Send -->
+<template>
+    <div style="padding: 0 0 1em">
+        Mobile Number to send to: <br> <strong>{jsonData.To}</strong> <br>
+        If this is blank, please enter a mobile number into the Mobile field on the case contact, and then try again.
+        <lightning-textarea
+            id="sms-body"
+            label="SMS Body"
+            maxlength="160"
+            onchange={handleSMSBodyChange}
+            required
+        ></lightning-textarea>
+
+        {smsTextSize}/160 characters
+        <lightning-button
+            variant="brand"
+            label="Send SMS"
+            title="Send SMS"
+            class="slds-float--right slds-p-around--medium"
+            onclick={handleSend}
+        ></lightning-button>
+        <lightning-spinner if:true={sendingSMS}></lightning-spinner>
+    </div>
+</template>

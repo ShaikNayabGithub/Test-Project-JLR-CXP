@@ -1,0 +1,15 @@
+.THIS.customRadioCls .slds-form-element__control .slds-radio{
+    display : inline-block !important;
+}
+.THIS .customIcon div{
+    vertical-align: top !important;
+}
+
+.THIS.customIcon div{
+    vertical-align: top !important;
+}
+
+.THIS .fchStyle{
+    padding-top: 20px !important;
+    padding-left: 50px !important;
+}

@@ -1,0 +1,273 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 10/09/2019.
+ -->
+
+<!-- Add Opportunity -->
+<template>
+    <div class="slds-grid slds-wrap">
+
+        <!-- First Name -->
+        <div class="slds-col slds-size--4-of-12">First Name</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-input class="input-first-name" label="" variant="label-hidden" onchange={handleFirstNameChange}>{firstName}
+            </lightning-input>
+            <template if:true={doShowNameFirstError}>
+                <span class="jlr-errors">First Name is required</span>
+            </template>
+        </div>
+
+        <!-- Last Name -->
+        <div class="slds-col slds-size--4-of-12">Last Name</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-input class="input-last-name" label="" variant="label-hidden" required onchange={handleLastNameChange}>{lastName}
+            </lightning-input>
+            <template if:true={doShowNameLastError}>
+                <span class="jlr-errors">Last Name is required</span>
+            </template>
+        </div>
+
+        <!-- Company -->
+        <div class="slds-col slds-size--4-of-12">Company</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-input class="input-company" label="" variant="label-hidden" onchange={handleCompanyChange}>{company}
+            </lightning-input>
+        </div>
+
+        <!-- Email -->
+        <div class="slds-col slds-size--4-of-12">Email</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-input class="input-email" label="" variant="label-hidden" value={email} onchange={handleEmailChange}></lightning-input>
+            <template if:true={doShowEmailOrMobileError}>
+                <span class="jlr-errors">Email or Mobile Phone must be supplied</span>
+            </template>
+            <template if:true={doShowInvalidEmailError}>
+                <span class="jlr-errors">Email not valid</span>
+            </template>
+        </div>
+
+        <!-- Mobile Number -->
+        <div class="slds-col slds-size--4-of-12">Mobile Number</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-input label="" class="input-phone-mobile" variant="label-hidden" value={mobileNumber} onchange={handleMobileChange}>
+            </lightning-input>
+            <template if:true={doShowEmailOrMobileError}>
+                <span class="jlr-errors">Email or Mobile Phone must be supplied</span>
+            </template>
+            <template if:true={doShowInvalidPhoneError}>
+                <span class="jlr-errors">The mobile number you have entered is not valid - Please enter a valid mobile number</span>
+            </template>
+        </div>
+
+        <div class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours" onclick={handleCheckForDuplicatesClicked}>
+            Check for Existing Records
+        </div>
+        <c-add-opportunity-deduplication
+                if:true={duplicateCheckActive}
+                account-data={duplicateAccountData}
+                oncancel={handleDuplicateCheckCancel}
+                is-company={company}
+                onfinish={handleDuplicateCheckCreate}
+        ></c-add-opportunity-deduplication>
+
+        <template if:true={duplicateCheckComplete}>
+            <!-- Lead Source -->
+            <div class="slds-col slds-size--4-of-12">Lead Source</div>
+            <div class="slds-col slds-size--8-of-12">
+                <select required="required"
+                        class="slds-input jlr-is-clickable jlr-select"
+                        onchange={handleLeadSourceChange}>
+                    <option selected="" class="jlr-placeholder"> - select -</option>
+                    <template for:each={leadSources} for:item="val">
+                        <option key={val.Id}>{val.Name}</option>
+                    </template>
+                </select>
+                <template if:true={doShowLeadSourceError}>
+                    <span class="jlr-errors">Lead Source is required</span>
+                </template>
+            </div>
+
+            <!--Enquiry Type-->
+            <div class="slds-col slds-size--4-of-12">Enquiry Type</div>
+            <div class="slds-col slds-size--8-of-12">
+                <select required="required"
+                        class="slds-input jlr-is-clickable jlr-select"
+                        onchange={handleEnquiryTypeChange}>
+                    <option selected="" class="jlr-placeholder"> - select -</option>
+                    <template for:each={enquiryTypes} for:item="val">
+                        <option key={val.Id}>{val.Name}</option>
+                    </template>
+                </select>
+                <template if:true={doShowEnquiryTypeError}>
+                    <span class="jlr-errors">Enquiry Type is required</span>
+                </template>
+            </div>
+
+            <!--Initial Sales Type-->
+            <div class="slds-col slds-size--4-of-12">Initial Sales Type</div>
+            <div class="slds-col slds-size--8-of-12">
+                <select required="required"
+                        class="slds-input jlr-is-clickable jlr-select"
+                        onchange={handleInitialSalesTypeChange}>
+                    <option selected="" class="jlr-placeholder"> - select -</option>
+                    <template for:each={initialSalesTypes} for:item="val">
+                        <option key={val.Id} value={val.Id}>{val.Name}</option>
+                    </template>
+                </select>
+                <template if:true={doShowInitialSalesTypeError}>
+                    <span class="jlr-errors">Initial Sales Type is required</span>
+                </template>
+            </div>
+
+            <!-- Campaign -->
+            <div class="slds-col slds-size--4-of-12">Campaign</div>
+            <div class="slds-col slds-size--8-of-12">
+                <select required="required"
+                        class="slds-input jlr-is-clickable jlr-select"
+                        onchange={handleCampaignChange}>
+                    <option selected="" class="jlr-placeholder"> - select -</option>
+                    <template for:each={campaigns} for:item="val">
+                        <option key={val.Id} value={val.Id}>{val.Name}</option>
+                    </template>
+                </select>
+            </div>
+
+            <!-- Opportunity Qualification -->
+            <div class="slds-col slds-size--4-of-12">Qualification Completed?</div>
+            <div class="slds-col slds-size--2-of-12">
+                <lightning-input type="checkbox" onchange={handleOpportunityQualificationChange}>{isOpportunityQualified}
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size--6-of-12"></div>
+
+
+            <!-- Activity Type -->
+            <div class="slds-col slds-size--4-of-12">Activity Type</div>
+            <div class="slds-col slds-size--8-of-12">
+                <select required="required"
+                        class="slds-input jlr-is-clickable jlr-select"
+                        onchange={handleActivityTypeChange}>
+                    <option selected="" class="jlr-placeholder"> - select -</option>
+                    <template for:each={activityTypes} for:item="val">
+                        <option key={val.Id}>{val.Name}</option>
+                    </template>
+                </select>
+                <template if:true={doShowActivityTypeError}>
+                    <span class="jlr-errors">Activity Type is required</span>
+                </template>
+            </div>
+
+            <!-- Related Milestone -->
+            <div class="slds-col slds-size--4-of-12">Opportunity Stage</div>
+            <div class="slds-col slds-size--8-of-12">
+                <select required="required"
+                        class="slds-input jlr-is-clickable jlr-select input-milestone"
+                        onchange={handleRelatedMilestoneChange}>
+                    <option selected="" class="jlr-placeholder"> - select -</option>
+                    <template for:each={relatedMilestones} for:item="val">
+                        <option key={val.Id} value={val.Id} selected={val.IsDefaultSelection}>{val.Name}</option>
+                    </template>
+                </select>
+            </div>
+
+            <template if:false={doShowEventFields}>
+                <!-- Due Date -->
+                <div class="slds-col slds-size--4-of-12">Due Date</div>
+                <div class="slds-col slds-size--8-of-12">
+                    <lightning-input variant="label-hidden"  type="date" onchange={handleDueDateChange}></lightning-input>
+                    <template if:true={doShowDueDateError}>
+                        <span class="jlr-errors">Due Date is required</span>
+                    </template>
+                </div>
+            </template>
+
+
+            <template if:true={doShowEventFields}>
+
+                <!-- event date start -->
+                <div class="slds-col slds-size--4-of-12">Event Date Start</div>
+                <div class="slds-col slds-size--8-of-12">
+                    <lightning-input type="datetime" onchange={handleEventDateStartChange}></lightning-input>
+                    <template if:true={doShowEventStartError}>
+                        <span class="jlr-errors">Event Start Date is required</span>
+                    </template>
+                </div>
+
+                <!-- event date start -->
+                <div class="slds-col slds-size--4-of-12">Event Date End</div>
+                <div class="slds-col slds-size--8-of-12">
+                    <lightning-input type="datetime" class="input-event-end" onchange={handleEventDateEndChange}></lightning-input>
+                    <template if:true={doShowEventEndError}>
+                        <span class="jlr-errors">Event End Date is required</span>
+                    </template>
+                </div>
+
+            </template>
+
+            <!-- comments -->
+            <div class="slds-col slds-size--4-of-12">Comments</div>
+            <div class="slds-col slds-size--8-of-12">
+                <lightning-textarea variant="label-hidden" onchange={handleCommentsChange}></lightning-textarea>
+            </div>
+
+            <!--Make Selector-->
+            <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-drop-down
+                        class="input-select-make"
+                        placeholder=" - select - "
+                        options={makes}
+                        dropdown-name="Make"
+                        onvaluechange={handelMakeChange}>
+                </c-milestone-drop-down>
+            </div>
+
+            <!--Model Selector-->
+            <div if:true={selectedMake} class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-drop-down
+                        class="input-select-model"
+                        placeholder=" - select - "
+                        options={models}
+                        dropdown-name="Model"
+                        onvaluechange={handelModelChange}>
+                </c-milestone-drop-down>
+            </div>
+
+            <!-- Reminder -->
+            <div class="slds-col slds-size--4-of-12">Create Reminder?</div>
+            <div class="slds-col slds-size--2-of-12">
+                <lightning-input type="checkbox" onchange={handleDoSetReminderChange}>{doSetReminder}</lightning-input>
+            </div>
+            <div class="slds-col slds-size--6-of-12"></div>
+
+            <!-- reminder related fields -->
+            <template if:true={doShowReminder}>
+
+                <!-- reminder date -->
+                <div class="slds-col slds-size--4-of-12">Reminder Date</div>
+                <div class="slds-col slds-size--8-of-12">
+                    <lightning-input class="input-reminder-date" variant="label-hidden" type="datetime"
+                                     onchange={handleReminderDateChange}></lightning-input>
+                    <template if:true={doShowReminderError}>
+                        <span class="jlr-errors">Reminder date is required when Reminder is checked</span>
+                    </template>
+                    <template if:true={doShowBadReminderDate}>
+                        <span class="jlr-errors">Reminder date cannot be after the due date</span>
+                    </template>
+                </div>
+
+            </template>
+
+            <div class="slds-col slds-size--4-of-12">Save</div>
+            <div class="slds-col slds-size--8-of-12 jlr-button-cell jlr-button-cell-inverse-colours" onclick={handleClick}>
+                Ok
+            </div>
+
+            <!-- Spinner -->
+            <template if:true={doShowSubmittingInProgress}>
+                <div class="slds-col slds-size--4-of-12">
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </div>
+                <div class="slds-col slds-size--4-of-12">Submitting</div>
+            </template>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,134 @@
+<!-- 
+ *  Name        : VME_WBS_process
+ *  
+ *  Company     : Marlabs
+ *    
+ *  Purpose     : This component used to schedule the VME_BatchClassWBSMappingTransformation Batch
+ *
+ *  Developer   : Tejashree J
+ *
+ *  Created Date: 18/07/2019
+ -->
+ <aura:component controller="VME_WBS_Process" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >	
+<aura:attribute name="status" type="String" />
+  <lightning:button class="slds-align_absolute-center" variant="brand" name="Process WBS Records" label="Process WBS Records" onclick="{! c.scheduleWBS }" />
+  <div class="demo-only"  style="height: 100%;">
+        <aura:if isTrue="{!v.status=='COMPLETED'}">
+            <section  class="slds-modal slds-fade-in-open Popup">
+                <div class="slds-modal__container ModalCss" >
+                    <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                 <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            WBS UPLOAD STATUS    </h2>
+                        </header>
+                <div class="slds-modal__content slds-p-around_medium" >
+               
+                <p class="slds-align_absolute-center">
+                     <lightning:icon iconName="action:approval" style="margin-right: 10px;"/> 
+                    WBS UPLOAD SUCCESSFUL
+                    </p>                        
+                </div>
+                <footer class="slds-modal__footer"> 
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="brand" label="Close" title="Ok" onclick="{! c.closeMe}" />
+                    </div>
+                </footer>
+            </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open slds-theme_inverse"></div>
+        </aura:if>
+        <aura:if isTrue="{!v.status=='STARTED-PROCESSING'}">
+            <section  class="slds-modal slds-fade-in-open Popup">
+                <div class="slds-modal__container ModalCss" >
+                    <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                 <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            WBS UPLOAD STATUS    </h2>
+                        </header>
+                <div class="slds-modal__content slds-p-around_medium" >
+                    <p class="slds-align_absolute-center">
+                <lightning:icon iconName="action:defer" style="margin-right: 10px;"/>  
+                        The QMSP upload is in process and will take a few minutes to complete. 
+                        <br/>Please verify the processed records under "VME WBS Mapping Requests" tab.
+                    </p>                        
+                </div>
+                <footer class="slds-modal__footer"> 
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="brand" label="Close" title="Close" onclick="{! c.closeMe}" />
+                    </div>
+                </footer>
+            </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open slds-theme_inverse"></div>
+        </aura:if>
+        <aura:if isTrue="{!v.status=='ERROR'}">
+            <section  class="slds-modal slds-fade-in-open Popup">
+                 <div class="slds-modal__container ModalCss2" >
+                    <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            WBS UPLOAD STATUS    </h2>
+                        </header>
+                <div class="slds-modal__content slds-p-around_medium" >
+                    <p class="slds-align_absolute-center">
+                <lightning:icon iconName="action:close" style="margin-right: 10px;"/> 
+                    ERROR IN PROCESSING RECORDS!!! PLEASE CONTACT YOUR ADMINISTRATOR   
+                    </p>                     
+                </div>
+                <footer class="slds-modal__footer"> 
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="brand" label="Close" title="Close" onclick="{! c.closeMe}" />
+                    </div>
+                </footer>
+            </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open slds-theme_inverse"></div>
+        </aura:if>
+        <aura:if isTrue="{!v.status=='MARKET-UNAVAILABLE'}">
+            <section  class="slds-modal slds-fade-in-open Popup">
+                 <div class="slds-modal__container ModalCss2" >
+                    <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            WBS UPLOAD STATUS    </h2>
+                        </header>
+                <div class="slds-modal__content slds-p-around_medium" >
+                    <p class="slds-align_absolute-center">
+                <lightning:icon iconName="action:close" style="margin-right: 10px;"/> 
+                    ERROR!!! PLEASE PROVIDE THE MARKET OF THE USER   
+                    </p>                     
+                </div>
+                <footer class="slds-modal__footer"> 
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="brand" label="Close" title="Close" onclick="{! c.closeMe}" />
+                    </div>
+                </footer>
+            </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open slds-theme_inverse"></div>
+        </aura:if>
+        <aura:if isTrue="{!v.status=='INSUFFICIENT PRIVILEGES'}">
+            <section  class="slds-modal slds-fade-in-open Popup">
+                 <div class="slds-modal__container ModalCss2" >
+                    <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            WBS UPLOAD STATUS    </h2>
+                        </header>
+                <div class="slds-modal__content slds-p-around_medium" >
+                    <p class="slds-align_absolute-center">
+                <lightning:icon iconName="action:close" style="margin-right: 10px;"/> 
+                    INSUFFICIENT PRIVILEGES!!! FOR FURTHER ASSISTANCE CONTACT YOUR ADMINISTRATOR   
+                    </p>                     
+                </div>
+                <footer class="slds-modal__footer"> 
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="brand" label="Close" title="Close" onclick="{! c.closeMe}" />
+                    </div>
+                </footer>
+            </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open slds-theme_inverse"></div>
+        </aura:if>
+    </div>     
+</aura:component>

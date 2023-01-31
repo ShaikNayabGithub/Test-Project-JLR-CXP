@@ -1,0 +1,81 @@
+<apex:component controller="SearchFirst_ContactController">
+    <apex:attribute name="host" type="SearchFirst_HostController" assignTo="{!pageController}"  required="true" description="The controller for the page." />
+    <apex:outputPanel id="resultPanel">
+        <apex:form id="resultForm">
+            <apex:actionFunction action="{!CreateRecord}" name="apexCreateContact"/>
+            <apex:pageBlock id="knowncontactresultPanel" title="{!$Label.sfKnownContacts + ' [' + text(knownContacts.size) + ']'}" tabStyle="Contact">
+            	<apex:pageMessage strength="2" severity="warning" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+                <apex:pageMessage strength="2" severity="info" summary="{!$Label.sfNoContactResultWarning}" rendered="{!AND(knownContacts.size == 0, NOT(moreRecords))}" />
+                <apex:pageBlockSection title="{!$Label.sfMatchingContacts}" collapsible="true" columns="1" rendered="{!(knownContacts.size != 0)}">
+                    <apex:pageBlockTable value="{!knownContacts}" var="contactItem">
+                        <apex:column >
+                            <apex:facet name="header">{!$Label.sfContactName}</apex:facet>
+                            <apex:outputLink value="{!URLFOR($Action.Contact.View, contactItem.Id)}">{!contactItem.Firstname}&nbsp;{!contactItem.Lastname}</apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{!contactItem.Phone}"/>
+                        <apex:column value="{!contactItem.MobilePhone}"/>
+                        <apex:column value="{!contactItem.Email}"/>
+                        <apex:column value="{!contactItem.MailingCity}"/>
+                        <apex:column value="{!contactItem.Site__c}"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:commandButton id="createNewContact" value="{!$Label.btnNew}" onclick="SearchFirst.createContact();return false;"/>
+            </apex:pageBlock>
+            <apex:pageBlock id="unknowncontactresultPanel" title="{!$Label.sfUnknownContacts + ' [' + text(unknownContacts.size) + ']'}" tabStyle="Contact">
+            	<apex:pageMessage strength="2" severity="warning" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+                <apex:pageMessage strength="2" severity="info" summary="{!$Label.sfNoContactResultWarning}" rendered="{!AND(unknownContacts.size == 0,  NOT(moreRecords))}" />
+                <apex:pageBlockSection title="{!$Label.sfMatchingContacts}" collapsible="true" columns="1" rendered="{!(unknownContacts.size != 0)}">
+                    <apex:pageBlockTable value="{!unknownContacts}" var="contactItem">
+                        <apex:column >
+                            <apex:facet name="header">{!$Label.sfUnknownContactName}</apex:facet>
+                            <apex:commandLink value="{!contactItem.Name}" action="{!popupController.ShowPopup}" rerender="conpopup" rendered="{!LOWER(pageController.searchParameters.FirstName)=LOWER(contactItem.FirstName) || LOWER(pageController.searchParameters.LastName)=LOWER(contactItem.LastName) || LOWER(pageController.searchParameters.CompanyName)=LOWER(contactItem.Name)}">
+                                <apex:param name="conId" value="{!contactItem.Id}"/>
+                                <apex:param name="conName" value="{!contactItem.Name}"/>
+                                <apex:param name="conPhone" value="{!contactItem.Phone}"/>
+                                <apex:param name="conEmail" value="{!contactItem.Email}"/>
+                                <apex:param name="conMobile" value="{!contactItem.MobilePhone}"/>
+                                <apex:param name="conAccId" value="{!contactItem.AccountId}"/>
+                            </apex:commandLink>
+                        </apex:column>                        
+                        <apex:column headerValue="{!$Label.sfPhone}">
+                            <!-- <apex:outputField value="{!contactItem.Phone}" rendered="{!pageController.searchParameters.Phone=contactItem.Phone}"/> -->
+                            <apex:commandLink value="{!contactItem.Phone}" action="{!popupController.ShowPopup}" rerender="conpopup" rendered="{!pageController.searchParameters.Phone=contactItem.Phone}">
+                                <apex:param name="conId" value="{!contactItem.Id}"/>
+                                <apex:param name="conName" value="{!contactItem.Name}"/>
+                                <apex:param name="conPhone" value="{!contactItem.Phone}"/>
+                                <apex:param name="conEmail" value="{!contactItem.Email}"/>
+                                <apex:param name="conMobile" value="{!contactItem.MobilePhone}"/>
+                                <apex:param name="conAccId" value="{!contactItem.AccountId}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                        <apex:column headerValue="{!$Label.sfMobile}">
+                            <!-- <apex:outputField value="{!contactItem.MobilePhone}" rendered="{!pageController.searchParameters.Phone=contactItem.MobilePhone}"/> -->
+                            <apex:commandLink value="{!contactItem.MobilePhone}" action="{!popupController.ShowPopup}" rerender="conpopup" rendered="{!pageController.searchParameters.Phone=contactItem.MobilePhone}">
+                                <apex:param name="conId" value="{!contactItem.Id}"/>
+                                <apex:param name="conName" value="{!contactItem.Name}"/>
+                                <apex:param name="conPhone" value="{!contactItem.Phone}"/>
+                                <apex:param name="conEmail" value="{!contactItem.Email}"/>
+                                <apex:param name="conMobile" value="{!contactItem.MobilePhone}"/>
+                                <apex:param name="conAccId" value="{!contactItem.AccountId}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                        <apex:column headerValue="{!$Label.sfEmail}">
+                           <!--  <apex:outputField value="{!contactItem.Email}" rendered="{!pageController.searchParameters.Email=contactItem.Email}"/> -->
+                            <apex:commandLink value="{!contactItem.Email}" action="{!popupController.ShowPopup}" rerender="conpopup" rendered="{!pageController.searchParameters.Email=contactItem.Email}">
+                                <apex:param name="conId" value="{!contactItem.Id}"/>
+                                <apex:param name="conName" value="{!contactItem.Name}"/>
+                                <apex:param name="conPhone" value="{!contactItem.Phone}"/>
+                                <apex:param name="conEmail" value="{!contactItem.Email}"/>
+                                <apex:param name="conMobile" value="{!contactItem.MobilePhone}"/>
+                                <apex:param name="conAccId" value="{!contactItem.AccountId}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                        <apex:column value="{!contactItem.MailingCity}"/>
+                        <apex:column value="{!contactItem.Site__c}"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+    </apex:outputPanel>
+    <c:SearchFirst_ContactPopup id="conpopup" host="{!This}"/>
+</apex:component>

@@ -1,0 +1,24 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">
+  <lightning:utilityBarAPI aura:id="createAccount" /> 
+  <aura:attribute name="selectedItem" type="String" />
+  <div>
+    <lightning:verticalNavigation
+      selectedItem="{! v.selectedItem }"
+      onselect="{!c.handleSelect}"
+    >
+      <lightning:verticalNavigationSection label="신규 계정 생성">
+        <lightning:verticalNavigationItemIcon
+          label="법인/회사"
+          name="Corporate"
+          iconName="utility:company"
+        />
+
+        <lightning:verticalNavigationItemIcon
+          label="개인 고객"
+          name="Individual"
+          iconName="utility:user"
+        />
+      </lightning:verticalNavigationSection>
+    </lightning:verticalNavigation>
+  </div>
+</aura:component>

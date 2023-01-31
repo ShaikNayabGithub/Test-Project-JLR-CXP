@@ -1,0 +1,18 @@
+<aura:component >
+    <aura:attribute name="iconName" type="String" />
+    <aura:attribute name="iconSize" type="String" default="x-small" />
+    <aura:attribute name="objectName" type="String" />
+    <aura:attribute name="recordTypeId" type="String" />
+    <aura:attribute name="displayText" type="String" />
+    <aura:attribute name="mode" type="String" default="goto" />
+    
+    <aura:if isTrue="{!v.iconName != null}">
+    	<lightning:icon iconName="{!v.iconName}" size="{!v.iconSize}" />&nbsp;
+    </aura:if>
+    <aura:if isTrue="{!v.mode == 'goto'}">
+    	<a onclick="{!c.gotoObject}">{!v.displayText}</a>
+    </aura:if>
+    <aura:if isTrue="{!v.mode == 'create'}">
+    	<a onclick="{!c.createObject}">{!v.displayText}</a>
+    </aura:if>
+</aura:component>

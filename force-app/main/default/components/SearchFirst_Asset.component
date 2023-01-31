@@ -1,0 +1,64 @@
+<apex:component controller="SearchFirst_AssetController">
+    <apex:attribute name="host" type="SearchFirst_HostController" assignTo="{!pageController}"  required="true" description="The controller for the page." />
+    <apex:outputPanel id="resultPanel">
+        <apex:form id="resultForm">
+            <apex:actionFunction action="{!CreateRecord}" name="apexCreateAsset"/>
+            <apex:pageBlock id="knownassetresultPanel" title="{!SUBSTITUTE(SUBSTITUTE($Label.ObjectsYouView, '{0}', $ObjectType.Asset.labelplural), '{1}', 'can') + ' [' + text(knownAssets.size) + ']'}" tabStyle="Asset">
+                <apex:pageMessage strength="2" severity="warning" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+                <apex:pageMessage strength="2" severity="info" summary="{!SUBSTITUTE($Label.NoMatchingRecords, '{0}', $ObjectType.Asset.label)}" rendered="{!AND(knownAssets.size == 0, NOT(moreRecords))}" />
+                <apex:pageBlockSection title="{!$Label.Matching + ' ' + $ObjectType.Asset.labelplural}" collapsible="true" columns="1" rendered="{!(knownAssets.size != 0)}">
+                    <apex:pageBlockTable value="{!knownAssets}" var="assetItem">
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.Asset.fields.VIN__c.Label}</apex:facet>
+                            <apex:outputLink value="{!URLFOR($Action.Asset.View, assetItem.Id)}">{!assetItem.VIN__c}</apex:outputLink>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.Asset.fields.Short_VIN__c.Label}</apex:facet>
+                            <apex:outputLink value="{!URLFOR($Action.Asset.View, assetItem.Id)}">{!assetItem.Short_VIN__c}</apex:outputLink>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.Asset.fields.Registration_Number__c.Label}</apex:facet>
+                            <apex:outputLink value="{!URLFOR($Action.Asset.View, assetItem.Id)}">{!assetItem.Registration_Number__c}</apex:outputLink>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageBlock id="unknownassetresultPanel" title="{!SUBSTITUTE(SUBSTITUTE($Label.ObjectsYouView, '{0}', $ObjectType.Asset.labelplural), '{1}', 'cannot') + ' [' + text(unknownAssets.size) + ']'}" tabStyle="Asset">
+                <apex:pageMessage strength="2" severity="warning" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+                <apex:pageMessage strength="2" severity="info" summary="{!SUBSTITUTE($Label.NoMatchingRecords, '{0}', $ObjectType.Asset.label)}" rendered="{!AND(unknownAssets.size == 0, NOT(moreRecords))}" />
+                <apex:pageBlockSection title="{!$Label.Matching + ' ' + $ObjectType.Asset.labelplural}" collapsible="true" columns="1" rendered="{!(unknownAssets.size != 0)}">
+                    <apex:pageBlockTable value="{!unknownAssets}" var="assetItem">
+                        <apex:column headerValue="{!$ObjectType.Asset.fields.VIN__c.Label}">
+                            <apex:commandLink value="{!assetItem.VIN__c}" action="{!popupController.ShowPopup}" rerender="assetPopup" rendered="{!LOWER(pageController.searchParameters.AssetIdentifier)=LOWER(assetItem.VIN__c)}">
+                                <apex:param name="assetId" value="{!assetItem.Id}"/>
+                                <apex:param name="accountId" value="{!assetItem.AccountId}"/>
+                                <apex:param name="mobile" value="{!assetItem.Account.PersonMobilePhone}"/>
+                                <apex:param name="homePhone" value="{!assetItem.Account.Phone}"/>
+                                <apex:param name="email" value="{!assetItem.Account.PersonEmail}"/>
+                            </apex:commandLink>
+                        </apex:column>                        
+                        <apex:column headerValue="{!$ObjectType.Asset.fields.Short_VIN__c.Label}">
+                            <apex:commandLink value="{!assetItem.Short_VIN__c}" action="{!popupController.ShowPopup}" rerender="assetPopup" rendered="{!LOWER(pageController.searchParameters.AssetIdentifier)=LOWER(assetItem.Short_VIN__c)}">
+                                <apex:param name="assetId" value="{!assetItem.Id}"/>
+                                <apex:param name="accountId" value="{!assetItem.AccountId}"/>
+                                <apex:param name="mobile" value="{!assetItem.Account.PersonMobilePhone}"/>
+                                <apex:param name="homePhone" value="{!assetItem.Account.Phone}"/>
+                                <apex:param name="email" value="{!assetItem.Account.PersonEmail}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Asset.fields.Registration_Number__c.Label}">
+                            <apex:commandLink value="{!assetItem.Registration_Number__c}" action="{!popupController.ShowPopup}" rerender="assetPopup" rendered="{!LOWER(pageController.searchParameters.AssetIdentifier)=LOWER(assetItem.Registration_Number__c)}">
+                                <apex:param name="assetId" value="{!assetItem.Id}"/>
+                                <apex:param name="accountId" value="{!assetItem.AccountId}"/>
+                                <apex:param name="mobile" value="{!assetItem.Account.PersonMobilePhone}"/>
+                                <apex:param name="homePhone" value="{!assetItem.Account.Phone}"/>
+                                <apex:param name="email" value="{!assetItem.Account.PersonEmail}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+    </apex:outputPanel>
+    <c:SearchFirst_AssetPopup id="assetPopup" host="{!This}"/>
+</apex:component>

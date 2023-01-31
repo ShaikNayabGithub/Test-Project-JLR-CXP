@@ -1,0 +1,5 @@
+<design:component>
+	<design:attribute name="showDMS" label="Show DMS Button" default="true" />
+    <design:attribute name="showExtract" label="Show Extract Opportunity Button" default="true" />
+    <design:attribute name="showLock" label="Show Unlock Record" default="true" />
+</design:component>

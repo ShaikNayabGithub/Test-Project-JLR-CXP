@@ -1,0 +1,66 @@
+<aura:component controller="AssetTradeInTransferController" implements="forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="tradeInVin" type="String" default="" />
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="options" type="List" default="[
+                                                        {'label': 'Transfer', 'value': 'Transfer'},
+                                                        {'label': 'Trade In &amp; Transfer', 'value': 'Trade In &amp; Transfer'}
+                                                        ]"/>
+    <aura:attribute name="value" type="String" default="Transfer"/>
+    
+    <lightning:card title="Trade In">
+        <lightning:layout>
+            <lightning:layoutItem size="4">
+                <div class="slds-form slds-form_horizontal slds-p-around_small">
+                    <lightning:input type="text" label="VIN" value="{!v.tradeInVin}" />
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="8">
+                <div class="slds-form slds-p-around_medium">
+                    <lightning:button label="{!$Label.c.RDA_TradeIn_Transfer_Button}" onclick="{!c.tradeIn}" />
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    
+    <aura:if isTrue="{!v.isOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModal }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium">Trade In &amp; Transfer Asset</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p class="slds-text-heading_small slds-align_absolute-center" ><b> VIN: {!v.tradeInVin} </b> </p>
+                    <p class="slds-align_justify"><br/> Please select options to <b>"Transfer"</b> or <b>"Trade In and Transfer"</b>. </p>
+                    <ul class="slds-list_dotted">
+                      <li> <b>Transfer </b> - just transfer the asset from old retailer to your retailer account.</li>
+                      <li> <b>Trade In &amp; Transfer</b>- This option helps to mark the asset is available for trade in along with transfer to current retailer.</li>
+                    </ul>
+                    <p><lightning:radioGroup name="radioButtonGroupRequired"
+                                             label="Please select the preference"
+                                             options="{! v.options }"
+                                             value="{! v.value }"
+                                             type="button"
+                                             required="true"/>
+                    </p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="brand"
+                                      label="Proceed"
+                                      title="Proceed"
+                                      onclick="{!c.tradeInTransfer}"/>
+                    <lightning:button variant="neutral"
+                                      label="Cancel"
+                                      title="Cancel"
+                                      onclick="{! c.closeModal }"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,46 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 14/11/2019.
+ -->
+
+<!-- Milestone Item -->
+<template>
+    <div class="slds-grid slds-wrap jlr-highlighted-milestone jlr-is-clickable" onclick={handleClick} if:true={isInProgress}>
+        <div class="slds-col slds-size--12-of-12 jlr-spacer-vertical">
+            <div class="slds-grid slds-wrap" >
+
+                <!-- Milestone is in progress -->
+                <div class="slds-col slds-size--1-of-12">
+                    <lightning-icon icon-name="utility:clock" size="x-small"></lightning-icon>
+                </div>
+                <div class="slds-col slds-size--10-of-12">
+                    <span>{milestoneDisplayName}</span>
+                </div>
+                <div class="slds-col slds-size--1-of-12">
+                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-wrap jlr-completed-milestone" if:false={isInProgress}>
+        <div class="slds-col slds-size--12-of-12 jlr-spacer-vertical">
+            <div class="slds-grid slds-wrap" >
+
+                <!-- Milestone is not in progress -->
+                <div class="slds-col slds-size--1-of-12">
+                    <lightning-input class="jlr-milestones-checkbox" type="checkbox" checked={isChecked}
+                                     variant="label-hidden" onchange={handelCheckboxClicked} ></lightning-input>
+                </div>
+                <div class="slds-col slds-size--10-of-12">
+                    <span>{milestoneDisplayName}</span>
+                </div>
+                <div class="slds-col slds-size--1-of-12">
+                    <!--
+                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                    -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,97 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" >
+    
+    <aura:attribute name="showModal" type="Boolean" default="false"/>     
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="showCheckStock" type="String" default="/asset/Asset/Default?Asset-filterId=CheckStock" />
+    <aura:attribute name="showTradeIn" type="String" default="/asset/Asset/Default?Asset-filterId=TradeIn" />
+    <aura:attribute name="showServiceVehicle" type="String" />
+    <aura:attribute name="showHandoverRDA" type="String" default="/rda/RDA__c/Default" />
+    <aura:attribute name="showFleetAndBusiness" type="String" />
+    
+  	<div class="slds-grid slds-gutters slds-wrap slds-grid_align-space">
+		<div class="slds-col slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_4-of-12 slds-large-size_2-of-12">
+        	<!--<lightning:button class="slds-m-top_small" variant="brand" label="New Opportunity" title="Create" aura:id="createButton" onclick="{!c.showModal}"/>-->
+            <center>
+            	<a id="NEWOPPID" onclick="{!c.showModal}">
+                	<lightning:icon iconName="utility:magicwand" alternativeText="New Opportunity" />
+                    <p style="padding-top:5px">{!$Label.c.New_Opportunity}</p>
+                </a>
+            </center>
+        </div>
+        <aura:if isTrue="{!and(v.showCheckStock != null, v.showCheckStock != '')}">
+        <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_4-of-12 slds-large-size_2-of-12">
+        	<center>
+                <a onclick="{!c.checkStock}">
+            		<lightning:icon iconName="utility:travel_and_places" alternativeText="Check Stock" />
+                	<p style="padding-top:5px">{!$Label.c.Check_Stock}</p>
+                </a>
+            </center>
+        </div>
+        </aura:if>
+        <aura:if isTrue="{!and(v.showTradeIn != null, v.showTradeIn != '')}">
+        <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_4-of-12 slds-large-size_2-of-12">
+        	<center>
+                <a onclick="{!c.tradein}">
+            		<lightning:icon iconName="utility:rotate" alternativeText="Trade-In" />
+                    <p style="padding-top:5px">{!$Label.c.Lead_Trade_In}</p>
+                </a>
+            </center>
+        </div>
+        </aura:if>
+        <aura:if isTrue="{!and(v.showServiceVehicle != null, v.showServiceVehicle != '')}">
+        <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_4-of-12 slds-large-size_2-of-12">
+        	<center>
+                <a onclick="{!c.service}">
+            		<lightning:icon iconName="utility:custom_apps" alternativeText="Service Vehicle" />
+                    <p style="padding-top:5px">{!$Label.c.Service_Vehicle}</p>
+                </a>
+            </center>
+        </div>
+        </aura:if>
+        <aura:if isTrue="{!and(v.showHandoverRDA != null, v.showHandoverRDA != '')}">
+        <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_4-of-12 slds-large-size_2-of-12">
+        	<center>
+                <a onclick="{!c.RDA}">
+            		<lightning:icon iconName="utility:cart" alternativeText="Handover/RDA" />
+                    <p style="padding-top:5px">{!$Label.c.Handover_RDA}</p>
+                </a>
+            </center>
+        </div>
+        </aura:if>
+    	<aura:if isTrue="{!and(v.showFleetAndBusiness != null, v.showFleetAndBusiness != '')}">
+        <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_4-of-12 slds-large-size_2-of-12">
+        	<center>
+                <a onclick="{!c.fleetBusiness}">
+            		<lightning:icon iconName="utility:company" alternativeText="Fleet &amp; Business" />
+                    <p style="padding-top:5px">{!$Label.c.Fleet_Business}</p>
+                </a>
+            </center>
+        </div>
+        </aura:if>
+    </div>
+    
+    <aura:if isTrue="{!v.showModal}">
+        <div style="height: 800px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 70rem !important;">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModal}">
+                            <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="close"  variant="error" />
+                            <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            <img class="slds-align_absolute-center" src="{!$Resource.CXP_logo_lightning_home_page}"/>
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1" style="height: 80rem !important;">
+                        <aura:if isTrue="{!v.showSpinner}"><lightning:spinner /></aura:if>
+                        <c:CustomSearch />
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        
+    </aura:if>
+    
+</aura:component>

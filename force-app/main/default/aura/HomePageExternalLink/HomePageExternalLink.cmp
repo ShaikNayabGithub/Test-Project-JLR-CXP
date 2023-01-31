@@ -1,0 +1,13 @@
+<aura:component >
+    <aura:attribute name="iconName" type="String" default="utility:web_link" />
+    <aura:attribute name="iconSize" type="String" default="x-small" />
+    <aura:attribute name="urlLink" type="String" />
+    <aura:attribute name="displayText" type="String" />
+    <aura:attribute name="isPopOut" type="boolean" default="false" />
+    
+    <lightning:icon iconName="{!v.iconName}" size="{!v.iconSize}" />&nbsp;<a onclick="{!c.openURL}">{!v.displayText}</a>
+    
+    <aura:if isTrue="{!v.isPopOut}">
+        &nbsp;<lightning:icon iconName="utility:new_window" size="xx-small" />
+    </aura:if>
+</aura:component>

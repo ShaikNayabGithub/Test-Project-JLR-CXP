@@ -1,0 +1,18 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="Title" type="String" />
+    <aura:attribute name="Descriptiontext" type="String"/>
+       
+    <div class="section remove-padding--bottom">
+        <div class="grid">
+            <div class="section__header">
+                <h1 class="section__heading">{!v.Title}</h1>
+    
+                <div class="section__intro">
+                    <aura:unescapedHtml value="{!v.Descriptiontext}"/>
+                </div>
+            </div>
+        </div><!-- .grid -->
+    </div><!-- .section -->
+    
+    
+</aura:component>

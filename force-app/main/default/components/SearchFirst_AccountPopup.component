@@ -1,0 +1,74 @@
+<apex:component controller="SearchFirst_AccountPopupController">
+    <apex:attribute name="host" type="SearchFirst_Controller_A" assignTo="{!searchFirstController}"  required="true" description="The controller for the page." />
+    <apex:form >
+        <apex:outputPanel id="accountpopup">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!ShowPopup}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!ShowPopup}">
+                <apex:outputLabel value="{!$Label.sfMakeAccountKnownDescription}"/>
+                <br/><br/>
+                <apex:outputPanel id="accountErrorPanel">
+                    <apex:pageMessage strength="2" title="{!ErrorTitle}" summary="{!$Label.PleaseTryAgain}" severity="error" rendered="{!ErrorTitle!=''}" />
+                </apex:outputPanel>
+                <table width="100%"> 
+                    <tr>
+                        <td width="100%">   
+                            <table width="100%">
+                                <tr>
+                                    <td width="10%">
+                                        <apex:outputLabel value="{!$Label.sfAccount}"/>
+                                    </td>
+                                    <td width="90%">
+                                        <apex:outputLabel value="{!PopupAccount.Name}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <apex:outputLabel value="{!$Label.sfPhone}"/>
+                                    </td>
+                                    <td width="100%">
+                                        <apex:inputText value="{!PopupAccount.Phone}" id="accountInputPhone"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <apex:commandButton value="{!$Label.sfSubmit}" action="{!MakeRecordKnown}" rerender="accountpopup,accountErrorPanel" styleClass="searchFilterButton"/>
+                                    </td>
+                                    <td>
+                                        <apex:commandButton value="{!$Label.sfCancel}" action="{!ClosePopup}" rerender="accountpopup,accountErrorPanel" styleClass="searchFilterButton"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>  
+                    </tr>
+                </table>
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+    <style type="text/css">
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            overflow: 'hidden';
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: fixed;
+            width: 600px;
+            margin-left: -300px;
+            top: 40%;
+        }
+        .popupBackground{
+            background-color:black;
+            overflow: 'hidden';
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+    </style>
+</apex:component>

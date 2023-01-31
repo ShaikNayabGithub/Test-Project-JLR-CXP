@@ -1,0 +1,131 @@
+<aura:component controller="ExtendServicePlanController" implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,forceCommunity:searchInterface" access="global" >
+    <aura:attribute name="assetInputId" type="string" /> 
+    <aura:attribute name="asset" type="Object" /> 
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <!-- Attributes specific to component-->
+    <aura:attribute name="results" type="object[]" />    
+    <aura:attribute name="openDropDown" type="Boolean" default="false" />
+    <aura:attribute name="rentalCar" type="Boolean" default="false" />
+    <aura:attribute name="rentalCarDisabled" type="Boolean" default="false" />
+    <aura:attribute name="showInput" type="Boolean" default="true" />
+    <aura:attribute name="selectedServicePlan" type="String" />
+    <aura:attribute name="selectedOption" type="String" />
+    <aura:attribute name="inputValue" type="String" />
+    <aura:attribute name="selectedPlan" type="object"/>
+    <aura:attribute name="inputSearchFunction" type="Object" />
+    <aura:attribute name="extServicePlanName" type="String" />
+    <aura:attribute name="minDate" type="Date" /> 
+    <aura:attribute name="StartDate" type="Date" /> 
+    <aura:attribute name="currentUser" type="Object" /> 
+    <aura:registerEvent name="Actionname" type="c:Actionevent"></aura:registerEvent>
+    
+    <!-- SHOW LOADING SPINNER--> 
+    <div aura:id="Id_spinner">
+        <lightning:spinner variant="brand" size="large" style="background: none;" />
+    </div>
+    
+    <lightning:layout multipleRows="true" class="slds-box slds-form slds-size_12-of-12">
+        <lightning:layout multipleRows="true" class="slds-form">
+            <lightning:layoutItem padding="around-small" size="12">   
+                
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="combobox-id-21">{!$Label.c.SPC_Extend_Service_Plan}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-combobox_container">
+                            <aura:if isTrue="{!v.showInput}">
+                                <div class="{! v.openDropDown ? 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'}"
+                                     aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                        <input type="text"
+                                               class="slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"
+                                               id="combobox-id-21" aria-autocomplete="list" aria-controls="listbox-id-11"
+                                               autoComplete="off" onkeyup="{!c.searchHandler}" role="textbox" placeholder="{!$Label.c.SPC_Search_Extended_Service_Plan}"
+                                               value="{!v.inputValue}" />
+                                        <aura:if isTrue="{! empty(v.selectedOption)}">
+                                            <span
+                                                  class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                                                <lightning:icon iconName="utility:search" size="x-small" />
+                                            </span>
+                                            <aura:set attribute="else">
+                                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                                        title="{!$Label.c.SPC_Clear_the_text_input}" onclick="{!c.clearOption}">
+                                                    <lightning:icon iconName="utility:clear" size="x-small" />
+                                                </button>
+                                            </aura:set>
+                                        </aura:if>
+                                    </div>
+                                    <div id="listbox-id-11" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                                         role="listbox">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                            <aura:iteration items="{!v.results}" var="result" indexVar="index">
+                                                <li role="presentation" class="slds-listbox__item" data-id="{!index}"
+                                                    data-value="{!index}" onclick="{!c.optionClickHandler}">
+                                                    <div id="{!result.Product2Id}"
+                                                         class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                         role="option">
+                                                        <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                        <span class="slds-media__body">
+                                                            <span class="slds-truncate" style="width:100%" title="{!$Label.c.SPC_Product_Code + result.Product2.ProductCode+ '\n'+ $Label.c.SPC_Service_Interval+result.Product2.Service_Interval_Time__c+'\n'+$Label.c.SPC_Service_Interval_Distance+result.Product2.Service_Interval_Distance__c+'\n'+$Label.c.SPC_Number_of_services+result.Product2.Number_of_Services__c}">
+                                                                <span>{!result.Product2.Name}</span>
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </aura:iteration>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <aura:set attribute="else">
+                                    <div class="slds-text-heading_small"> {!v.extServicePlanName}</div>
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                    </div>
+                </div>
+                
+            </lightning:layoutItem>
+            <aura:if isTrue="{!v.selectedPlan !=null}">
+                <lightning:layoutItem padding="around-small" size="12">
+                    <lightning:layout multipleRows="true" class="slds-form">
+                        <lightning:layoutItem padding="around-small" size="12">
+                            <span class="slds-text-heading_small">
+                                <div style=" font-weight: bold; ">
+                                    {!$Label.c.SPC_Selected_Service_Plan} {!v.selectedPlan.Product2.Name}
+                                </div>
+                            </span>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <b><lightning:formattedRichText value="{!$Label.c.SPC_Product_Code+'&lt;/b&gt;'}"/></b>
+                            <lightning:formattedText value="{!v.selectedPlan.Product2.ProductCode}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <b><lightning:formattedRichText value="{!$Label.c.SPC_Service_Interval_Distance+'&lt;/b&gt;'}"/></b>
+                            <lightning:formattednumber value="{!v.selectedPlan.Product2.Service_Interval_Distance__c}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <b><lightning:formattedRichText value="{!$Label.c.SPC_Service_Interval_Time+'&lt;/b&gt;'}"/></b>
+                            <lightning:formattedText value="{!v.selectedPlan.Product2.Service_Interval_Time__c}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <b><lightning:formattedRichText value="{!$Label.c.SPC_Number_of_services+'&lt;/b&gt;'}"/></b>
+                            <lightning:formattednumber value="{!v.selectedPlan.Product2.Number_of_Services__c}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </aura:if>
+            <lightning:layoutItem padding="around-small" size="12">
+                <lightning:input type="checkbox" name="rentalCar" aura:id="rentalCarId" label="{!$Label.c.Rental_Car}" onclick="{!c.checkboxSelect}" checked="{!v.rentalCar}" disabled="{!v.rentalCarDisabled}" value="{!v.rentalCar}"/>           
+            </lightning:layoutItem>    
+            <lightning:layoutItem padding="around-small" size="12">
+                <lightning:input type="date" required="true" name="StartDate" aura:id="dateField" label="{!$Label.c.SPC_Start_Date}" value="{!v.StartDate}" min="{!v.minDate}"  messageWhenRangeUnderflow="{!$Label.c.SPC_Service_plan_start_date_must_be_after_previous_policy_end_date}" disabled="{!if(v.currentUser.Contact.Account.Country_ISO_Code__c=='JP' || v.currentUser.Country_ISO_Code__c=='JP',true,false)}" />           
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="12">
+                <div style="text-align:center">
+                    <lightning:button name="Add Service Plan" label="{!$Label.c.SPC_Add_Service_Plan}" onclick="{!c.addSPC}" />                                   
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:layout>
+    
+</aura:component>

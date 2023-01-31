@@ -1,0 +1,136 @@
+<aura:component implements="forceCommunity:searchInterface,forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" access="global" controller="NewLeadController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="newLead" type="Lead" default="{'sobjectType':'Lead'}" /> <!--, 'Type__c':'Product', 'Purchase_Type__c':'New Vehicle' -->
+    
+    <aura:attribute name="salutationPicklistValues" type="List" /> 
+    <aura:attribute name="enquiryTypePicklistValues" type="List" /> 
+    
+    <aura:attribute name="brandPicklistValues" type="List" /> 
+    <aura:attribute name="vehicleModelPicklistValuesByBrand" type="Map" />   
+    <aura:attribute name="vehicleModelPicklistValuesBySelectedBrand" type="List" /> 
+    
+    <!--<aura:attribute name="typePicklistValues" type="List" /> 
+    <aura:attribute name="purchaseTypePicklistValuesByType" type="Map" />   
+    <aura:attribute name="purchaseTypePicklistValuesBySelectedType" type="List" />    
+    <aura:attribute name="subTypePicklistValuesByType" type="Map" />   
+    <aura:attribute name="subTypePicklistValuesBySelectedType" type="List" /> -->
+    
+    <div>       
+        <!-- Lead Creation -->
+        <lightning:card title="{!$Label.c.New_Lead}" aura:id="accountDiv">           
+            <lightning:layout multipleRows="true">
+                
+                <div class="divider">Lead Information</div>
+                
+                <lightning:layoutItem padding="around-small" size="6">    
+                    <lightning:layoutItem padding="around-small" >                    
+                        <lightning:select aura:id="salutation" label="Salutation" name="salutation" required = "true" value="{!v.newLead.Salutation}">
+                            <aura:iteration items="{!v.salutationPicklistValues}" var="option">
+                                <option text="{!option.label}" value="{!option.value}"></option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" >                  
+                        <lightning:input label="First Name" name="firstName" value="{!v.newLead.FirstName}" required="true"/>              
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" >                  
+                        <lightning:input label="Last Name" name="lastName" value="{!v.newLead.LastName}" required="true"/>              
+                    </lightning:layoutItem>
+                    
+                </lightning:layoutItem>
+                
+                <lightning:layoutItem padding="around-small" size="6">
+                    <lightning:layoutItem padding="around-small" >                    
+                        <lightning:select aura:id="enquiryType" label="Enquiry Type" name="enquiryType" required = "true" value="{!v.newLead.Enquiry_Type__c}">
+                            <aura:iteration items="{!v.enquiryTypePicklistValues}" var="option">
+                                <option text="{!option.label}" value="{!option.value}"></option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </lightning:layoutItem>
+                </lightning:layoutItem>
+                
+                
+                <div class="divider">Primary Contact Details</div>
+                
+                <lightning:layoutItem padding="around-small" size="6">
+                    <lightning:layoutItem padding="around-small" > 
+                        <lightning:input type="tel" name="Mobile" value="{!v.newLead.MobilePhone}" label="Mobile" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$"/>              
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small"  >  
+                        <label class="slds-form-element__label" style="margin-right: 0.5rem; margin-bottom:-5px;"><p style="color:blue; float: left;">*</p> <p style="float: right; margin-left:3px;">Email</p> </label>                        
+                        <lightning:input type="email" name="Email" value="{!v.newLead.Email}" variant="label-hidden"/> 
+                    </lightning:layoutItem> 
+                    <lightning:layoutItem padding="around-small" > 
+                        <p style="color:blue;">* One of Phone or Email must be entered.</p>
+                    </lightning:layoutItem>    
+                </lightning:layoutItem>
+                
+                <lightning:layoutItem padding="around-small" size="6">
+                    <lightning:layoutItem padding="around-small" > 
+                        <label class="slds-form-element__label" style="margin-right: 0.5rem; margin-bottom:-5px;"><p style="color:blue; float: left;">*</p> <p style="float: right; margin-left:3px;">Phone</p> </label>                        
+                        
+                        <lightning:input type="tel" name="Phone" value="{!v.newLead.Phone}" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$" variant="label-hidden"/>              
+                    </lightning:layoutItem>
+                    
+                </lightning:layoutItem>
+                
+                
+                <div class="divider">Interest</div>
+                
+                <lightning:layoutItem padding="around-small" size="6">
+                    
+                    
+                    <lightning:layoutItem padding="around-small" >                    
+                        <lightning:select aura:id="brand" label="Brand (Offline)" name="brand" required="true" value="{!v.newLead.Brand_Offline__c}" onchange="{!c.brandOnChange}">
+                            <aura:iteration items="{!v.brandPicklistValues}" var="option">
+                                <option text="{!option.label}" value="{!option.value}"></option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem padding="around-small" >                    
+                        <lightning:select aura:id="vehicleModel" label="Vehicle Model" name="vehicleModel" required="true" value="{!v.newLead.Vehicle_Model_Offline__c }"  >
+                            <aura:iteration items="{!v.vehicleModelPicklistValuesBySelectedBrand}" var="option">
+                                <option text="{!option}" value="{!option.value}"></option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </lightning:layoutItem>
+                </lightning:layoutItem>
+                
+                <!--<lightning:layoutItem padding="around-small" size="6">
+                    
+                    <lightning:layoutItem padding="around-small" >                    
+                        <lightning:select aura:id="type" label="Type" name="type" value="{!v.newLead.Type__c}" onchange="{!c.typeOnChange}" >
+                            <aura:iteration items="{!v.typePicklistValues}" var="option">
+                                <option text="{!option.label}" value="{!option.value}" selected="{!option.value==v.newLead.Type__c}"></option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem padding="around-small" >                    
+                        <lightning:select aura:id="purchaseType" label="Purchase Type" name="purchaseType" value="{!v.newLead.Purchase_Type__c}"  >
+                            <aura:iteration items="{!v.purchaseTypePicklistValuesBySelectedType}" var="option">
+                                <option text="{!option}" value="{!option}" selected="{!option==v.newLead.Purchase_Type__c}" ></option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem padding="around-small" >                    
+                        <lightning:select aura:id="subType" label="Sub Type" name="subType" value="{!v.newLead.Sub_Type__c}"  >
+                            <aura:iteration items="{!v.subTypePicklistValuesBySelectedType}" var="option">
+                                <option text="{!option}" value="{!option}"></option>
+                            </aura:iteration>
+                        </lightning:select> 
+                    </lightning:layoutItem>
+                    
+                </lightning:layoutItem>-->
+                
+            </lightning:layout>
+            <lightning:button class="slds-m-top_small slds-float_right" variant="brand" name="update" label="Confirm" onclick="{!c.createLead}" />   
+        </lightning:card>
+        
+    </div>
+    
+    
+</aura:component>

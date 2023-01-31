@@ -1,0 +1,222 @@
+<aura:component implements="forceCommunity:searchInterface,forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" access="global" controller="NewLeadWalkInController">
+    
+    <aura:attribute name="newLead" type="Lead" default="{'sobjectType':'Lead'}" />
+    <aura:attribute name="showCreateLeadForm" type="Boolean" default="true"/>
+    <aura:attribute name="showCompleteLeadForm" type="Boolean"/>
+    <aura:attribute name="showAccounts" type="Boolean"/>
+    <aura:attribute name="campaignCreateAccess" type="Boolean"/>
+    <aura:attribute name="showOpportunities" type="Boolean"/>
+    <aura:attribute name="ButtonText" type="String" default="{!$Label.c.Create_New_Walk_in}"/>
+    <aura:attribute name="selectedId" type="String" />
+    <aura:attribute name="selectedAccountId" type="String" />
+    <aura:attribute name="selectedEmail" type="String" />
+    <aura:attribute name="selectedPhone" type="String" />
+    
+    <aura:attribute name="accountsList" type="List" /> 
+    <aura:attribute name="opportunitiesList" type="List" /> 
+    <aura:attribute name="enquiryTypePicklistValues" type="List" /> 
+    <aura:attribute name="brandPicklistValues" type="List" /> 
+    <aura:attribute name="vehicleModelPicklistValuesByBrand" type="Map" />   
+    <aura:attribute name="vehicleModelPicklistValuesBySelectedBrand" type="List" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <div aura:id="modalspinnerLookup" class="slds-hide">
+        <lightning:spinner variant="brand" size="small" alternativeText="Loading"/>
+    </div>
+    
+    <aura:if isTrue="{!v.showCreateLeadForm}">
+        <div class="slds-form_horizontal slds-form">
+            <lightning:input aura:id="FirstName" variant="label-inline" type="text" Name="FirstName" label ="{!$Label.c.FIRST_NAME}" value="{!v.newLead.FirstName}" required="{!v.showCompleteLeadForm}"/>
+            <lightning:input aura:id="LastName" variant="label-inline" type="text" Name="LastName" label ="{!$Label.c.LAST_NAME}" value="{!v.newLead.LastName}" required="{!v.showCompleteLeadForm}"/>
+            <!--<lightning:input aura:id="company" variant="label-inline" type="text" name="company" label="Company" value="{!v.newLead.Company}" />-->
+            <lightning:input aura:id="email" variant="label-inline" type="email" name="email" label="{!$Label.c.Email}" value="{!v.newLead.Email}" required="{!v.showCompleteLeadForm}"/>
+            <lightning:input aura:id="phone" variant="label-inline" type="tel" name="phone" label="{!$Label.c.Mobile_Number}" value="{!v.newLead.MobilePhone}" required="{!v.showCompleteLeadForm}" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$"/>
+            
+            <aura:if isTrue="{!v.showCompleteLeadForm}">
+                <c:lookupField objectAPIName="Campaign" label="{!$Label.c.Campaign}" returnFields="['Name']" queryFields="['Name']" selectedId="{!v.selectedId}" showAddNew="{!v.campaignCreateAccess}"/>
+                
+                <lightning:select aura:id="enquiryType" label="{!$Label.c.Enquiry_Type}" name="enquiryType" required = "true" value="{!v.newLead.Enquiry_Type__c}">
+                    <aura:iteration items="{!v.enquiryTypePicklistValues}" var="option">
+                        <option text="{!option}" value="{!option}"></option>
+                    </aura:iteration>
+                </lightning:select>
+                
+                
+                <lightning:select aura:id="brand" label="{!$Label.c.Brand}" name="brand" required="true" value="{!v.newLead.Brand_Offline__c}" onchange="{!c.brandOnChange}">
+                    <aura:iteration items="{!v.brandPicklistValues}" var="option">
+                        <option text="{!option}" value="{!option}"></option>
+                    </aura:iteration>
+                </lightning:select>
+                
+                <lightning:select aura:id="vehicleModel" label="{!$Label.c.Vehicle_Model}" name="vehicleModel" required="true" value="{!v.newLead.Vehicle_Model_Offline__c }"  >
+                    <aura:iteration items="{!v.vehicleModelPicklistValuesBySelectedBrand}" var="option">
+                        <option text="{!option}" value="{!option.value}"></option>
+                    </aura:iteration>
+                </lightning:select> 
+                
+                <lightning:button class="slds-button slds-button_stretch" variant="brand" label="{!v.ButtonText}" title="Create New Walk-in" onclick="{! c.createLeads }" />
+                <aura:set attribute="else">
+                    <lightning:button class="slds-button slds-button_stretch" variant="brand" label="{!$Label.c.Check_for_Existing_Records}" title="Check for Existing Records" onclick="{! c.searchLeads }" />
+                </aura:set>
+            </aura:if>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showAccounts}">
+        <div class="slds-m-bottom_x-small slds-text-heading_small slds-align_absolute-center"><h1>{!$Label.c.Existing_Records_Detected}</h1></div>
+        <div class="slds-m-bottom_small"><h1>{!$Label.c.Existing_Record}</h1></div>
+        <h1>{!$Label.c.Select_Existing_Record} </h1>
+        <table aria-multiselectable="true" class="slds-m-top_x-small slds-table slds-table_bordered slds-table_resizable-cols" role="grid" >
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col"></th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Full Name">{!$Label.c.Full_Name}</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Email">{!$Label.c.Email}</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Mobile">{!$Label.c.Mobile}</span>                              
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.accountsList}" var="account">
+                    <tr aria-selected="false"> 
+                        <td role="gridcell">
+                            <div class="slds-truncate" title="{!account.accFName}"> 
+                                <ui:inputRadio class="slds-m-right_x-small" aura:id="accountCheckboxId" value="false" text="{!account}" change="{!c.onSelectAccount}"/>    
+                            </div>
+                        </td>
+                        <td role="gridcell">
+                            <div class="slds-grid--vertical" title="{!account.accFName}"> 
+                                {!account.accFName} &nbsp; {!account.accLName}
+                            </div>
+                        </td>
+                        <td role="gridcell">
+                            <div class="slds-grid--vertical" title="{!account.accEmail}"> 
+                                {!account.accEmail}
+                            </div>
+                        </td>
+                        <td role="gridcell">
+                            <div class="slds-grid--vertical" title="{!account.accMobile}"> 
+                                {!account.accMobile}
+                            </div>
+                        </td> 
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+        <div>
+            <div class="slds-m-bottom_x-small slds-align_absolute-center"><h1>or,</h1></div>
+            <div class="slds-align_absolute-center"><lightning:button class="slds-button" variant="brand" label="{!$Label.c.Create_New_Individual}" title="Create New Individual" onclick="{! c.createNew }" /></div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showOpportunities}">
+        <div class="slds-m-bottom_x-small slds-text-heading_small slds-align_absolute-center"><h1>Existing Opportunities Found</h1></div>
+        <div class="slds-m-bottom_small"><h1>The person you selected already has one or more open Opportunities associated with their Salesforce record.</h1></div>
+        <h1>Please choose an existing Opportunity or click continue to create a new opportunity.</h1>
+        <table aria-multiselectable="true" class="slds-m-top_x-small slds-table slds-table_bordered slds-table_resizable-cols" role="grid" >
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col"></th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Opportunity Name">Opportunity Name</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Brand">Brand</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Primary Model of Interest">Primary Model of Interest</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Primary Contact">Primary Contact</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Stage">Stage</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-p-right_x-small slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Owner">Owner</span>                              
+                        </div>
+                    </th>
+                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                        <div class="slds-grid slds-align_absolute-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="CreatedDate">CreatedDate</span>                              
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.opportunitiesList}" var="opps">
+                    <tr aria-selected="false" class="slds-hint-parent"> 
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.OppName}"> 
+                                <ui:inputRadio class="slds-m-right_x-small" aura:id="opportunityCheckboxId" value="false" text="{!opps.OppId}" change="{!c.onSelectOpportunity}"/>    
+                            </div>
+                        </td>
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.OppName}"> 
+                                {!opps.OppName}
+                            </div>
+                        </td>
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.OppBrand}"> 
+                                {!opps.OppBrand}
+                            </div>
+                        </td>
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.OppPrimaryModel}"> 
+                                {!opps.OppPrimaryModel}
+                            </div>
+                        </td> 
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.OppPrimaryContact}"> 
+                                {!opps.OppPrimaryContact}
+                            </div>
+                        </td>
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.StageName}"> 
+                                {!opps.StageName}
+                            </div>
+                        </td>
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.OppOwner}"> 
+                                {!opps.OppOwner}
+                            </div>
+                        </td>
+                        <td scope="row" tabindex="0">
+                            <div class="slds-truncate" title="{!opps.OppCreatedDate}"> 
+                                {!opps.OppCreatedDate}
+                            </div>
+                        </td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+        <div>
+            <div class="slds-m-bottom_x-small slds-align_absolute-center"><h1>or,</h1></div>
+            <div class="slds-align_absolute-center"><lightning:button class="slds-button" variant="brand" label="Create New Walk-in" title="Create New Walk-in" onclick="{! c.createNewOpp }" /></div>
+        </div>
+    </aura:if>
+    
+</aura:component>

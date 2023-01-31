@@ -1,0 +1,192 @@
+<template>
+    <lightning-card  title={label.csvBulkUpload}>
+        <div class="slds-m-around_medium">
+            
+            <lightning-combobox
+                name="object"
+                label={label.csvObject}
+                value={selectedObject}
+                placeholder="Select the object type to upload"
+                options={objectOptions}
+                onchange={handleObjectChange} >
+            </lightning-combobox>
+            <lightning-combobox
+                name="Operation"
+                label={label.csvOperation}
+                value={selectedOperation}
+                placeholder="Select the operation type"
+                options={operationOptions}
+                onchange={handleOperationChange} >
+            </lightning-combobox>
+            <lightning-combobox
+                name="updateUpsertKey"
+                label={label.csvUpdateUpsertKey}
+                value={selectedUpdateUpsertKey}
+                placeholder="Select the field to update/upsert against"
+                options={updateUpsertKeyOptions}
+                onchange={handleUpdateUpsertKeyChange} >
+            </lightning-combobox>
+            <lightning-layout pull-to-boundary="medium" multiple-rows="true">
+                
+                <lightning-layout-item size="12"  if:true={reportExportOptions}  class="slds-m-around_x-small">
+                    
+                    <lightning-button-group class="slds-align_absolute-center">
+                        <template for:each={reportExportOptions} for:item="reportExport">
+                            <lightning-button  
+                                key={reportExport.id} 
+                                data-report-id={reportExport.id}
+                                label={reportExport.displayName} 
+                                title={reportExport.displayName} 
+                                onclick={handleExportTemplateClick} 
+                                class="">
+                            </lightning-button>
+                        </template>
+                    </lightning-button-group>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="12" padding="horizontal-small" class="slds-align_absolute-center slds-m-around_x-small">
+                    <lightning-input 
+                        type="file" 
+                        label="CSV File"
+                        accept=".csv"
+                        multiple="false"
+                        onchange={handleFileInput}
+                    ></lightning-input>
+                </lightning-layout-item>
+
+            </lightning-layout>
+            
+            <lightning-button-group class=" slds-align_absolute-center slds-m-around_x-small">
+                <lightning-button label={label.csvClearandReset} onclick={handleReset}></lightning-button>
+                <lightning-button label={label.csvTogglePreview} onclick={handleTogglePreview}></lightning-button>
+                <lightning-button label={label.csvToggleResults} onclick={handleToggleResults}></lightning-button>
+                
+            </lightning-button-group>
+
+            <lightning-button-group class=" slds-align_absolute-center slds-m-around_x-small"> 
+            <lightning-button variant="brand" label="Import" onclick={handleImport}></lightning-button>
+            </lightning-button-group>
+            
+            <lightning-button-group class=" slds-align_absolute-center slds-m-around_x-small"> 
+            <lightning-button        
+                label={label.csvOptionsGuidance} 
+                title="Show Advanced Options and Guidance" 
+                onclick={handleAdvancedOptions} 
+                class="slds-m-around_medium slds-align_absolute-center"
+                >
+            </lightning-button>
+            </lightning-button-group>
+
+            
+            <lightning-layout multiple-rows="true" if:true={showAdvancedOptions} >
+                
+                <lightning-layout-item size="6" padding="around-small">
+                    <h2 class="slds-text-heading_small">Salesforce Record Ids</h2>
+                    <ul class="slds-list_dotted">
+                        <li>Every Salesforce record has an Id, but it can be expressed in its 15-digit or 18-digit format.</li>
+                        <li>This tool requires the 18 digit format to be used.</li>
+                        <li>The tool will convert all values which match the 15-digit Record Id format into their 18-digit counterparts, by checking the length of the value.</li>
+                        <li>To override this behaviour, deselect the option below and provide a comma-separate listed of headers to apply the conversion to.</li>
+                    </ul>
+                    <lightning-input 
+                        type="toggle" 
+                        label="Auto-convert 15 Digit Salesforce IDs" 
+                        name="autoConvert15DigitSalesforceIdsControl"
+                        onchange={handleAutoConvertSfIdChange}
+                        checked={autoConvert15DigitSalesforceIds}
+                        >
+                    </lightning-input>
+                    <div if:false={autoConvert15DigitSalesforceIds}>
+                        <p>Manually specify the headers to be converted in a comma-separated list, or leave blank for no conversion </p>
+                        <lightning-input 
+                            type="text" 
+                            label="Enter any headers with 15-digit Salesforce Record IDs"
+                            onchange={handleManualConvertSfIdChange}
+                        ></lightning-input>
+                    </div>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="6" padding="around-small">
+                    <h2 class="slds-text-heading_small">Templates</h2>
+                    <ul class="slds-list_dotted">
+                        <li>Only include headers in the import file of data that you want to change.</li>
+                        <li>The headings of the template must match the field definitions in CXP.</li>
+                        <li>Each heading must be unique.</li>
+                        <li>Each heading that is uploaded must be editable by the user. For example, whist you can 'export' the Created Date, this field is Read-Only so the import will fail if you attempt to include it in the import</li>
+                    </ul>
+                    <br/>
+                    <p>Reach out to the support team if you are unsure of how to include a field. </p>
+                    
+                </lightning-layout-item>
+
+                <lightning-layout-item size="6" padding="around-small">
+                    <h2 class="slds-text-heading_small">Date Formats</h2>
+                    <ul class="slds-list_dotted">
+                        <li>Dates must be specified in the format: YYYY-MM-DD </li>
+                    </ul>
+                    <!--
+                    <lightning-input 
+                        type="toggle" 
+                        label="Auto-convert Date values" 
+                        name="autoConvertDateControl"
+                        onchange={handleAutoConvertDatesChange}
+                        checked={autoConvertDates}
+                        >
+                    </lightning-input>
+                    <div if:true={autoConvertDates}>
+                        <lightning-combobox
+                            name="dateFormatSelection"
+                            label="Choose date format"
+                            value={selectedInputDateFormat}
+                            placeholder="Select the date format of your data"
+                            options={dateFormatConversionOptions}
+                            onchange={handleDateFormatConverstionChange} >
+                        </lightning-combobox>
+                    </div>
+                -->
+                </lightning-layout-item>
+
+                <lightning-layout-item size="6" padding="around-small">
+                    <h2 class="slds-text-heading_small">Checkboxes</h2>
+                    <ul class="slds-list_dotted">
+                        <li>To set a checkbox as checked, provide the value "true".</li>
+                        <li>To set a checkbox as unchecked, provide the value "false".</li>
+                    </ul>
+                    
+                </lightning-layout-item>
+                
+            </lightning-layout>
+            
+            
+            
+            
+            
+            
+            
+            <div if:true={showPreviewData} class="slds-m-around_medium">
+                <h1 class="slds-text-heading_medium slds-m-around_small">Preview Data</h1>
+                <lightning-datatable
+                    key-field="row_id"
+                    hide-checkbox-column
+                    data={rows}
+                    columns={columns}
+                >
+
+                </lightning-datatable>
+            </div>
+
+            <div if:true={showResultsData} class="slds-m-around_medium">
+                <h1 class="slds-text-heading_medium slds-m-around_small" >Results Data</h1>
+                <lightning-datatable
+                    key-field="row_id"
+                    hide-checkbox-column
+                    data={resultRows}
+                    columns={resultColumns}
+                >
+
+                </lightning-datatable>
+            </div>
+    </div>
+    </lightning-card>
+    
+</template>

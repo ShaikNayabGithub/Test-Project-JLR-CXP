@@ -1,0 +1,38 @@
+<aura:component implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="CoopCampaignActivityController">
+	<aura:attribute name="campaignActivityId" type="Id" />
+    <aura:attribute name="campaignActivity" type="CooP_Campaign_Activity__c" />
+    <aura:attribute name="campaignActivityName" type="String" default="Campaign Activity" />
+    <aura:attribute name="accept" type="List" default="['.txt']"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+    <aura:attribute name="activityFiles" type="Id[]" />
+    <aura:registerEvent name="activityDragAndDrop" type="c:FileDragAndDropEvent" />
+    <aura:handler name="init" value="{!this}" action="{!c.initialisation}" />
+    
+    <div class="slds-box slds-theme_default">
+    	<h2>{!$Label.c.LC_COOP_Existing_Media}</h2>
+    	<div class="slds-grid slds-wrap">
+			<aura:iteration var="f" items="{!v.activityFiles}">
+    	    	<div class="slds-size_1-of-2 slds-p-bottom_x-small">
+        	        <lightning:fileCard fileId="{!f}" />
+        		</div>
+    		</aura:iteration>
+        <aura:if isTrue="{!or((v.campaignActivity.Status__c =='Activity Created'),(v.campaignActivity.Status__c =='Activity Rejected'))}" >
+            
+           <div class="slds-size_2-of-2"><h2>{!$Label.c.LC_COOP_New_Media}</h2></div>
+    	    <div class="slds-size_2-of-2">                
+    			<lightning:fileUpload  name="{!'fileUploader' + v.campaignActivityName}"
+        			    	                  label= "{!$Label.c.LC_COOP_Upload_Media_For_Activity+' ' + v.campaignActivityName}"
+       	    			    	              multiple="{!v.multiple}"
+           	    			    	          accept="{!v.accept}"
+               	    			    	      disabled="{!v.disabled}"
+                   	    			   	  	  recordId="{!v.campaignActivityId}"
+                       	   				      onuploadfinished="{!c.handleUploadFinished}" />
+        	</div>
+            
+            </aura:if>    
+	     
+    	</div>
+    </div>
+    
+</aura:component>

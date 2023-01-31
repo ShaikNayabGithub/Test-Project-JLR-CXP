@@ -1,0 +1,73 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="simpleAsset" type="Object" />
+    <!--<aura:attribute name="accountIcon" type="String" default="standard:account" />
+    <aura:attribute name="vinIcon" type="String" default="standard:portal" />
+    <aura:attribute name="modelIcon" type="String" default="standard:work_order" />
+    <aura:attribute name="derivativeIcon" type="String" default="custom:custom83" />
+    <aura:attribute name="plateIcon" type="String" default="standard:scan_card" />-->
+    <aura:attribute name="recallIcon" type="String" default="standard:recent" />
+    <!--<aura:attribute name="newIcon" type="String" default="standard:topic" />
+    <aura:attribute name="mileageIcon" type="String" default="custom:custom64" />-->
+    <aura:attribute name="vinImg" type="String" default="/Asset/Icon_VIN.png" />
+    <aura:attribute name="modelImg" type="String" default="/Asset/Icon_Model.png" />
+    <aura:attribute name="derivativeImg" type="String" default="/Asset/Icon_Derivative.png" />
+    <aura:attribute name="newUsedImg" type="String" default="/Asset/Icon_NewUsed.png" />
+    <aura:attribute name="mileageImg" type="String" default="/Asset/Icon_Mileage.png" />
+    <aura:attribute name="recallImg" type="String" default="/More/Icon_Recall.png" />
+    <aura:attribute name="recordTypeImg" type="String" default="/Additional/Icon_CampaignBrand.png" />
+    <aura:attribute name="warrantyImg" type="String" default="/Additional/Icon_StartDate.png" />
+    <aura:attribute name="modelYearImg" type="String" default="/Additional/Icon_EndDate.png" />
+    <aura:attribute name="accountImg" type="String" default="/Account/Icon_NoOfOpenCases.png" />
+    <aura:attribute name="columnFields" type="String[]" default="['VIN__c','AccountId', 'Account.RecordType.Name', 'Warranty_Start_Date__c', 'Model_Year__c', 'Model__c', 'Model__r.Name','Model_Alternative__c' , 'Derivative__c', 'Derivative__r.Name', 'Registration_Number__c', 'New_or_Used__c', 'Mileage__c', 'Subject_to_Recall_Indicator__c', 'Recall_Campaign__c', 'Account.Name', 'Brand__c', 'Brand__r.Name']" />
+    
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetFields="{!v.simpleAsset}" mode="VIEW" fields="{!v.columnFields}" />
+    
+    <lightning:layout>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="Account Name"><img src="{!$Resource.MENAHeaderIcons + v.accountImg}" style="width:40px; height:40px" /></span>
+           <aura:if isTrue="{!v.simpleAsset.AccountId!=null}">
+                <a href="javascript:void(0)" onclick="{!c.navigateToAccountRecord}">{!v.simpleAsset.Account.Name}</a>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="{!$Label.c.Stock_Search_Model}"><img src="{!$Resource.MENAHeaderIcons + v.modelImg}" style="width:40px; height:40px" /></span>
+            <aura:if isTrue="{!v.simpleAsset.Model__c!=null}">
+                 <lightning:formattedText value="{!if(v.simpleAsset.Model_Alternative__c!=null, v.simpleAsset.Model_Alternative__c, '-')}" />
+               
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small" class="slds-truncate">
+            <span style="padding-right:4px" title="Model Year"><img src="{!$Resource.MENAHeaderIcons + v.modelYearImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleAsset.Model_Year__c!=null, v.simpleAsset.Model_Year__c, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="1" padding="horizontal-small">
+            <span style="padding-right:4px" title="Account Record Type"><img src="{!$Resource.MENAHeaderIcons + v.recordTypeImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleAsset.Account.RecordType.Name!=null, v.simpleAsset.Account.RecordType.Name, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="1" padding="horizontal-small">
+            <span style="padding-right:4px" title="Warranty Start Date"><img src="{!$Resource.MENAHeaderIcons + v.warrantyImg}" style="width:40px; height:40px" /></span>
+           <aura:if isTrue="{!v.simpleAsset.Warranty_Start_Date__c!=null}" >
+            <lightning:formattedDateTime value="{!v.simpleAsset.Warranty_Start_Date__c}" year="numeric" month="numeric" day="numeric"     /> 
+            </aura:if> 
+            <aura:if isTrue="{!v.simpleAsset.Warranty_Start_Date__c==null}" >
+            <lightning:formattedText value="-" />
+                       </aura:if> 
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <aura:if isTrue="{!v.simpleAsset.Subject_to_Recall_Indicator__c}">
+	            <span style="padding-right:4px" title="{!$Label.c.Asset_Recall}"><img src="{!$Resource.MENAHeaderIcons + v.recallImg}" style="width:40px; height:40px" /></span>
+                <lightning:formattedText value="{!if(v.simpleAsset.Recall_Campaign__c!=null, v.simpleAsset.Recall_Campaign__c, '-')}" />
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small" class="slds-p-top_x-small">
+            <aura:if isTrue="{!v.simpleAsset.Brand__r.Name == 'Jaguar'}">
+	       		<img src="{!$Resource.LightningBrandJaguar}" />
+            </aura:if>
+            <aura:if isTrue="{!v.simpleAsset.Brand__r.Name == 'Land Rover'}">
+                <img src="{!$Resource.LightningBrandLandRover}" />
+            </aura:if>
+        </lightning:layoutItem>
+	</lightning:layout>
+    
+</aura:component>

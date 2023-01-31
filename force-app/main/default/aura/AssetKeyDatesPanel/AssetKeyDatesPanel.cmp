@@ -1,0 +1,27 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+	
+	<lightning:recordEditForm aura:id="editAsset" recordId="{!v.recordId}" objectApiName="Asset" onsuccess="{!c.handleSuccess}">
+    	<lightning:card title="{!$Label.c.Asset_Key_Dates}" iconName="custom:custom76" class="slds-p-around_xx-small">
+        	<aura:set attribute="actions">
+            	<lightning:button label="{!$Label.c.sfSave}" type="submit" name="save" variant="brand" />
+        	</aura:set>
+    		<p class="slds-p-horizontal_small">
+            	<div class="slds-grid slds-wrap">
+    				<div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Warranty_Start_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Delivered_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Warranty_End_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Handover_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Extended_Warranty_End_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Vehicle_Initial_Registration_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Vehicle_Last_Service_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Last_Registration_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Last_Repaired_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Last_Date_Change_of_Ownership__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="MOT_Inspection_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Manufacture_Year__c" /></div>
+                </div>
+	        </p>
+    	</lightning:card>
+    </lightning:recordEditForm>
+    
+</aura:component>

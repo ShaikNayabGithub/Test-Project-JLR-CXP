@@ -1,0 +1,61 @@
+<template>
+    <!--lightning-card-->
+        <div class="asset-container slds box" style="border: none;">
+            <div class="asset-header">
+                <label>RDA Validation Checker : {rdaType}</label>
+                <lightning-icon if:true={existingRda} size="small" icon-name="utility:success" alternative-text="Success!" variant="success"
+                title="success variant"></lightning-icon>
+                <lightning-button if:false={existingRda} class="btn slds-float_right" label="Refresh" onclick={refreshDataTable}></lightning-button>
+            </div>
+            <template if:false={existingRda}>
+                <template if:true={checkResults}>
+                    <template if:true={checkResults}>
+                    <table id="resulttable"><!-- class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered">-->
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate jlr-h4" title="Result">Result</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate jlr-h4" title="Description">Description</div>
+                                </th>
+                            </tr>
+                        </thead>
+        
+                        <tbody>
+                            <template if:false={checkCount} for:each={checkResults} for:item="checkResult">
+                                <tr if:false={checkResult.Pass} key={checkResult.Id}> <!--MUST CHANGE-->
+                                    <td class="result-cell">
+                                        <lightning-icon icon-name="utility:error" alternative-text="Error!" variant="error" title="error variant">
+                                        </lightning-icon>
+                                    </td>
+                                    <td>
+                                        <div>{checkResult.Message}</div>
+                                    </td>
+                                </tr>
+                            </template>
+                            
+                            <tr if:true={checkCount}>
+                                <td class="result-cell"> 
+                                    <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+                                    title="success variant"></lightning-icon>
+                                </td> 
+                                <td> 
+                                    <div>RDA checks have been passed. Successful Validation</div> 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </template>
+                <template if:false={checkResults.length}>
+                    No Data Found
+                </template>
+            </template>
+            
+            <template if:true={error}>
+                Error While Loading data from Salesforce
+            </template>
+            </template>
+        </div>
+    <!--/lightning-card-->
+</template>

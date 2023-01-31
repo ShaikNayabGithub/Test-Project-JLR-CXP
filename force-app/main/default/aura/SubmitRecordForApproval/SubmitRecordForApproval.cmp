@@ -1,0 +1,14 @@
+<aura:component access="global" controller="LCSubmitRecordForApproval_Controller">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="CommunityRecordId" type="String" />
+    <aura:attribute name="enableApproval" type="boolean" default="false" />
+    <aura:attribute name="communityUserId" type="String" />   
+    <aura:attribute name="approvalComment" type="String" default="" />
+    
+    <!--User: {!v.communityUserId}<br />-->
+    <aura:if isTrue="{!v.enableApproval}">
+        <br/>
+        <lightning:input name="Submitter Comments" value="{!v.approvalComment}" label="Submitter Comments" placeholder="Please type comments.."  required="true"/>
+    	<lightning:button class="slds-m-top_small" variant="brand" type="submit" name="approval" label="Submit" disabled="{!if(or(empty(v.approvalComment),v.approvalComment==''),true,false)}" onclick="{!c.registerApproval}" />
+    </aura:if>
+</aura:component>

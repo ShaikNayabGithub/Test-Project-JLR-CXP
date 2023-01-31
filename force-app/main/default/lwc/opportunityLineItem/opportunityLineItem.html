@@ -1,0 +1,15 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 21/11/2019.
+ -->
+
+<!-- Opportunity Line Item -->
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size--10-of-12" key={product.Id}>{product.Name}</div>
+        <div class="slds-col slds-size--1-of-12" key={product.Id}>{product.Quantity}</div>
+        <div class="slds-col slds-size--1-of-12" key={product.Id}>
+            <lightning-icon class="jlr-is-clickable" icon-name="utility:close" size="x-small"
+                            onclick={handleClearProductItem}></lightning-icon>
+        </div>
+    </div>
+</template>

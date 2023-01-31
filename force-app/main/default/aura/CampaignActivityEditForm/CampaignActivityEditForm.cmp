@@ -1,0 +1,28 @@
+<aura:component >
+        <aura:attribute name="activity" type="CooP_Campaign_Activity__c" />     
+        <aura:attribute name="communityUserId" type="String" />  
+	<lightning:navigation aura:id="{!v.activity.Id}"/>
+    		<lightning:recordEditForm recordId="{!v.activity.Id}" objectApiName="CooP_Campaign_Activity__c" onsuccess="{!c.handleSaveSuccess}">
+
+        		<lightning:messages />
+                   <a onclick="{!c.navToRecord}" id="{!v.activity.Id}">
+                        <h3 class="slds-text-heading_small slds-m-bottom_xx-small">{!v.activity.Name}</h3>
+                    </a>
+
+
+           		<div class="slds-card__body slds-card__body_inner">
+	       			<lightning:inputField fieldName="Name" disabled="true"/>
+        			<lightning:inputField fieldName="Media_Type__c" />
+        			<lightning:inputField fieldName="Start_Date__c" />
+        			<lightning:inputField fieldName="End_Date__c" />
+                   <lightning:inputField fieldName="PlannedspendforActivity__c" />
+                    <!-- <lightning:inputField fieldName="ActualspendforActivity__c" /> -->
+        			<lightning:inputField fieldName="Status__c" disabled="true"/>
+        			<lightning:inputField fieldName="Is_Mandatory_Activity__c" />
+
+            		<lightning:button class="slds-m-top_small" variant="brand" type="submit" name="update" label="{!$Label.c.LC_COOP_Update}" />   
+                    <c:SubmitRecordForApproval recordId="{!v.activity.Id}" communityUserId="{!v.communityUserId}" enableApproval="{!and(v.activity.Status__c=='Activity Created', v.activity.Has_Attachment__c==true)}" />
+            	</div>
+			</lightning:recordEditForm> 
+
+</aura:component>

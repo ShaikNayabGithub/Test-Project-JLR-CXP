@@ -1,0 +1,49 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 16/10/2019.
+ -->
+
+<!-- Activity Time Line -->
+<template>
+    <div>Tasks</div>
+
+    <div class="slds-grid slds-wrap wrapper">
+
+        <!-- First Row -->
+        <div class="slds-col slds-size--12-of-12 jlr-headings">
+            <span class="jlr-h4">Activity TimeLine</span>
+        </div>
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12"><h4>Tasks</h4></div>
+            <div class="slds-col slds-size--4-of-12">Date</div>
+            <div class="slds-col slds-size--4-of-12">Type</div>
+            <div class="slds-col slds-size--4-of-12">Subject</div>
+            <div class="slds-col slds-size--12-of-12">
+                <template for:each={tasks} for:item="task">
+                    <c-activity-item key={task.Id} activity={task}></c-activity-item>
+                </template>
+            </div>
+        </div>
+
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12"><h4>Events</h4></div>
+            <div class="slds-col slds-size--4-of-12">Date</div>
+            <div class="slds-col slds-size--4-of-12">Type</div>
+            <div class="slds-col slds-size--4-of-12">Subject</div>
+            <div class="slds-col slds-size--12-of-12">
+                <template for:each={events} for:item="event">
+                    <c-activity-item key={event.Id} activity={event}></c-activity-item>
+                </template>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="slds-col slds-size--12-of-12 jlr-row-dark">
+            <span class="jlr-h5">Upcoming & Overdue</span>
+        </div>
+
+        <!-- Third Row -->
+
+    </div>
+</template>

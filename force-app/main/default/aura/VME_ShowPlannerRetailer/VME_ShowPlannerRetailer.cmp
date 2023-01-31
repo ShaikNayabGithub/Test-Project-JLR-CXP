@@ -1,0 +1,52 @@
+<!--
+||      Name : VME_ShowPlannerRetailer.cmp
+||      Author: Sumit Kumar
+||      Purpose: VME Planner component will show all the Retail Based Scheme per Parent L3 VME Campaign
+||      Created Date : 05/06/2018
+||      Modified By: <Your name>
+||      Modified Date : Date
+||      Reason : <your reason>
+-->
+<aura:component>
+        <aura:attribute name="dealerList" type="VME_Schemes__c[]" />
+        <aura:attribute name="isOpenComp" type="boolean" default="false" />
+        <aura:if isTrue="{!v.isOpenComp}">
+                <div class="demo-only" style="height: 100%;">
+                        <section class="slds-modal slds-fade-in-open">
+                                <div class="slds-modal__container ModalCss">
+                                        <header class="slds-modal__header">
+                                                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"> Retailer List </h2>
+                                        </header>
+                                        <div class="slds-modal__content slds-p-around_medium">
+                                                <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+                                                        <div aura:id="ModalDialogPlaceholderPlanner" />
+                                                        <table class="slds-table slds-table_cell-buffer slds-table--col-bordered">
+                                                                <thead class="slds-cell-buffer_left tableHeader">
+                                                                        <tr class="slds-line-height_reset slds-text-title_caps">
+                                                                                <th class="slds-cell-buffer_left tableHeader">
+                                                                                        <div class="slds-truncate " title="Retailer Name">Retailer Name</div>
+                                                                                </th>
+                                                                                <th class="slds-cell-buffer_left tableHeader">
+                                                                                        <div class="slds-truncate " title="Retailer Name">Retailer Code</div>
+                                                                                </th>
+                                                                        </tr>
+                                                                </thead>
+                                                                <aura:iteration items="{!v.dealerList}" var="exisObj">
+                                                                        <tr class="border_bottom">
+                                                                                <td style="text-align:left !Important"><a href="{!'/lightning/r/Account/'+exisObj.VME_Retailer__r.Id+'/view'}" target="_blank" tabindex="-1">{!exisObj.VME_Retailer__r.Name}</a></td>
+                                                                                <td class="slds-cell-buffer_left" style="text-align:left !Important">{!exisObj.VME_Retailer__r.Dealer_CI_Code__c}</td>
+                                                                        </tr>
+                                                                </aura:iteration>
+                                                        </table>
+                                                </div>
+                                        </div>
+                                        <footer class="slds-modal__footer">
+                                                <lightning:button variant="neutral" label="Close" title="Close" onclick="{! c.closeMe}" />
+                                        </footer>
+                                </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+        </aura:if>
+</aura:component>

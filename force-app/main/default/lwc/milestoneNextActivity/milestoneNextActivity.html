@@ -1,0 +1,89 @@
+<!--
+ - Created by caleb on 30/01/2020.
+ -->
+
+<!-- Milestone Next Activity -->
+<template>
+    <div class="slds-grid slds-wrap">
+
+        <!--Activity Selection-->
+        <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+            <c-milestone-radio-button-group
+                    radio-group-name="Select Activity Type"
+                    options={activityTypes}
+                    selected-value={currentActivity}
+                    onvaluechange={handelEventTaskChange}>
+            </c-milestone-radio-button-group>
+        </div>
+
+        <!--Related Stage-->
+        <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+            <c-milestone-drop-down
+                    class="input-milestone-dropdown"
+                    placeholder=" - select - "
+                    options={milestones}
+                    dropdown-name="Related Stage"
+                    onvaluechange={handelMilestoneChange}>
+            </c-milestone-drop-down>
+        </div>
+
+        <template if:true={isTask}>
+            <!--Task Due Date-->
+            <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-date-picker
+                        class="input-due-date"
+                        date-picker-name="Due Date"
+                        date={taskDueDate}
+                        onvaluechange={handelTaskDueDateChange}>
+                </c-milestone-date-picker>
+            </div>
+        </template>
+        <template if:false={isTask}>
+            <!--Event Date Pickers-->
+            <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-datetime-picker
+                        class="input-event-start"
+                        date-picker-name="Event Start Datetime"
+                        date-time={eventStartDate}
+                        onvaluechange= {handelEventStartDateChange}>
+                </c-milestone-datetime-picker>
+            </div>
+
+            <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-datetime-picker
+                        class="input-event-end"
+                        date-picker-name="Event End Datetime"
+                        date-time={eventEndDate}
+                        onvaluechange={handelEventEndDateChange}>
+                </c-milestone-datetime-picker>
+            </div>
+        </template>
+
+        <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+            <c-milestone-long-text-area
+                    text-area-name="Comments"
+                    text={commentText}
+                    onvaluechange={handelCommentChange}>
+            </c-milestone-long-text-area>
+        </div>
+
+        <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+            <c-milestone-checkbox
+                    checkbox-name="Add Reminder?"
+                    is-checked={doSetReminder}
+                    onvaluechange={handelReminderCheckBoxChange}>
+            </c-milestone-checkbox>
+        </div>
+
+        <template if:true={doSetReminder}>
+            <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-datetime-picker
+                        class="input-reminder-date"
+                        date-picker-name="Reminder Date"
+                        datetime={reminderDate}
+                        onvaluechange={handelReminderDateChange}>
+                </c-milestone-datetime-picker>
+            </div>
+        </template>
+    </div>
+</template>

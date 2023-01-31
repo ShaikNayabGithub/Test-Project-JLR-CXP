@@ -1,0 +1,25 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="Title" type="String" default="IMPORTANT INFORMATION (FAQ)"/>
+    <aura:attribute name="Description" type="String"/>
+    <aura:attribute name="Link_label" type="String" default="LINK TO FAQ PAGE"/>
+    <aura:attribute name="ImgURL" type="String"/>
+    <aura:attribute name="AWSUrl" type="String"/>
+    <aura:attribute name="CommunityUrl" type="String"/>
+    <div class="section">
+        <div class="media-column-blocks media-column-blocks--alternate">
+            <div class="media-column-block">
+                <div class="media-column-block__media">
+                    <img class="pic" src="{!v.AWSUrl+v.ImgURL}" />
+                </div>            
+                <div class="media-column-block__content">
+                    <h2 class="media-column-block__heading">{!v.Title}</h2>
+            		<aura:unescapedHtml value="{!v.Description}"/>
+                    <div class="media-column-block__cta">
+                        <a href="{!'/'+v.CommunityUrl+'/s/faq'}" class="button">{!v.Link_label}</a>
+					</div>
+				</div>
+            </div>
+		</div>
+	</div>
+</aura:component>

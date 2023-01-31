@@ -1,0 +1,9 @@
+.THIS .ModalCss{
+    max-width: 70rem !important;
+    width:33% !important;
+   /* overflow-y: scroll !important;*/
+}
+.THIS .ModalCss2{
+    max-width: 70rem !important;
+    width:44% !important;
+}

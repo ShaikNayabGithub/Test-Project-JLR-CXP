@@ -1,0 +1,212 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<aura:attribute name="CommunityUrl" type="String"/>
+    
+    <aura:attribute name="Title" type="String" default="Driving tips"/>
+    <aura:attribute name="Description" type="String"/>
+    <aura:attribute name="Video1URL" type="String"/>
+    <aura:attribute name="Video1Type" type="String"/>
+    <aura:attribute name="Video1Title" type="String"/>
+    <aura:attribute name="VideoImage1" type="String"/>
+    <aura:attribute name="Image1URL" type="String"/>
+    <aura:attribute name="Image1Title" type="String"/>
+    <aura:attribute name="Video2URL" type="String"/>
+    <aura:attribute name="Video2Title" type="String"/>
+    <aura:attribute name="Video2Type" type="String"/>
+    <aura:attribute name="VideoImage2" type="String"/>
+    <aura:attribute name="Image2URL" type="String"/>
+    <aura:attribute name="Image2Title" type="String"/>
+    <aura:attribute name="Video3URL" type="String"/>
+    <aura:attribute name="Video3Title" type="String"/>
+    <aura:attribute name="Video3Type" type="String"/>
+    <aura:attribute name="VideoImage3" type="String"/>
+    <aura:attribute name="Image3URL" type="String"/>
+    <aura:attribute name="Image3Title" type="String"/>
+    <aura:attribute name="Link_label" type="String" default="More videos"/>
+    
+	<aura:attribute name="AWSUrl" type="String"/>
+    
+    <aura:attribute name="panevideo1" type="String"/>
+    <aura:attribute name="paneimage1" type="String"/>
+    <aura:attribute name="panevideoimage1" type="String"/>
+    <aura:attribute name="panevideo2" type="String"/>
+    <aura:attribute name="paneimage2" type="String"/>
+    <aura:attribute name="panevideoimage2" type="String"/>
+    <aura:attribute name="panevideo3" type="String"/>
+    <aura:attribute name="paneimage3" type="String"/>
+    <aura:attribute name="panevideoimage3" type="String"/>
+    
+     <div class="section section--secondary">
+            <div class="section__header">
+                <h4 class="section__heading">{!v.Title}</h4>
+                <div class="section__intro"><aura:unescapedHtml value="{!v.Description}"/></div>
+            </div>
+        <div class="grid">
+            <div class="grid__row">
+                <div class="grid__col span-12 large--span-10 large--offset-1">
+                    <div class="grid__row">
+                        <aura:if isTrue="{!v.panevideo1}">
+                        <div class="grid__col span-4 ">
+                             <div class="media-container-wrapper">
+                             	<div class="media-container">
+                                	<a href="#modal_video-carousel" class="media-container__media-play-button   js-modal-inline--video" data-video-index="0">Play video</a>                           
+                                		               
+                                    <aura:if isTrue="{!v.panevideoimage1}">
+                						<img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}"/>
+                						<aura:set attribute="else">
+                        					<img src="{!v.AWSUrl+v.VideoImage1}"/>
+    									</aura:set>
+                					</aura:if>            
+                                    
+                                    <!--<img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}" />-->                            
+                                 </div>
+                                 <p class="media-container__media-caption   ">{!v.Video1Title}</p>
+                             </div>     
+                        </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.paneimage1}">
+                            <div class="grid__col span-4 ">
+                                 <div class="media-container-wrapper">
+                                      <div class="media-container">
+                                            <img class="media-container__media-poster" src="{!v.AWSUrl+v.Image1URL}" />
+                                        </div>
+                                     <p class="media-container__media-caption   ">{!v.Image1Title}</p>
+                                 </div>     
+                        	</div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.panevideo2}">
+                            <div class="grid__col span-4">
+                                 <div class="media-container-wrapper">
+                                 	<div class="media-container">
+                                    	<a href="#modal_video-carousel" class="media-container__media-play-button   js-modal-inline--video" data-video-index="1">Play video</a>                           
+                                    	
+                                        <aura:if isTrue="{!v.panevideoimage2}">
+                						<img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}"/>
+                						<aura:set attribute="else">
+                        					<img src="{!v.AWSUrl+v.VideoImage2}"/>
+    									</aura:set>
+                						</aura:if>                               
+                                        <!--<img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}" />-->
+                                 	</div>
+                                     <p class="media-container__media-caption   ">{!v.Video2Title}</p>
+                                 </div>
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.paneimage2}">
+                            <div class="grid__col span-4 ">
+                                 <div class="media-container-wrapper">
+                                 	<div class="media-container">
+                                    	<img class="media-container__media-poster" src="{!v.AWSUrl+v.Image2URL}" />
+                                 	</div>
+                                     <p class="media-container__media-caption   ">{!v.Image2Title}</p>
+                                 </div>     
+                        	</div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.panevideo3}">
+                            <div class="grid__col span-4">
+                                 <div class="media-container-wrapper">
+                                      <div class="media-container">
+                                      	<div class="media-container">
+                                        	<a href="#modal_video-carousel" class="media-container__media-play-button   js-modal-inline--video" data-video-index="2">Play video</a>                           
+                                            <aura:if isTrue="{!v.panevideoimage3}">
+                								<img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}"/>
+                								<aura:set attribute="else">
+                        						<img src="{!v.AWSUrl+v.VideoImage3}"/>
+    											</aura:set>
+                							</aura:if>  
+                                            
+                                            <!--<img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}" />-->
+                                     	</div>
+                                     </div>
+                                     <p class="media-container__media-caption   ">{!v.Video3Title}</p>
+                                 </div>
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.paneimage3}">
+                            <div class="grid__col span-4 ">
+                                 <div class="media-container-wrapper">
+                                      <div class="media-container">
+                                      	<img class="media-container__media-poster" src="{!v.AWSUrl+v.Image3URL}" />
+                                      </div>
+                                     <p class="media-container__media-caption   ">{!v.Image3Title}</p>
+                                 </div>     
+                        	</div>
+                        </aura:if>
+                    </div>
+                </div>
+            </div><!-- .grid__row -->
+
+            <div class="section__footer">
+                <a href="{!'/'+v.CommunityUrl+'/s/driving-tips'}" class="button">{!v.Link_label}<i class="button-icon button-icon--right icon icon--chevron-right"></i></a>
+            </div>
+        </div><!-- .section -->
+    </div>
+   <div id="modal_video-carousel" class="modal modal--inline modal--dark mfp-hide">
+        <div class="modal__inner">
+            <div class="js-carousel-video carousel  carousel--video js-no-dots loading">
+                <aura:if isTrue="{!v.panevideo1}">
+                    <div class="js-carousel-pane">
+                        <p class="carousel-pane__title">{!v.Video1Title}</p>
+                        <div class="carousel-pane__video">
+                             <div class="media-container-wrapper">
+                                 <div class="media-container">
+                                     <a href="#" class="media-container__media-play-button js-play-button  media-play-button--with-caption " >Play video</a>
+                                     <img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}" />
+                                     <div class="video-player-wrapper">
+                                     	<video src="{!v.AWSUrl+v.Video1URL}" class="video-player" aura:id="{!globalId+'videoId'}" id="video-1"  preload="none" >	
+                                            Your browser does not support HTML5 video.
+                                     	</video>
+                                     </div>
+                                 </div>
+                                 <p class="media-container__media-caption media-caption--center-caption  media-caption--media-scroll js-auto-scroll ">This is a caption</p>
+                             </div>  
+                        </div>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.panevideo2}">
+                    <div class="js-carousel-pane">
+                        <p class="carousel-pane__title">{!v.Video2Title}</p>
+                        <div class="carousel-pane__video">
+                             <div class="media-container-wrapper">
+                                  <div class="media-container">
+                                     <a href="#" class="media-container__media-play-button js-play-button  media-play-button--with-caption " >Play video</a>
+                                     <img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}" />
+                                        <div class="video-player-wrapper">
+                                            <video src="{!v.AWSUrl+v.Video2URL}" class="video-player" aura:id="{!globalId+'videoId'}" id="video-2"  preload="none">
+                                                Your browser does not support HTML5 video.
+                                            </video>
+                                        </div>     
+                                 </div>
+                                 <p class="media-container__media-caption media-caption--center-caption  media-caption--media-scroll js-auto-scroll ">This is a caption</p>
+                             </div> 
+                        </div>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.panevideo3}">
+                    <div class="js-carousel-pane">
+                        <p class="carousel-pane__title">{!v.Video3Title}</p>
+                        <div class="carousel-pane__video">
+                             <div class="media-container-wrapper">
+                                  <div class="media-container">
+                                     <a href="#" class="media-container__media-play-button js-play-button  media-play-button--with-caption " >Play video</a>
+                                     <img class="media-container__media-poster" src="{!'/'+v.CommunityUrl+'/resource/GraphicResources/poster.jpg'}" />
+                                      <div class="video-player-wrapper">
+                                          <video src="{!v.AWSUrl+v.Video3URL}" class="video-player" aura:id="{!globalId+'videoId'}" id="video-3"  preload="none">
+                                              Your browser does not support HTML5 video.
+                                          </video>
+                                      </div>     
+                                 </div>
+                                 <p class="media-container__media-caption media-caption--center-caption  media-caption--media-scroll js-auto-scroll ">This is a caption</p>
+                             </div>    
+                        </div>
+                    </div>
+                </aura:if>
+                <div class="carousel-controls">
+                    <div class="carousel-controls__inner js-carousel-controls"></div>
+                </div>
+            </div>
+    	</div>
+    </div> 
+    
+</aura:component>

@@ -1,0 +1,182 @@
+<!--
+ - Created by caleb on 30/01/2020.
+ -->
+
+<!-- Milestone Event Complete -->
+<template>
+
+    <!--Screen One-->
+    <template if:true={isOnFirstScreen}>
+        <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+            <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-checkbox
+                        class="input-mark-complete"
+                        checkbox-name="Do you want to mark this activity as complete?"
+                        onvaluechange={handelDoMarkCompleteChange}
+                        is-checked={doMarkComplete}>
+                </c-milestone-checkbox>
+            </div>
+            <div class="slds-col slds-size--12-of-12 slds-p-bottom_small">
+                <c-milestone-checkbox if:true={doShowCloseOpportunityCheckBox}
+                        class="input-close-opportunity"
+                        checkbox-name="Do you want to close this Opportunity?"
+                        onvaluechange={handelDoCloseOpportunityChange}
+                        is-checked={doCloseOpportunity}>
+                </c-milestone-checkbox>
+            </div>
+            <div class="slds-col slds-size--12-of-12">
+                <!--Errors-->
+                <template for:each={errors} for:item="item">
+                    <span key={item.id} class="jlr-errors">{item.message}</span>
+                </template>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-navigation
+                        back-text="Back"
+                        next-text="Next"
+                        onbackclick={handelClickCancel}
+                        onnextclick={handelClickNext}>
+                </c-milestone-navigation>
+            </div>
+        </div>
+    </template>
+
+    <!--Screen Two-->
+    <template if:true={isOnSecondScreen}>
+        <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-next-activity
+                        class="next-activity"
+                        milestones={nextMilestones}>
+                </c-milestone-next-activity>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-navigation
+                        back-text="Back"
+                        next-text="Finish"
+                        onbackclick={handelClickBack}
+                        onnextclick={handelClickFinishCreateEvent}>
+                </c-milestone-navigation>
+            </div>
+        </div>
+    </template>
+
+    <!--Screen Three-->
+    <template if:true={isOnThirdScreen}>
+        <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-close-opportunity
+                        opportunity-email={opportunityEmail}
+                        opportunity-id={opportunityId}
+                        class="close-opportunity">
+                </c-milestone-close-opportunity>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-navigation
+                        back-text="Back"
+                        next-text="Next"
+                        onbackclick={handelClickBack}
+                        onnextclick={handelClickFinishCloseOpp}>
+                </c-milestone-navigation>
+            </div>
+        </div>
+    </template>
+
+    <!--Screen four-->
+    <template if:true={isOnForthScreen}>
+        <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-close-opp-confirmation-screen
+                        class="close-opportunity-confirmation">
+                </c-milestone-close-opp-confirmation-screen >
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-navigation
+                        back-text="Back"
+                        next-text="Yes"
+                        onbackclick={handelClickBack}
+                        onnextclick={handelClickFinishCloseOppConfirmation}>
+                </c-milestone-navigation>
+            </div>
+        </div>
+    </template>
+
+    <!--Screen five-->
+    <template if:true={isOnFifthScreen}>
+        <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-create-new-confirmation-screen
+                        class="new-activity-confirmation">
+                </c-milestone-create-new-confirmation-screen>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-navigation
+                        back-text="No"
+                        next-text="Yes"
+                        onbackclick={handelClickCancel}
+                        onnextclick={handelClickNextGotoCreateActivity}>
+                </c-milestone-navigation>
+            </div>
+        </div>
+    </template>
+
+    <template if:true={isOnSixthScreen}>
+        <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-asset-already-assigned
+                        opportunity-list={assetAlreadyAssignedModalTable}>
+                </c-milestone-asset-already-assigned>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-navigation
+                        back-text="Cancel"
+                        next-text="Proceed"
+                        onbackclick={handelClickCancel}
+                        onnextclick={assetAlreadyAssignedModalProceed}>
+                </c-milestone-navigation>
+            </div>
+        </div>
+    </template>
+
+    <!-- Screen 7 -->
+    <template if:true={isOnSeventhScreen}>
+        <div class="slds-grid slds-wrap slds-p-around_medium jlr-milestone-complete-wrapper">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-update-address
+                        class="update-address"
+                        opportunity-id={opportunityId}>
+                </c-milestone-update-address>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--12-of-12">
+                <c-milestone-navigation
+                        back-text="Cancel"
+                        next-text="Next"
+                        onbackclick={handelClickCancel}
+                        onnextclick={updateAddressInfoBeforeClosingOpportunity}>
+                </c-milestone-navigation>
+            </div>
+        </div>
+    </template>
+
+    <!--Loading-->
+    <template if:true={isLoading}>
+        <div class="slds-col slds-size--4-of-12">
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </template>
+
+</template>

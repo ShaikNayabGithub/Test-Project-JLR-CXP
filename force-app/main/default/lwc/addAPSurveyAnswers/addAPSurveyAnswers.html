@@ -1,0 +1,142 @@
+<template>
+    <lightning-card>   
+    <div class="modal-header slds-modal__header slds-size_1-of-1" style="background: whitesmoke; border-radius:5px; ">
+        <h4 class="title slds-text-heading--medium"><b>Add Answers to Survey Question ({name})</b></h4>
+    </div>
+       <div class="slds-card">
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12"
+                padding="around-small">
+                <lightning-accordion allow-multiple-sections-open active-section-name="">
+                    <lightning-accordion-section name="Questions" label="Questions">
+                        <ul class="slds-list_ordered" style="line-height: 2;">
+                            <li>English: <b>{English_Question}</b></li>
+                            <li>Vietnamese: <b>{Vietnamese_Question}</b></li>
+                            <li>French: <b>{French_Question}</b></li>
+                            <li>Mongolian: <b>{Mongolian_Question}</b></li>
+                            <li>Chinese: <b>{Chinese_Question}</b></li>
+                            <li>Cambodian: <b>{Cambodian_Question}</b></li>
+                            <li>Thai: <b>{Thai_Question}</b></li>
+                            <li>Burmese: <b>{Burmese_Question}</b></li>
+                            <li>Laos: <b>{Laos_Question}</b></li>
+                        </ul>
+                    </lightning-accordion-section>
+                </lightning-accordion>
+                <hr style="margin: 0;" />
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12"
+                padding="around-small">
+                <div class="modal-header slds-modal__header slds-size_1-of-1"
+                    style="background: whitesmoke; border-radius:5px;">                   
+                    <lightning-input type="number" label={choiceLabel} value={defDynamicrow} onkeyup={handleAddDynamicRows}> </lightning-input>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12"
+                padding="around-small">
+                <template for:each={itemList} for:item="item" for:index="index">
+                    
+                        <lightning-record-edit-form key={item.id}  object-api-name="AP_Survey_Answer__c">
+                           <table  class="slds-box">
+                        <tr class="slds-hint-parent">    
+                            
+                            <td data-label="Sr No">
+                                <div class="slds-truncate" title="Sr No" style="padding: 15px;">                                    
+                                    {item.id}
+                                    <div style="display: none;">
+                                        <lightning-input-field field-name="Question__c" value={questionId} variant="label-stacked" ></lightning-input-field> 
+                                    </div>
+                                </div>
+                            </td>
+                            <template if:true={isStarRating}>
+                            <td data-label="Text for Star">
+                                <div class="slds-truncate" title="Text for Star">                                    
+                                    <lightning-input-field field-name="Text_for_Star__c" variant="label-stacked" ></lightning-input-field>
+                                    
+                                </div>
+                            </td>
+                            </template>
+                            <td data-label="English Answer">
+                                <div class="slds-truncate" title="English Answer">                                    
+                                    <lightning-input-field field-name="English__c" variant="label-stacked" required></lightning-input-field>
+                                    
+                                </div>
+                            </td>
+                            <td data-label="Vietnamese Answer">
+                                <div class="slds-truncate" title="Vietnamese Answer">
+                                    <lightning-input-field field-name="Vietnamese__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="French Answer">
+                                <div class="slds-truncate" title="French Answer">
+                                    <lightning-input-field field-name="French__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="Mongolian Answer">
+                                <div class="slds-truncate" title="Mongolian Answer">
+                                    <lightning-input-field field-name="Mongolian__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="Chinese Answer">
+                                <div class="slds-truncate" title="Chinese Answer">
+                                    <lightning-input-field field-name="Chinese__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+
+                            <td data-label="Cambodian Answer">
+                                <div class="slds-truncate" title="Cambodian Answer">
+                                    <lightning-input-field field-name="Cambodian__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="Thai Answer">
+                                <div class="slds-truncate" title="Thai Answer">
+                                    <lightning-input-field field-name="Thai__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="Burmese Answer">
+                                <div class="slds-truncate" title="Burmese Answer">
+                                    <lightning-input-field field-name="Burmese__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="Laos Answer">
+                                <div class="slds-truncate" title="Laos Answer">
+                                    <lightning-input-field field-name="Laos__c" variant="label-stacked" required></lightning-input-field>
+                                </div>
+                            </td>
+
+                            <td data-label="Dependent Question">
+                                <div class="slds-truncate" title="Dependent Question">
+                                    <lightning-input-field field-name="Dependent_Question__c" variant="label-stacked"></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="Sort Order">
+                                <div class="slds-truncate" title="Sort Order">
+                                    <lightning-input-field field-name="Sort_Order__c" variant="label-stacked"></lightning-input-field>
+                                </div>
+                            </td>
+                            <td data-label="Score">
+                                <div class="slds-truncate" title="Score">
+                                    <lightning-input-field field-name="Score__c" variant="label-stacked"></lightning-input-field>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    </lightning-record-edit-form>   
+                    </template> 
+                    <lightning-layout>
+                        <div class="slds-align_absolute-center slds-p-top_medium">
+                            <lightning-button label="Cancel" slot="actions" onclick={handleCancelAnswers} class="slds-m-left_x-small">                                
+                            </lightning-button>
+                            <lightning-button  onclick={handleSubmitAnswers} name="savenew" label="Save & New" class="slds-m-left_x-small">
+                            </lightning-button>
+                            <lightning-button variant="brand" onclick={handleSubmitAnswers} name="save" label="Save" class="slds-m-left_x-small">
+                            </lightning-button>
+                            
+                        </div>
+                    </lightning-layout>                                  
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+    </lightning-card>
+</template>

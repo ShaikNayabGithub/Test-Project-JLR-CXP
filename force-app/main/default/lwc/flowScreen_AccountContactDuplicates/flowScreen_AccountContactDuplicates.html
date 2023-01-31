@@ -1,0 +1,18 @@
+<!--
+ - Created by Ethan Sargent on 26/3/20.
+ -->
+
+<!-- Flow Screen Account Contact Duplicates -->
+<template>
+
+    <c-add-opportunity-dedupe-account-table
+            account-data={accountData}
+            oncontactselected={handleContactSelected}
+    ></c-add-opportunity-dedupe-account-table>
+    <p class="slds-text-align--center"> Or,</p><br>
+    <div style="width: 100%">
+        <div class="slds-align_absolute-center">
+            <button class="slds-button slds-button_brand" onclick={createNewHandler}>Create New Account and Contact</button>
+        </div>
+    </div>
+</template>

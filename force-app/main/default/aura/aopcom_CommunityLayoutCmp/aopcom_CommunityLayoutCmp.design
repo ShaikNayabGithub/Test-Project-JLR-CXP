@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="Logo_source" label="Logo source" />
+    <design:attribute name="AmendBooking_link" label="Amend booking link" />
+</design:component>

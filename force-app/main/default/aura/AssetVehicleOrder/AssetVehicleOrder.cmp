@@ -1,0 +1,15 @@
+<aura:component controller="AssetVehicleOrderApiController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="hasError" type="Boolean" />
+    <aura:attribute name="ShowSpinner" type="Boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.invokeVechicleOrderApi}"/>
+    <aura:if isTrue="{!v.ShowSpinner}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    <center><img src="{!$Resource.CXP_logo_lightning_home_page}"/></center>
+    <hr/>
+    <center><div class="slds-card slds-text-heading_medium"><aura:unescapedHtml value="{!v.message}" /></div><br/>
+        <lightning:button variant="brand" label="Ok" onclick="{! c.handleClick }" />
+    </center>
+</aura:component>

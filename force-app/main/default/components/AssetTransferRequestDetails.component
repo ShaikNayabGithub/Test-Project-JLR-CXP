@@ -1,0 +1,16 @@
+<apex:component controller="AssetApprovalReject" access="global" >
+    <apex:attribute name="assetId" assignTo="{!assetIds}" type="String" description="Id of the cont"/>
+    <!--<br />
+    {!URL}
+    <br />
+    {!$label.Stock_Search_Requesting_Dealer} <br />
+    {!OriginalRequestor.CompanyName} <br />
+    <br />
+    {!$label.Stock_Search_Sales_Exec} <br/>
+    {!OriginalRequestor.LastName}, {!OriginalRequestor.FirstName} <br />
+    <br />
+
+    {!HTMLencode(OriginalApprovalRequest.Comments)}
+    
+    -->
+</apex:component>

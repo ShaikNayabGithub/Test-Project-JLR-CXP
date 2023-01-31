@@ -1,0 +1,38 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="aopcom_LocationCmp">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="location" type="String" default=" " />
+    <aura:attribute name="location_label" type="String" />
+    <aura:attribute name="time" type="String" />
+    <aura:attribute name="time_label" type="String" />
+    <aura:attribute name="date" type="String" />
+    <aura:attribute name="date_label" type="String" />
+    <aura:attribute name="link_label" type="String" />
+    
+    <aura:attribute name="AWSUrl" type="String" />
+    <aura:attribute name="CommunityUrl" type="String" />
+    
+    
+    <div class="section">
+    	<div class="section section--secondary section--fill">
+            <div class="grid">
+                <ul class="event-details" >
+                    <li>
+                        <p class="event-details__label">{!v.location_label}:</p>
+                        <p class="event-details__value">{!v.location}</p>
+                    </li>
+                    <li>
+                        <p class="event-details__label">{!v.date_label}:</p>
+                        <p class="event-details__value">{!v.date}</p>
+                    </li>
+                    <li>
+                        <p class="event-details__label">{!v.time_label}:</p>
+                        <p class="event-details__value">{!v.time}</p>
+                    </li>
+                </ul>
+                <div class="section__footer">
+                    <a href="#modal_amend-booking" class="button js-modal-inline">{!v.link_label}<i class="button-icon button-icon--right icon icon--chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>	
+</aura:component>

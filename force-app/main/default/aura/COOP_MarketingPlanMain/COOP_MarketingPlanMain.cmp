@@ -1,0 +1,413 @@
+<aura:component controller ="COOP_MarketingPlanMainController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:attribute name="Results" type="List"/>    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="force:refreshView" action="{! c.doInit}" />
+    
+    
+    <!-- SHOW LOADING SPINNER--> 
+    <div aura:id="Id_spinner" class="slds-spinner_container">
+    <lightning:spinner variant="brand" size="large" class="" />
+    </div>
+    <aura:attribute name="selectedYear" type="String"/>   
+    <aura:attribute name="selectedQuarter" type="String"/> 
+    <aura:attribute name="selectedBrand" type="String" default="Jaguar Land Rover"/> 
+    <aura:attribute name="selectedModel" type="String"/> 
+    <aura:attribute name="selectedRetailer" type="String"/> 
+    <aura:attribute name="modelMap" type="Object"/>  
+    <aura:attribute name="currentFYDetails" type="Object"/> 
+    <aura:attribute name="modelList" type="List"/> 
+    <aura:attribute name="retailerList" type="List"/> 
+    <aura:attribute name="currentUser" type="User"/> 
+    <aura:attribute name="showActivityModal" type="Boolean" default="false"/> 
+    <aura:attribute name="showSubmitModal" type="Boolean" default="false"/> 
+    <aura:attribute name="showApprovalModal" type="Boolean" default="false"/> 
+    <aura:attribute name="showconfirmModal" type="Boolean" default="false"/>
+    <aura:attribute name="showCancelModal" type="Boolean" default="false"/>
+    <aura:attribute name="showCommentModal" type="Boolean" default="false"/>
+    
+    <aura:attribute name="modalHeading" type="String"/> 
+    <aura:attribute name="campaignId" type="String"/>  
+    <aura:attribute name="activityId" type="String"/>  
+    <aura:attribute name="campaignActivityName" type="String"/> 
+    <aura:attribute name="campaignName" type="String"/>
+    <aura:attribute name="campaignCurency" type="String"/>
+    <aura:attribute name="campaignComments" type="String"/> 
+    <aura:attribute name="activityList" type="CooP_Campaign_Activity__c[]"/> 
+    
+    <aura:handler event="c:PassSelectedValue" action="{!c.setSelectedRetailer}"/>
+    
+    <div class="slds-page-header">        
+        <h1>
+            <span class="slds-page-header__title slds-truncate" title="Marketing Plans">Marketing Plans</span>
+        </h1>        
+    </div>
+    
+    <article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner">            
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <lightning:input aura:id="fyyear" maxlength="5" name="year" label="FY" value="{!v.selectedYear}" onchange="{!c.onYearChange}" pattern="[0-9]{2}-[0-9]{2}" messageWhenPatternMismatch="Please enter correct Year format"/>
+                </div>
+                <div class="slds-col">
+                    <lightning:select name="Quarter" label="Quarter"  value="{!v.selectedQuarter}" disabled="{!v.selectedYear == ''}" onchange="{!c.setQuarter}">
+                        <option value="none">None</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </lightning:select>
+                </div>
+                <div class="slds-col">
+                    <lightning:select name="Brand" label="Brand" onchange="{!c.onBrandChange}" value="{!v.selectedBrand}">
+                        <option value="JLR">Jaguar Land Rover</option>
+                        <option value="Jaguar">Jaguar</option>
+                        <option value="Land Rover">Land Rover</option>
+                    </lightning:select>
+                </div>
+                <div class="slds-col">
+                    <lightning:select aura:id="Model" name="Model" label="Model" value="{!v.selectedModel}" disabled="{!v.selectedBrand == ''}" onchange="{!c.getCampaigns}">
+                        <option value="none">All</option>
+                        <aura:iteration items="{!v.modelList}" var="model" >
+                            <option value="{!model}">{!model}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+                <div class="slds-col">
+                    <c:COOPSearchablePickList totalList="{!v.retailerList}" selectedValue="{!v.selectedRetailer}" disabled ="{!v.currentUser.ContactId != null}"/>
+                </div>
+            </div>
+        </div>
+    </article>
+    <aura:iteration items="{!v.Results}" var="r" >        
+        <lightning:messages />
+        <article class="slds-card slds-m-top_x-small">
+            <div class="slds-card__header slds-page-header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-campaign" title="campaign">
+                            <lightning:icon iconName="standard:campaign" alternativeText="Campaign" title="Campaign" />
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-page-header__name-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Campaigns">
+                                <span>
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Campaigns">
+                                        <span onclick="{!c.redirectTorecord}" id = "{!r.Id}">{!r.Name}</span>
+                                    </a>
+                                </span>
+                            </a>
+                            <span class="slds-button slds-button_outline-brand noPointerEvents slds-m-left_x-small" >{!r.Status}</span>
+                        </h2>
+                    </div>
+                    <div class="slds-button-group" role="group">
+                        <c:COOPCampaignApproverDisplay campaignId="{!r.Id}" /> 
+                        <aura:if isTrue="{!and(r.ProcessInstances == null, or(r.Status =='Plan Created',r.Status=='Campaign Needs Modification'))}">
+                            <!-- <button class="slds-button slds-button_neutral">Submit</button> -->
+                            <lightning:button label="Submit" title="Submit" name="{!r.Id}" onclick="{! c.showSubmitModal }"/>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!and(r.ProcessInstances != null , v.currentUser.ContactId == null )}">
+                            <!-- <button class="slds-button slds-button_neutral">Approve/Reject</button> -->
+                            <lightning:button label="Approve/Reject" title="Approve/Reject" name="{!r.Id}" onclick="{! c.showApprovalModal }"/>
+                        </aura:if><!-- <button class="slds-button slds-button_neutral" id="{!r.Id}" onclick="{!c.showActivityModal}">Create Activity</button> -->
+                        <lightning:button label="Create Activity" title="Create Activity" name="{!r.Id+'-$'+r.Name+'-$'+r.CurrencyIsoCode}" onclick="{! c.showActivityModal }"/>
+                        <lightning:button label="Comment" title="Comment" name="{!r.Id}" onclick="{! c.showCommentModal }"/>
+                        
+                    </div>
+                </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_11-of-12">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Quarter Budget" aurs:id="QuarterBudget" value = "{!r.Retailer_Quarter_Budget__c}" variant="label-stacked"  disabled ="{!v.currentUser.ContactId != null}" fieldLevelHelp="Budget allocated" />
+                            </div>
+                             <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Carried Forward Budget" aurs:id="CarryForwardedBudget" value = "{!r.Carry_Forwarded_Budget__c}" fieldLevelHelp="Leftover budget from previous quarter" variant="label-stacked" disabled="true"/>
+                            </div>
+                             <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Total Adjustment" value = "{!r.COOP_Adjustment_Amount__c}" variant="label-stacked" fieldLevelHelp="Total adjustment amount" disabled="true"/>
+                            </div>
+                            <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Total Penalty" value = "{!r.Total_Penalty_Amount__c}" variant="label-stacked" disabled="true" fieldLevelHelp="Cumulative penalty of all activities"/>
+                            </div>
+                             <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Final Eligible Budget" value = "{!r.Final_Eligible_Budget__c}" variant="label-stacked" fieldLevelHelp=" Quarter Budget + Carried Forward Budget - Total Adjustmnet - Total Penalty" disabled="true"/>
+                            </div> 
+                          </div>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_11-of-12">
+                        <div class="slds-grid">
+                             <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element" >
+                                <lightning:input  type="number" formatter="currency" label="Planned Spend" aurs:id="PlannedSpend" value = "{!r.Planned_spend_to_date_per_campaign__c}" variant="label-stacked" disabled="true" fieldLevelHelp="Cumulative planned spend of all activities" />
+                            </div>
+                             <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Actual Spend" aurs:id="ActualSpend" value = "{!r.coop_Actual_spend_per_campaign__c}" variant="label-stacked" disabled="true" fieldLevelHelp="Cumulative actual spend of all activities" />
+                            </div>
+                            <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Total Claim Amount" aurs:id="TotalClaimAmount" value = "{!r.Total_Claim_Amount__c}" variant="label-stacked" disabled="true" fieldLevelHelp="Total claim of all activities"/>
+                            </div>
+                            <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency" label="Total Approved Claim" aurs:id="TotalAppClaimAmount" value = "{!r.Total_Claim_For_Quarter__c}" variant="label-stacked" disabled="true" fieldLevelHelp="Carried Forward Claim + Total Approved Claim"/>
+                            </div>
+                            <div class="slds-col slds-size_2-of-12 slds-form-element_stacked slds-form-element">
+                                <lightning:input type="number" formatter="currency"  label="Remaining"  aurs:id="Remaining" value = "{!r.COOP_Remaining_Amount__c}" variant="label-stacked" disabled="true" fieldLevelHelp="Final Eligible Budget - Total Claim Amount"/>
+                            </div>
+                      <!--    <div class="slds-col slds-size_3-of-12 slds-form-element_stacked slds-form-element">
+                                <label class="slds-form-element__label slds-no-flex">Actual Budget </label>                        
+                                <lightning:input type="number" formatter="currency" label="Actual Budget in Campaign"  aurs:id="ActualBudget" value = "{!r.COOP_Actual_Budget__c}" variant="label-hidden"  disabled ="{!v.currentUser.ContactId != null}"/>
+                            </div> -->
+                          </div>
+                    </div>
+                    <!-- <div class="slds-col slds-size_3-of-12 slds-form-element_stacked slds-form-element">                      
+                        
+                        <lightning:input  label="Comments" value = "{!r.COOP_Campaign_Comments__c}" variant="label-stacked"  disabled ="{!v.currentUser.ContactId != null}"/>
+                    </div> -->
+                </div>
+                <div class="" style="overflow-x: scroll">
+                    <lightning:tabset selectedTabId="one">
+                        <lightning:tab label="Created/Approved Activities" id="one">
+                            <aura:if isTrue="{!r.Campaign_activities__r != null}"> 
+                                <div class="slds-grid slds-gutters" style="font-weight: bold;">
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Activity Name
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Status
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >
+                                        Business Type
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >
+                                        Activity Type
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Planned Spend
+                                    </div> 
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Actual Spends
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Total Claim
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Start Date
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >End Date
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Activity Description
+                                    </div>
+                                    <!-- <div class="slds-col slds-size_2-of-12 activitybackground" >Brand
+                                    </div> -->
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Name Plate
+                                    </div>
+                                    
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Retailer experiences (Expected)
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Retailer experiences (Actual)
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Expected Number of Leads
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Total Number of Leads
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Penalties
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 activitybackground" >Funnel Category
+                                    </div>
+
+                                </div>
+                                <div style="height:20rem;">
+                                    <aura:iteration items="{!r.Campaign_activities__r }" var="act">
+                                        <div style="padding-top:1rem;">
+                                            <!-- <lightning:recordEditForm recordId="{!act.Id}" objectApiName="CooP_Campaign_Activity__c" aura:id="activity">
+                                                <lightning:messages /> -->
+                                            <div class="slds-grid slds-gutters"  style="overflow: visible !important;">
+                                                <div class="slds-col slds-size_2-of-12"  style="padding-top:1rem;">
+                                                    <aura:if isTrue="{#and(act.Status__c != 'Cancellation Submitted', act.Status__c !='Ready for Approval')}">
+                                                        <lightning:button label="Cancel" name="{!r.Id + '-' +act.Id}" variant="brand" onclick="{! c.showCancelModal }"/>
+                                                        <aura:if isTrue="{!act.Status__c != 'Activity Approved'}">
+                                                        <lightning:button label="Edit" name="{!r.Id + '-$' +act.Id+'-$'+ act.Name+'-$'+r.CurrencyIsoCode}" variant="brand" onclick="{! c.editActivity }"/>
+                                                        </aura:if> 
+                                                        <aura:set attribute="else">
+                                                            Pending Approval
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;">
+                                                    <a href="javascript:void(0);" class="slds-has-flexi-truncate" title="{!act.Name}">
+                                                        <span onclick="{!c.redirectTorecord}" id = "{!act.Id}">{!act.Name}</span>
+                                                    </a>
+                                                    <!-- <lightning:outputField   fieldName="Name" variant="label-hidden" /> -->
+                                                </div>
+                                                <div class="{!if(act.Status__c == 'Cancellation Submitted', 'DesabledClass slds-col slds-size_2-of-12','slds-col slds-size_2-of-12')}">
+                                                    <lightning:select value="{!act.Status__c}" label="status" variant="label-hidden">
+                                                        <option value="{!act.Status__c}">{!act.Status__c}</option>  
+                                                        <aura:if isTrue="{!and(act.Status__c == 'Ready for Approval',v.currentUser.ContactId == null )}">
+                                                            <option value="Activity Needs Modification">Activity Needs Modification</option>
+                                                        	<aura:if isTrue="{!act.Is_Locked__c}">
+                                                            	<option value="Activity Approved">Activity Approved</option>
+                                                            	<option value="Activity Rejected">Activity Rejected</option>
+                                                        	</aura:if>
+                                                        </aura:if>
+                                                        
+                                                        <aura:if isTrue="{!and(act.Status__c == 'Activity Needs Modification', v.currentUser.ContactId != null)}">
+                                                            <option value="Activity Created">Activity Created</option>
+                                                        </aura:if>
+                                                    </lightning:select>
+                                                    <!--  <lightning:input   value="{!act.Status__c}" variant="label-hidden" disabled="true"/> -->
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12"  style="padding-top:1rem;">
+                                                    {!act.Business_Type__c}                                       
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12"   style="padding-top:1rem;"> 
+                                                    {!act.Media_Type__c}
+                                                </div>
+                                                <div class="{!if(act.Status__c == 'Cancellation Submitted' || act.Status__c == 'Ready for Approval', 'DesabledClass slds-col slds-size_2-of-12','slds-col slds-size_2-of-12')}" style="padding-top:1rem;"> 
+                                                    <lightning:input formatter="currency" type="number"   value="{!act.PlannedspendforActivity__c}" variant="label-hidden" disabled="{!and(act.Status__c != 'Activity Created',act.Status__c != 'Activity Needs Modification')}" />
+                                                </div>
+                                                <div class="{!if(act.Status__c == 'Cancellation Submitted' || act.Status__c == 'Ready for Approval', 'DesabledClass slds-col slds-size_2-of-12','slds-col slds-size_2-of-12')}" style="padding-top:1rem;"> 
+                                                    <lightning:input  formatter="currency" type="number" value="{!act.ActualspendforActivity__c}" variant="label-hidden"/>
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;">
+                                                    <lightning:input  formatter="currency" type="number" value="{!act.Total_Claimed_Amount__c}" variant="label-hidden" disabled="true"/>
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;">
+                                                    {!act.Start_Date__c}
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;"> 
+                                                    {!act.End_Date__c}
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;"> 
+                                                    {!act.Description__c}
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;">
+                                                    {!act.Model__c}
+                                                </div>
+                                                <!-- <div class="slds-col slds-size_3-of-12"> <lightning:inputField   fieldName="Status__c" variant="label-hidden" />
+                                                    </div> -->
+                                                
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;"> 
+                                                    {!act.Experiences_Target__c}
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;"> 
+                                                    {!act.Experiences_Actual__c}
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;">
+                                                    {!act.Leads_Target__c}
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;">
+                                                    {!act.Number_of_Leads__c}
+                                                </div>
+                                                <div class="{!if(act.Status__c == 'Cancellation Submitted' || act.Status__c == 'Ready for Approval', 'DesabledClass slds-col slds-size_2-of-12','slds-col slds-size_2-of-12')}" style="padding-top:1rem;">
+                                                    <lightning:input  formatter="currency" type="number"  value="{!act.Penalty__c}" variant="label-hidden" disabled="{!v.currentUser.ContactId != null}" />
+                                                </div>
+                                                <div class="slds-col slds-size_2-of-12" style="padding-top:1rem;"> 
+                                                    {!act.Funnel_Category__c}
+                                                </div>
+                                                
+                                            </div>
+                                            <!--  </lightning:recordEditForm> -->
+                                        </div>
+                                    </aura:iteration>
+                                </div>
+                            </aura:if>
+                        </lightning:tab>
+                        <lightning:tab label="Rejected/Cancelled Activities" id="two">
+                            <c:RejCanActivitiesTab campaignId="{!r.Id}" />
+                        </lightning:tab>
+                    </lightning:tabset>
+                </div>
+            </div>
+        </article>
+    </aura:iteration>
+    
+    
+    <aura:if isTrue="{!v.Results.length > 0}">
+        <lightning:layout horizontalAlign="center">
+            <lightning:layoutItem padding="around-small">
+                <lightning:button label="Save" variant="brand" aura:id="saveButton" onclick="{!c.saveAllRecords}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small">
+                <lightning:button label="Reset" variant="brand" onclick="{!c.reset}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+        <aura:set attribute="else">
+            <div class="slds-align_absolute-center" style="height:5rem">No matching campaigns found.</div>     
+        </aura:set>
+    </aura:if>
+    <aura:if isTrue="{!(v.showActivityModal || v.showSubmitModal || v.showApprovalModal || v.showconfirmModal || v. showCancelModal || v.showCommentModal)}">
+        <div style="height: 800px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 70rem !important;">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModal}">
+                            <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="close"  variant="error" />
+                            <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            <!-- <img class="slds-align_absolute-center" src="{!$Resource.CXP_logo_lightning_home_page}"/> -->
+                            {!v.modalHeading}
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1" style="height: 80rem !important;">
+                        <aura:if isTrue="{!v.showSpinner}"><lightning:spinner /></aura:if>
+                        <aura:if isTrue="{!v.showActivityModal}">                           
+                            <c:campaignActivityEditUpdateForm aura:id="editForm" campaignCurrency="{!v.campaignCurency}" campaignId="{!v.campaignId}" recordId="{!v.activityId}" campaignActivityName="{!v.campaignActivityName}" campaignName="{!v.campaignName}"/>                          
+                        </aura:if> 
+                        <aura:if isTrue="{!v.showSubmitModal}">                         
+                            <lightning:layout horizontalAlign="center" multipleRows="true">
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <lightning:input name="input1" label="Submit Comments" value="{!v.campaignComments}"/> 
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" size="12" class="slds-align_absolute-center"> 
+                                    <lightning:button label="Submit" variant="brand" onclick="{!c.approvalhandler}" name="Comment"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>   
+                        </aura:if> 
+                        <aura:if isTrue="{!v.showCommentModal}">                         
+                            <lightning:layout horizontalAlign="center" multipleRows="true">
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <lightning:input name="input1" label="Submit Comments" value="{!v.campaignComments}"/> 
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" size="12" class="slds-align_absolute-center"> 
+                                    <lightning:button label="Submit" variant="brand" onclick="{!c.saveComments}" name="submit"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>   
+                        </aura:if> 
+                        
+                        <aura:if isTrue="{!v.showApprovalModal}">                           
+                            <lightning:layout horizontalAlign="center" multipleRows="true">
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <lightning:input name="input1" label="Submit Comments" aura:id="customComment" value="{!v.campaignComments}"/> 
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" size="12" class="slds-align_absolute-center"> 
+                                    <lightning:button label="Approve" variant="brand" onclick="{! c.approvalhandler }" name="Approve"/>
+                                    <lightning:button label="Reject" variant="brand" onclick="{! c.approvalhandler }" name="Reject"/>
+                                </lightning:layoutItem>
+                            </lightning:layout> 
+                        </aura:if> 
+                        <aura:if isTrue="{!v.showconfirmModal}">
+                            <p class="slds-align_absolute-center slds-p-bottom_large">All your changes will be lost</p>
+                            <div class="slds-align_absolute-center">
+                                <lightning:button variant="brand" label="{!$Label.c.Proceed}" title="{!$Label.c.Proceed}"  onclick="{!c.proceedToReset}"/> 
+                                <lightning:button variant="brand" label="{!$Label.c.Cancel}" title="{!$Label.c.Cancel}"  onclick="{!c.closeModal}"/> 
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.showCancelModal}">                           
+                            <lightning:layout horizontalAlign="center" multipleRows="true">
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <lightning:input aura:id="customComment" name="input1" label="Submit Comments" value="{!v.campaignComments}"/> 
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" size="12" class="slds-align_absolute-center"> 
+                                    <lightning:button label="Cancel" variant="brand" onclick="{! c.approvalhandler }" name="Cancel"/>
+                                </lightning:layoutItem>
+                            </lightning:layout> 
+                        </aura:if>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+</aura:component>

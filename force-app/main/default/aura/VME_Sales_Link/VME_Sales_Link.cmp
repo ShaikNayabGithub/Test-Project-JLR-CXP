@@ -1,0 +1,150 @@
+<!--
+||      Name : VME_Sales_Link.cmp
+||      Author: Deepti Tanguturi
+||      Purpose:VME Sales link component is to display opportunity related schemes and VME Campaign data.
+||      Created Date : 15/04/2018
+||      Modified By: Sumit Kumar
+||      Modified Date : 19/08/2019
+||      Reason : Revamp the saleslink on change of business process.
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" controller="VME_Sales_Link">
+        <!-- External JS file for Confimation BOX -->        
+        <ltng:require scripts="{!$Resource.VME_SweetAlert}" />
+        <aura:attribute name="schemesWrapperList" type="VME_Sales_Link.VME_Scheme_Wrpaper_CheckAll[]" />
+        <aura:attribute name="recordId" type="String" />
+        <aura:attribute name="index" type="Integer" default="0" />
+        <aura:attribute name="totalBenefit" type="Integer" default="0" />
+        <aura:attribute name="isSelectAll" type="boolean" default="false" />
+        <aura:attribute name="userInfo" type="user" />
+        <aura:attribute name="showSaveButton" type="boolean" default="FALSE" />
+        <aura:attribute name="showDetailBar" type="boolean" default="FALSE" />
+        <aura:attribute name="spinner" type="boolean" default="FALSE" />
+        <aura:attribute name="spinningTextClass" type="String" default="refresh" />
+        <aura:attribute name="actionSaverList" type="List" default="[]" />
+        <aura:attribute name="actionSaverListMaster" type="List" default="[]" />
+        <aura:attribute name="noData" type="String" />
+        <aura:attribute name="noDataIcon" type="String" />
+        <aura:attribute name="saveBtnStatus" type="Boolean" />
+        <aura:attribute name="disableAll" type="Boolean" />
+        <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+        <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" />
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    	<aura:handler event="force:refreshView" action="{! c.doInit}" />
+                <lightning:layout class="slds-page-header slds-page-header--object-home slds-border_bottom headerBack">
+                        <lightning:layoutItem size="1" flexibility="auto" class="slIconcss">
+                        <lightning:icon iconName="standard:category" alternativeText="Available Schemes" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="7" flexibility="auto" class="">
+                                <div class="page-section page-header">
+                                        <h2 class="slds-text-heading--medium">Available VME Campaigns</h2>
+                                </div>
+                        </lightning:layoutItem>
+                        
+                        <lightning:layoutItem padding="horizontal-small" size="2" flexibility="auto" class="">
+                                <aura:if isTrue="{!v.showSaveButton}">
+                                        <div class="">
+                                                <lightning:button label="Save" class="slds-button_brand" onclick="{!c.saveSelectedScheme}" disabled="{!v.saveBtnStatus}" aura:id="saveBtn"/>
+                                        </div>
+                                </aura:if>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem  size="3" flexibility="auto" class="slrefreshIcon">
+                                <div class="">
+                                        <lightning:button title="Click Refresh to get your data" label="Refresh" iconName="utility:refresh" iconPosition="left" variant="brand" onclick="{! c.isRefreshing }" />
+                                </div>
+                        </lightning:layoutItem>
+                </lightning:layout>
+                <aura:if isTrue="{!v.showDetailBar}">
+                        <lightning:layout class="slds-page-header slds-border_bottom headerBack">
+                                <lightning:layoutItem  size="1" flexibility="auto" class="">
+                                        <div>
+                                                <lightning:helptext content="{!v.noData}" iconName="utility:notification" class="myUniqueClass" />
+                                                <lightning:badge label="1" style="position: relative;top: -6px;right: 11px;background-color: #d41d17;color: #e8dddd;padding-right: 4px;padding-left: 4px;padding-top: 0px;padding-bottom: 1px;" />
+                                        </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem  size="7" flexibility="auto" class="">
+                                        <div class="form-control" style="float: right;font-size: large;padding-right: 2%;">
+                                                        Total Benefit : 
+                                        </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem  size="4" flexibility="auto" class="">
+                                        <div class="form-control" style="float: left;">
+                                                <lightning:input type="text" name="input5" disabled="true" value="{!v.userInfo.DefaultCurrencyIsoCode+' '+v.totalBenefit+'.00'}" label="" variant="label-hidden"/>
+                                        </div>
+                                </lightning:layoutItem>
+                        </lightning:layout>
+                </aura:if>
+        <aura:if isTrue="{!v.schemesWrapperList.length > 0}">
+                <lightning:layout class="slds-scrollable--x">
+                        <aura:if isTrue="{!v.spinner}">
+                                <!-- <div aura:id="spinnerId" class="slds-spinner_container">
+                                        <div class="slds-spinner-brand  slds-spinner slds-spinner-large slds-is-relative" role="alert">
+                                                <span class="slds-assistive-text">Loading...</span>
+                                                <div class="slds-spinner__dot-a"></div>
+                                                <div class="slds-spinner__dot-b"></div>
+                                        </div>
+                                </div> -->
+                                <lightning:spinner class="{!v.spinningTextClass}" size="large" variant="brand" alternativeText="Loading" />
+                        </aura:if>
+                        <lightning:layoutItem padding="around-small" size="8" class="scrollBody">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--col-bordered">
+                                        <thead>
+                                                <tr class="slds-line-height_reset slds-line-height_reset slds-text-title_caps">
+                                                        <th class="tableHeader" scope="col" title="Select all L3" >
+                                                                <td>
+                                                                        <ui:inputCheckbox value="{!v.isSelectAll}" name="{!index}" change="{!c.checkAllSchemes}" aura:id="selectAll" class="checkBoxCls isDisableCheck" disabled="{!v.disableAll}"/>
+                                                                </td>
+                                                        </th>
+                                                        <th class="tableHeader" scope="col">
+                                                                <div class="slds-truncate" title="Category">Category</div>
+                                                        </th>
+                                                        <th class="tableHeader" scope="col">
+                                                                <div class="slds-truncate" title="Sub Category">Sub Category</div>
+                                                        </th>
+                                                        <th class="tableHeader" scope="col">
+                                                                <div class="slds-truncate" title="l3Description">Level 3 Description</div>
+                                                        </th>
+                                                        <th class="tableHeader" scope="col">
+                                                                <div class="slds-truncate" title="" style="float: left;margin-top: 1%;">Customer Benefit (Post GST) </div><lightning:helptext content="JLR share + Retailer Contribution (including GST)"/>
+                                                        </th>
+                                                    	<!--<th class="tableHeader" scope="col">
+                                                                <div class="slds-truncate" title="Scheme Name">L3 VME Campaign Name</div>
+                                                        </th>-->
+                                                </tr>
+                                        </thead>
+                                        <tbody>
+                                                <aura:iteration items="{!v.schemesWrapperList}" var="sw" indexVar="index">
+                                                        <tr class="slds-hint-parent" id="{!index}">
+                                                                <td>
+                                                                        <ui:inputCheckbox aura:id="checkScheme" name="{!index}" value="{!sw.isChecked}" change="{!c.onCheck}" disabled="{!v.disableAll}" class="isDisableCheck"/>
+                                                                </td>
+                                                                <td data-label="Category">
+                                                                        <div class="slds-truncate" title="Category">{!sw.category}</div>
+                                                                </td>
+                                                                <td data-label="Sub Category">
+                                                                        <div class="slds-truncate" title="SubCategory">{!sw.subCategory}</div>
+                                                                </td>
+                                                                <td data-label="L3 Description">
+                                                                        <div class="slds-truncate" title="l3Description" style="white-space: normal;display:block;width: 20rem;word-wrap:break-word;">{!sw.l3Description}</div>
+                                                                </td>
+                                                                <td data-label="P/U Amount">
+                                                                        <div class="slds-text-body_regular slds-text-align_left ">
+                                                                                <lightning:formattedNumber value="{!sw.perUnitVariantPostGST}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                        </div>
+                                                                </td>
+                                                                <!--<td data-label="Scheme Name">
+                                                                        <div class="slds-truncate" title="Scheme Name"> {!sw.schemeName} </div>
+                                                                </td>-->
+                                                        </tr>
+                                                </aura:iteration>
+                                        </tbody>
+                                </table>
+                        </lightning:layoutItem>
+                </lightning:layout>
+                <aura:set attribute="else">
+                        <div class="slds-align_absolute-center slds-p-top_large" style="width: 75%;">
+                                <lightning:icon title="icons" iconName="{!'standard:'+v.noDataIcon}" size="medium" variant="warning" class=""></lightning:icon>
+                                <div style="justify-content: space-evenly;padding-left:2%;font-size: 16px;font-family: inherit;">{!v.noData}</div>
+                        </div>
+                </aura:set>
+        </aura:if>
+</aura:component>

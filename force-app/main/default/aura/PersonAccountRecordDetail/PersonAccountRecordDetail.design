@@ -1,0 +1,3 @@
+<design:component>
+	<design:attribute name="communityRecordId" label="Record Id"  description="The Opportunity id" />	
+</design:component>

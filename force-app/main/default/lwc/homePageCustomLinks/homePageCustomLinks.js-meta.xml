@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Home Page Custom Links</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default, lightning__AppPage, lightning__RecordPage, lightning__HomePage">
+            <property name="firstLink" type="String"/>
+            <property name="firstLinkLabel" type="String"/>
+            <property name="secondLink" type="String"/>
+            <property name="secondLinkLabel" type="String"/>
+            <property name="thirdLink" type="String"/>
+            <property name="thirdLinkLabel" type="String"/>
+            <property name="fourthLink" type="String"/>
+            <property name="fourthLinkLabel" type="String"/>
+            <property name="fifthLink" type="String"/>
+            <property name="fifthLinkLabel" type="String"/>
+            <property name="sixthLink" type="String"/>
+            <property name="sixthLinkLabel" type="String"/>
+            <property name="seventhLink" type="String"/>
+            <property name="seventhLinkLabel" type="String"/>
+            <property name="eighthLink" type="String"/>
+            <property name="eighthLinkLabel" type="String"/>
+            <property name="ninthLink" type="String"/>
+            <property name="ninthLinkLabel" type="String"/>
+            <property name="tenthLink" type="String"/>
+            <property name="tenthLinkLabel" type="String"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

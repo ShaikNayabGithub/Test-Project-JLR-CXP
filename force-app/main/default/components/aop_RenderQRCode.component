@@ -1,0 +1,135 @@
+<apex:component controller="QRWrapperController"  >
+      <apex:includeScript value="{!$Resource.QRCodeGen}"/>
+      <apex:includeScript value="{!$Resource.QRCodeGenUTF8}"/>
+      <apex:stylesheet value="{!URLFOR($Resource.aop_JaguarFonts, 'css/fonts.css')}"/>
+      <style>
+        #detailArea  h2
+{
+margin: 0px;
+        padding:0px;
+color: black;
+font-family: Jaguar,Arial,Helvetica,Sans-Serif;
+line-height: 100%;
+font-size:0.75em;
+}
+
+#detailArea h4
+{
+font-family: "Gotham",Arial,Helvetica,Sans-Serif;
+        font-size: 0.65em;
+		margin-top: 0px;
+        margin-bottom: 0px;
+        padding:0px;
+        
+}
+        #detailArea
+        {
+        	height:114px;
+        	width:60%;
+        	float:right;
+        }
+        #qrArea
+        {
+        	width:40%;
+        	float:left;
+        }
+        #jagLogoDiv
+        {
+        	margin-top: 1cm;
+        	text-align:center;
+        }
+        #aopLogoDiv
+        {
+        
+        	text-align:center;
+        }
+        
+        #qrAndText
+        {
+        	width: 100%;
+			margin-bottom: 1cm;
+        }
+        #borderArea
+        {
+        	padding-top: 0.5cm;
+        	width: 7.4cm;
+        	height: 10cm;
+        }
+        #eventArea
+        {
+        	height:50px;
+        	position:relative;
+        	bottom:0px;
+        }
+        #nameArea
+        {
+        	padding-top:7px;
+        	height:50px;
+        }
+       
+        #bottomContainer
+        {
+        	position:absolute;
+            bottom:0px;
+        }
+        
+        #spacerDiv
+        {
+        	height:80px;
+        }
+        #secondSpacer
+        {
+        	height:55px;
+        }
+      	
+      </style>
+  <apex:attribute name="BookingId" description="This is the string the customers booking id to be encoded within the QR image" type="String" required="true"/>
+  <apex:attribute name="Date" description="This is the session date from the campaign member" type="DateTime" required="true" assignTo="{!unFormatDate}"/>
+  <apex:attribute name="FirstName" description="This is the string of the customers first name to be encoded within the QR image" assignTo="{!FirstNameString}" type="String" required="true"/>
+  <apex:attribute name="LastName" description="This is the string of the customers last name to be encoded within the QR image" assignTo="{!LastNameString}" type="String" required="true"/>
+  <apex:attribute name="EventName" description="The name of the event" type="String" required="false"  assignTo="{!EventNameString}"/>
+  <apex:attribute name="Line2" description="Second line of the event description" type="String" required="false"/>
+  <apex:attribute name="CampaignId" description="This is the ID of the campaign" type="Id" required="true" assignTo="{!CampID}"/>
+  <apex:attribute name="CampaignTimeZone" description="This is the timezone of the campaign" type="string" required="true" assignTo="{!CampTimeZone}"/>  
+    <apex:form id="qrForm">
+      <div id="borderArea" style="page-break-after:always;">
+          <div id = "jagLogoDiv">
+              <apex:image id="jagLogo" value="{!$Resource.aop_LanyardJaguarLogo}" width="80px"/>
+          </div>
+          <div id="spacerDiv">
+          </div>
+          <div id = "aopLogoDiv">
+              <apex:image id="aopLogo" value="{!$Resource.aop_LanyardAOPLogo}" width="255px"/>
+          <br/>
+          </div>
+          <div id="secondSpacer">
+          </div>
+          <div id="qrAndText">
+             <div id="qrArea">
+              <apex:outputPanel id="qr" layout="block">
+              </apex:outputPanel>
+          	</div>
+          <div id="detailArea">
+                  <div id="nameArea">
+                      <h2>{!upperName}<br/> {!upperLastName}</h2>
+                  </div>
+             	 
+                  <div id = "eventArea">                      
+                      <div id="bottomContainer">
+                          <h4>{!upperEventName}</h4>
+                          <h4>{!formatDate}</h4>
+                      </div>                      
+                  </div>
+          </div> 
+          </div>
+          
+          <script>   
+            var qr = qrcode(8, 'Q');
+            qr.addData('{!BookingId}|{!LastName}|{!FirstName}');
+            qr.make();
+            document.getElementById('{!$Component.qrForm.qr}').innerHTML = qr.createImgTag();
+          </script>
+      </div>
+      <br style="clear:both;" />
+ </apex:form>
+</apex:component>

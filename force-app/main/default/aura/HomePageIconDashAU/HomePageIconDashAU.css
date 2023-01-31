@@ -1,0 +1,15 @@
+.THIS .outercell {
+    padding-left:5px; padding-right:5px; padding-bottom:10px; width:20%;
+}
+
+.THIS .innercell {
+    height:50px; padding:2px; vertical-align:middle;
+}
+
+.THIS .stat {
+	font-size:2em; font-weight:bold;
+}
+
+.THIS .statred {
+    color: red;
+}

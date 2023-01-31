@@ -1,0 +1,203 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" controller="VME_Category_Adjustment_Ctrl" access="global">
+    <ltng:require scripts="{!$Resource.VME_SweetAlert}" />
+     <aura:attribute name="showConfigure" type="Boolean"  default="false"/>
+    <aura:attribute name="selectedRegion" type="String" />
+    <aura:attribute name="selectedMarket" type="String" />
+    <aura:attribute name="selectedYear" type="String" />
+    <aura:attribute name="selectedBrand" type="String" />
+    <aura:attribute name="selectedQuarter" type="String" />
+    <aura:attribute name="selectedModel" type="String" />
+    <aura:attribute name="createdSchemeId" type="String" />
+    <aura:attribute name="isSearch" type="boolean" default="false" />
+    <aura:attribute name="hideNewCreationbtn" type="boolean" default="false" />
+    <aura:attribute name="loader" type="boolean" default="false" />
+    <aura:attribute name="openProductMixModel" type="boolean" default="false" />
+    <aura:attribute name="openVinMixModel" type="boolean" default="false" />
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="compIdentity" type="String" />
+    <aura:attribute name="parameterName" type="String" />
+    <aura:attribute name="parentCampaign" type="Campaign" />
+    <aura:attribute name="userCurrency" type="String" />
+    <aura:attribute name="retailerId" type="String" />
+    <aura:attribute name="quarterInfoMap" type="Map" />
+    <aura:attribute name="startDateOfVME" type="Date" />
+    <aura:attribute name="endDateOfVME" type="Date" />
+    <aura:attribute name="openNewschemeModel" type="boolean" default="false" />
+    <aura:attribute name="openSchemeAdjustModel" type="boolean" default="false" />
+    <aura:attribute name="openSchemeSplitModel" type="boolean" default="false" />
+    <aura:attribute name="openNewCampModel" type="boolean" default="false" />
+    <aura:attribute name="openDealerMixModel" type="boolean" default="false" />
+    <aura:attribute name="VMECampaignList" type="VME_Campaign__c[]" />
+    <aura:attribute name="CurrentVMECamp" type="VME_Campaign__c" />
+    <aura:attribute name="campWrapper" type="VME_Category_Adjustment_Ctrl.CampaignWrapper" />
+    <aura:attribute name="VMESchemeValue" type="VME_Schemes__c" />
+    <aura:attribute name="tempCampWrapper" type="VME_Category_Adjustment_Ctrl.CampaignWrapper" />
+    <aura:attribute name="vmeCampaignResultValue" type="VME_Category_Adjustment_Ctrl.VMECampaignWrapper" />
+    <aura:attribute name="containBaseScheme" type="boolean" />
+    <aura:attribute name="SchemeType" type="String" />
+    <aura:attribute name="availableFilters" type="boolean" />
+    <aura:handler name="filterCmpEvent" event="c:VME_QMSP_Filter_Event" action="{!c.handlefilterCmpEvent}" />
+    <aura:handler name="SplitSchemeEvt" event="c:VME_OpenModel" action="{!c.handleSplitSchemeEvt}" />
+    <aura:handler name="CancelSplitSchemeEvt" event="c:VME_OpenModel" action="{!c.handleCancelSplitSchemeEvt}" />
+    <aura:handler name="adjustVariantEvt" event="c:VME_OpenAdjustVariantModel" action="{!c.handleAdjustVariantEvt}" />
+    <aura:handler name="adjustVariantEvt1" event="c:VME_OpenAdjustVariantModel" action="{!c.handleAdjustVariantEvt}" />
+    <aura:handler name="cancelAdjustVariantEvt" event="c:VME_OpenAdjustVariantModel" action="{!c.handleCancelAdjustVariantEvt}" />
+    <aura:handler name="refreshCmpEvt" event="c:VME_OpenModel" action="{!c.handlerefreshCmpEvt}" />
+    <aura:handler name="statusEvent" event="c:VME_Confirm_Event" action="{!c.handleConfirm}" />
+    <aura:handler name="savedRecordDetailsEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleVMEsavedDetailsConfirm}" />
+    <aura:handler name="VME_SavedSchemeRecordDetailsEvent" event="c:VME_SavedRecordDetailsEvent" action="{!c.handlesavedSchemeDetailsConfirm}" />
+    <aura:handler name="sendSchemeIdToDealerEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleDealerMixCmpEvt}" />
+    <aura:handler name="callDealerMixDiscType" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleDealerMixCmpEvt}" />
+    <aura:handler name="VME_VinMixEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleVinMixCmpEvt}" />
+    <aura:handler name="VME_callDealerMixEvent" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleDealerMixCmpEvt}" />
+    <aura:handler name="configureBtnEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleVMEsavedDetailsConfirm}" />
+    <aura:handler name="reviseBtnEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleVMEsavedDetailsConfirm}" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <div aura:id="ModalDialogPlaceholder" />
+
+    <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide" style="position: fixed !important;" />
+
+    <div class="slds-text-align_center slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color:#1b5297;line-height: 2.25;"> VME Campaign Adjustment </div>
+
+    <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+        <c:VME_QMSP_Filter_Component />
+    </div>
+
+    <aura:if isTrue="{!v.isSearch}">
+      
+        <div class="slds-text-align_center slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color: #1b5297;line-height: 2;"> QMSP Details ({!v.campWrapper.campWrap.VME_QMSP_Code__c})</div>
+        <div class="slds-form slds-theme_shade slds-form_stacked slds-grid" style="padding-left: 1%;padding-right: 1%;">
+        <div class="slds-col">   
+        <div class="slds-form slds-theme_shade slds-form_stacked slds-align_absolute-center">
+                <lightning:input label="{!'Adjusted Amount ('+v.userCurrency+')'}" disabled="true" value="{!v.campWrapper.campWrap.VME_Adjust_Budget__c}" type="number" variant="standard" formatter="currency"></lightning:input>
+                <lightning:input value="{!v.campWrapper.campWrap.VME_Adjust_volume__c}" label="Adjusted Volume" disabled="true" type="number" variant="standard"></lightning:input>
+                <lightning:input label="{!'Adjusted P/U Amount ('+v.userCurrency+')'}" value="{!v.campWrapper.campWrap.VME_Adjust_P_U_Amount__c}" disabled="true" type="number" variant="standard" formatter="currency"></lightning:input>
+                <lightning:input label="{!'Under/Over Spent ('+v.userCurrency+')'}" value="{!v.campWrapper.campWrap.VME_Under_Over_Run__c}" disabled="true" type="number" variant="standard" class="UnderOverCss" formatter="currency"></lightning:input>
+            </div>
+            <div class="slds-form slds-theme_shade slds-form_stacked slds-align_absolute-center">
+                <lightning:input value="{!v.campWrapper.campWrap.VME_Actual_Spent__c}" label="{!'Actual Spend ('+v.userCurrency+')'}" disabled="true" type="number" variant="standard" formatter="currency"></lightning:input>
+                <lightning:input label="{!'Planned Amount ('+v.userCurrency+')'}" disabled="true" title="{!v.campWrapper.campWrap.VME_Planned_Budget__c}" value="{!v.campWrapper.campWrap.VME_Planned_Budget__c}" type="number" variant="standard" formatter="currency"></lightning:input>
+                <lightning:input label="Planned Volume" disabled="true" title="{!v.campWrapper.campWrap.VME_Planned_Volume__c}" value="{!v.campWrapper.campWrap.VME_Planned_Volume__c}" type="number" variant="standard"></lightning:input>
+                <lightning:input label="{!'Planned P/U Amount ('+v.userCurrency+')'}" disabled="true" title="{!v.campWrapper.campWrap.VME_Planned_P_U_Amount__c}" value="{!v.campWrapper.campWrap.VME_Planned_P_U_Amount__c}" type="number" variant="standard" formatter="currency"></lightning:input>
+            </div>
+        </div>
+            <div class="slds-form slds-theme_shade slds-form_stacked slds-col slds-grow-none">
+                    <aura:if isTrue="{!notequals(v.campWrapper.campWrap.VME_Under_Over_Run__c ,0)}">
+                                <aura:if isTrue="{!greaterthan(v.campWrapper.campWrap.VME_Under_Over_Run__c ,0)}">
+                                    <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_64.png'}" class="iconCSS" />
+                                </aura:if>
+                                <aura:if isTrue="{!lessthan(v.campWrapper.campWrap.VME_Under_Over_Run__c ,0)}">
+                                    <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_64.png'}" class="iconCSS" />
+                
+                                </aura:if>
+                  
+                        </aura:if> 
+            </div>
+        </div>
+        <!--   <ul class="slds-list_horizontal" style="background-color: rgb(48, 138, 218);padding:5px"></ul> -->
+        <div style="float:left;width:100%" class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right" >
+            <aura:if isTrue="{!not(empty(v.campWrapper.vmeCampaignWrapList))}">
+                <div class="slds-text-align_center slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color: #1b5297;line-height: 2;"> Related L2 VME Category </div>
+                <aura:iteration items="{!v.campWrapper.vmeCampaignWrapList}" var="wrapperObj" indexVar="index">
+                    <div style="padding: 0.5%;">
+                        <div style="border: 1px solid rgb(48, 138, 218)">
+                            <div class="slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color: rgb(48, 138, 218);line-height: 1.7;padding: 2px 25px;">
+                                <lightning:icon iconName="utility:quote" iconPosition="left" alternativeText="Detail" size="small" variant="inverse" />&nbsp;&nbsp;{!wrapperObj.vmeCampaignWrap.VME_External_ID__c}
+                                <span class="slds-badge" style="float: right;margin: 4px;color: #244a8c;">#L3 Campaign:
+                                    <aura:if isTrue="{!not(empty(wrapperObj.schemeList))}">{!wrapperObj.schemeList.length}
+                                        <aura:set attribute="else">0
+                                        </aura:set>
+                                    </aura:if>
+                                </span>
+                            </div>
+                            <lightning:layout>
+                                <lightning:layoutItem size="2" class="marginCss">
+                                    <lightning:input label="Start Date" disabled="true" type="date" variant="standard" value="{!wrapperObj.vmeCampaignWrap.VME_Start_Date__c}"></lightning:input>
+                                    <lightning:input label="Category" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Category__c}" type="text" variant="standard"></lightning:input>
+                                    <lightning:input label="{!'Actual Spend ('+v.userCurrency+')'}" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Actual_Amount__c}" type="number" variant="standard" formatter="currency"></lightning:input>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="2">
+                                    <lightning:input label="End Date" disabled="true" type="date" variant="standard" value="{!wrapperObj.vmeCampaignWrap.VME_End_Date__c}" />
+                                    <lightning:input label="Sub Category" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Sub_Category__c}" type="text" variant="standard"></lightning:input>
+                                    <lightning:input label="{!'Total Amount Approved ('+v.userCurrency+')'}" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Total_Amount_Approved__c}" type="number" variant="standard" formatter="currency"></lightning:input>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem size="2" class="marginCss">
+                                    <lightning:input label="{!'Approved P/U Amount ('+v.userCurrency+')'}" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Approved_PU_Amount__c}" variant="standard" type="number" formatter="currency"></lightning:input>
+                                    <lightning:input label="Approved Volume" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Approved_Volume__c}" variant="standard" type="number"></lightning:input>
+                                    <lightning:input label="{!'Approved Amount ('+v.userCurrency+')'}" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Approved_Budget__c}" variant="standard" type="number" formatter="currency"></lightning:input>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem size="2">
+                                    <lightning:input label="{!'Adjusted P/U Amount ('+v.userCurrency+')'}" disabled="{!wrapperObj.campEditable}" value="{!wrapperObj.vmeCampaignWrap.VME_Adjusted_PU_Amount__c}" variant="standard" formatter="currency" required="true" type="Number" min="1" messageWhenValueMissing="Please fill the required value" messageWhenRangeUnderflow="P/U Amount can't be less than 1" name="{!wrapperObj.vmeCampaignWrap.Id}" aura:id="Planned" maxlength="16" messageWhenStepMismatch="Please fill up to two digit after decimal" step="0.01" messageWhenTooLong="The maximum length of input is 16"></lightning:input>
+
+                                    <lightning:input label="Adjusted Volume" value="{!wrapperObj.vmeCampaignWrap.VME_Adjusted_Volume__c}" disabled="{!wrapperObj.campEditable}" required="true" type="Number" min="1" messageWhenValueMissing="Please fill the required value" messageWhenRangeUnderflow="Volume can't be less than 1" variant="standard" name="{!wrapperObj.vmeCampaignWrap.Id}" aura:id="Volume" maxlength="16" messageWhenStepMismatch="Volume can't be in fraction" step="0" messageWhenTooLong="The maximum length of input is 16"></lightning:input>
+                                    <lightning:input label="{!'Adjusted Amount ('+v.userCurrency+')'}" value="{!wrapperObj.vmeCampaignWrap.VME_Adjusted_Budget__c }" formatter="currency" disabled="true" type="number"></lightning:input>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="2">
+                                    <lightning:input label="{!'Planned P/U Amount ('+v.userCurrency+')'}" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Planned_PU_Amount__c}" variant="standard" type="number" formatter="currency"></lightning:input>
+                                    <lightning:input label="Planned Volume" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Planned_Volume__c}" variant="standard" type="number"></lightning:input>
+                                    <lightning:input label="{!'Planned Amount ('+v.userCurrency+')'}" disabled="true" value="{!wrapperObj.vmeCampaignWrap.VME_Planned_Budget__c}" variant="standard" type="number" formatter="currency"></lightning:input>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1" class="marginBtnCss">
+
+                                    <aura:if isTrue="{!wrapperObj.campEditable}">
+                                        <lightning:button variant="brand" value="{!wrapperObj.vmeCampaignWrap.Id}" label="Adjust" disabled="{!if(lessthan(wrapperObj.vmeCampaignWrap.VME_End_Date__c,v.today),true,false)}" onclick="{!c.editVMECampFields}" iconName="action:edit" iconPosition="left" class="paddingEditButtonCss"></lightning:button>
+                                    </aura:if>
+
+                                    <aura:if isTrue="{!wrapperObj.campEditable}">
+                                        <lightning:button iconName="utility:custom_apps" iconPosition="left" variant="brand" label="L3 Adjustments" value="{!wrapperObj.vmeCampaignWrap.Id}" disabled="{!!(or(if(lessthan(wrapperObj.vmeCampaignWrap.VME_End_Date__c,v.today),true,false),v.showConfigure))}" onclick="{!c.editVMESchFields}" class="paddingAdjustButtonCss"></lightning:button>
+                                        <aura:if isTrue="{!not(empty(wrapperObj.schemeList))}">
+                                            <lightning:button variant="brand" type="submit" label="End " value="{!wrapperObj.vmeCampaignWrap}" iconName="action:remove" iconPosition="left" disabled="{!if(lessthan(wrapperObj.vmeCampaignWrap.VME_End_Date__c,v.today),true,false)}" onclick="{!c.endVMECampaign}" class="EndBtnCss"></lightning:button>
+                                        </aura:if>
+
+                                    </aura:if>
+
+                                    <aura:if isTrue="{!(!wrapperObj.campEditable)}">
+                                        <lightning:button variant="success" value="{!wrapperObj.vmeCampaignWrap.Id}" label="Save" onclick="{!c.editVMECampFields}" iconName="utility:save" iconPosition="left" class="SaveBtnCss"></lightning:button>
+                                        <lightning:button variant="destructive" value="{!wrapperObj.vmeCampaignWrap.Id}" label="Cancel" onclick="{!c.cancel}" iconName="action:remove" iconPosition="left" class="cancelBtnCss"></lightning:button>
+                                    </aura:if>
+                                    <!--   </div> -->
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </div>
+                </aura:iteration>
+            </aura:if>
+            <aura:if isTrue="{!(!v.hideNewCreationbtn)}">
+                <lightning:layout class="slds-border_top slds-border_bottom slds-border_left slds-border_right">
+                    <lightning:layoutItem size="10">
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="ButtonRightCss">
+                        <lightning:button class="slds-theme_brand" iconPosition="right" variant="success" label="Add L2 VME Category" onclick="{!c.addVMECampaign}" iconName="action:new"></lightning:button>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:if>
+            <ul class="slds-list_horizontal" style="background-color: rgb(48, 138, 218);padding:5px"></ul>
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.openSchemeAdjustModel}">
+        <c:VME_Category_Adjust_Variant hideNewCreationbutton="{!v.hideNewCreationbtn}" vmeCampaignResult="{!v.vmeCampaignResultValue}" isOpen="{!v.openSchemeAdjustModel}" />
+    </aura:if>
+    <aura:if isTrue="{!v.openSchemeSplitModel}">
+        <c:VME_Category_SchemeAdjust isOpenSchemeComponent="{!v.openSchemeSplitModel}" tempVMESchemeObj="{!v.VMESchemeValue}" parentVMECampaign="{!v.CurrentVMECamp}" />
+    </aura:if>
+    <aura:if isTrue="{!v.openNewCampModel}">
+        <c:VME_NewVMECampaign parentCamp="{!v.parentCampaign}" countrycode="{!v.selectedMarket}" vmeCampList="{!v.VMECampaignList}" compIdentity="{!v.compIdentity}" startDate="{!v.startDateOfVME}" endDate="{!v.endDateOfVME}" isOpenComp="{!v.openNewCampModel}" />
+    </aura:if>
+    <aura:if isTrue="{!v.openNewschemeModel}">
+        <c:VME_NewSchemeCreation parentVMECampaign="{!v.CurrentVMECamp}" compIdentityValue="{!v.compIdentity}" parameterName="{!v.parameterName}" revisedScheme="{!v.VMESchemeValue}" startDate="{!v.startDateOfVME}" endDate="{!v.endDateOfVME}" containBaseScheme="{!v.containBaseScheme}" isOpenComp="{!v.openNewschemeModel}" />
+    </aura:if>
+    <aura:if isTrue="{!v.openProductMixModel}">
+        <c:VME_ProductMix schemeId="{!v.createdSchemeId}" compIdentityValue="{!v.compIdentity}" parameterName="{!v.parameterName}" currentVME="{!v.CurrentVMECamp}" revisedSchemeValue="{!v.VMESchemeValue}" isOpen="{!v.openProductMixModel}" />
+    </aura:if>
+    <aura:if isTrue="{!v.openVinMixModel}">
+        <c:VME_VINMix parentVMECampaign="{!v.CurrentVMECamp}" compIdentityValue="{!v.compIdentity}" retailer="{!v.retailerId}" schemeId="{!v.createdSchemeId}" parameterName="{!v.parameterName}" revisedSchemeValue="{!v.VMESchemeValue}" isOpenComp="{!v.openVinMixModel}" />
+    </aura:if>
+    <aura:if isTrue="{!v.openDealerMixModel}">
+        <c:VME_DealerMix schemeId="{!v.createdSchemeId}" filtersValue="{!v.availableFilters}" schemeApplicable="{!v.SchemeType}" compIdentityValue="{!v.compIdentity}" parameterName="{!v.parameterName}" parentVMECampaign="{!v.CurrentVMECamp}" revisedSchemeValue="{!v.VMESchemeValue}" isOpenComp="{!v.openDealerMixModel}" />
+    </aura:if>
+    <c:VME_ReviseConfirmation />
+</aura:component>

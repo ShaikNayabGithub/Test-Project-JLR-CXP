@@ -1,0 +1,47 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="simpleLead" type="Object" />
+    <!--<aura:attribute name="sourceIcon" type="String" default="standard:macros" />
+    <aura:attribute name="phoneIcon" type="String" default="standard:call" />
+    <aura:attribute name="emailIcon" type="String" default="standard:email" />-->
+    <aura:attribute name="mobileIcon" type="String" default="custom:custom28" />
+    <aura:attribute name="sourceImg" type="String" default="/Lead/Icon_LeadSource.png" />
+    <aura:attribute name="phoneImg" type="String" default="/Lead/Icon_Phone.png" />
+    <aura:attribute name="emailImg" type="String" default="/Lead/Icon_Email.png" />
+    <aura:attribute name="mobileImg" type="String" default="/Lead/Icon_MobilePhone.png" />
+    <aura:attribute name="soqlError" type="String" />
+    <aura:attribute name="columnFields" type="String[]" default="['Phone', 'MobilePhone', 'Email', 'LeadSource', 'Brand__c', 'Brand__r.Name']" />
+    
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetFields="{!v.simpleLead}" mode="VIEW" fields="{!v.columnFields}" targetError="{!v.soqlError}" />
+    
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="3" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.sfPhone}"><img src="{!if(v.simpleLead.Phone!=null, $Resource.MENAHeaderIcons + v.phoneImg, if(v.simpleLead.MobilePhone, $Resource.MENAHeaderIcons + v.mobileImg, $Resource.MENAHeaderIcons + v.phoneImg))}" style="width:40px; height:40px" /></span>
+            <aura:if isTrue="{!and(v.simpleLead.Phone==null, v.simpleLead.MobilePhone==null)}">-</aura:if>
+            <aura:if isTrue="{!or(v.simpleLead.Phone!=null, v.simpleLead.MobilePhone!=null)}">
+            <lightning:buttonMenu label="{!if(v.simpleLead.Phone!=null, v.simpleLead.Phone, if(v.simpleLead.MobilePhone!=null, v.simpleLead.MobilePhone, '-'))}" variant="container">
+                <aura:if isTrue="{!and(v.simpleLead.Phone!=null, v.simpleLead.MobilePhone!=null)}">
+                    <lightning:menuItem label="{!v.simpleLead.MobilePhone}" value="home" iconName="{!v.mobileIcon}" />
+                </aura:if>
+            </lightning:buttonMenu>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="3" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.sfEmail}"><img src="{!$Resource.MENAHeaderIcons + v.emailImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleLead.Email!=null, v.simpleLead.Email, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="3" padding="around-small">
+	       	<span style="padding-right:4px" title="{!$Label.c.Lead_Source}"><img src="{!$Resource.MENAHeaderIcons + v.sourceImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleLead.LeadSource!=null, v.simpleLead.LeadSource, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="3" padding="around-small" class="slds-p-top_x-small">
+            <aura:if isTrue="{!v.simpleLead.Brand__r.Name == 'Jaguar'}">
+	       		<img src="{!$Resource.LightningBrandJaguar}" />
+            </aura:if>
+            <aura:if isTrue="{!v.simpleLead.Brand__r.Name == 'Land Rover'}">
+                <img src="{!$Resource.LightningBrandLandRover}" />
+            </aura:if>
+        </lightning:layoutItem>
+	</lightning:layout>
+    
+</aura:component>

@@ -1,0 +1,428 @@
+<apex:component controller="LoginComponentController" language="{!language}" allowDML="true" layout="none" >
+    <apex:attribute name="dtoClass" type="CreateSavedVehicleDto" assignTo="{!dto}" description="" />
+    <apex:attribute name="marketCode" type="String" assignTo="{!market}" description="Get market from parent page" />
+    
+    <apex:includeScript value="https://code.jquery.com/jquery-3.3.1.min.js" />
+    <apex:includeScript value="https://www.google.com/recaptcha/api.js?hl={!language}"/>
+    
+    <script type="text/javascript">
+    function passwordMatch(){
+            var password = $('.pass').val();
+            var confirmPassword = $('.cpass').val();
+            //var confirm_password = document.getElementsByClassName("cpass");
+            console.log('Password-->'+password);
+            console.log('confirm_password-->'+confirmPassword);
+            if(password!=confirmPassword){
+                alert('Password MissMatch');
+                return false;
+            }else{
+                return true;
+            }
+        }
+        var emailVar;
+        function forgotPasswordLink(){
+            var form_login = document.querySelector('.luform__login');
+            form_login.classList.add('u-hidden-visually');
+            var form_reset = document.querySelector('.luform__reset');
+            form_reset.classList.remove('u-hidden-visually');
+            var form_error = document.querySelector('.error_wrapper');
+            form_error.classList.add('u-hidden-visually');
+        }
+        function PasswordConfirmation(){
+            document.getElementById('addemail').innerHTML = emailVar;
+            var form_login = document.querySelector('.luform__login');
+            form_login.classList.add('u-hidden-visually');
+            var form_reset = document.querySelector('.luform__reset');
+            form_reset.classList.add('u-hidden-visually');
+            var form_resetConfirm = document.getElementById("resetFormConfirm1");
+            form_resetConfirm.classList.remove('u-hidden-visually');
+            var form_error = document.querySelector('.error_wrapper');
+            form_error.classList.add('u-hidden-visually');
+        }
+        
+        function createUserController(createUserFlag, errorMsg){
+            if(createUserFlag){
+                createuser();
+            }else{
+                registerUser(errorMsg);
+                showErrorRegister(errorMsg);
+                //modalUnBlock();
+            }
+        }
+    
+        function registerUser(errorMsg){
+            if(errorMsg === ''){
+                var form_signup = document.querySelector('.luform__signup');
+                form_signup.classList.add('u-hidden-visually');
+                var form_thankyou = document.querySelector('.luform__thankyou');
+                form_thankyou.classList.remove('u-hidden-visually');
+            }
+        }
+    
+        function showError(errorMsg){
+            if(errorMsg === ''){
+                var form_error = document.querySelector('.error_wrapper');
+                form_error.classList.add('u-hidden-visually');
+            }else{
+                /*var form_login = document.querySelector('.luform__login');
+                var form_reset = document.querySelector('.luform__reset');
+                var form_signup = document.querySelector('.luform__signup');
+                var form_thankyou = document.querySelector('.luform__thankyou')*/;
+                var form_error = document.querySelector('.error_wrapper');
+                var errorMsgElement = document.querySelector('.p_error');
+                /*form_login.classList.add('u-hidden-visually');
+                form_reset.classList.add('u-hidden-visually');
+                form_signup.classList.add('u-hidden-visually');
+                form_thankyou.classList.add('u-hidden-visually');*/
+                form_error.classList.remove('u-hidden-visually');
+                errorMsgElement.innerHTML = errorMsg;
+            }
+        }
+        function showErrorForConfirm(errorMsg){
+            if(errorMsg === ''){
+                var form_error = document.querySelector('.error_wrapper');
+                form_error.classList.add('u-hidden-visually');
+                PasswordConfirmation();
+            }else{
+                var form_error = document.querySelector('.error_wrapper');
+                var errorMsgElement = document.querySelector('.p_error');
+                form_error.classList.remove('u-hidden-visually');
+                errorMsgElement.innerHTML = errorMsg;
+            }
+        }
+        
+        function showErrorRegister(errorMsg){
+            if(errorMsg === ''){
+                var form_error = document.querySelector('.error_wrapper_register');
+                form_error.classList.add('u-hidden-visually');
+            }else{
+                /*var form_login = document.querySelector('.luform__login');
+                var form_reset = document.querySelector('.luform__reset');
+                var form_signup = document.querySelector('.luform__signup');
+                var form_thankyou = document.querySelector('.luform__thankyou')*/;
+                var form_error = document.querySelector('.error_wrapper_register');
+                var errorMsgElement = document.querySelector('.p_error_register');
+                /*form_login.classList.add('u-hidden-visually');
+                form_reset.classList.add('u-hidden-visually');
+                form_signup.classList.add('u-hidden-visually');
+                form_thankyou.classList.add('u-hidden-visually');*/
+                form_error.classList.remove('u-hidden-visually');
+                errorMsgElement.innerHTML = errorMsg;
+                document.getElementById("modal-1").scrollTop = document.getElementById("modal-1").scrollHeight;
+            }
+        }
+        function closeConfirm(){
+            var resetConfirm =document.getElementById('resetFormConfirm1');
+            resetConfirm.classList.add('u-hidden-visually');
+            refreshPage();
+        }
+        
+        
+        
+        function toggleTabForms(showForm) {
+            var logintoggle = document.querySelector('.js_luform--login');
+            var signuptoggle = document.querySelector('.js_luform--signup');
+            var loginForm = document.querySelector('.luform__login');
+            var signupForm = document.querySelector('.luform__signup');
+            var thankyouForm = document.querySelector('.luform__thankyou');
+            var resetForm = document.querySelector('.luform__reset');
+            var resetConfirm =document.getElementById('resetFormConfirm1');
+            var modalTabs = document.querySelector('.modaltabs');
+            var resettoggle = document.querySelector('.js-modal-reset');
+            var errorForm = document.querySelector('.error_wrapper');
+            var registerErrorForm = document.querySelector('.error_wrapper_register');
+            if (showForm === 'login') {
+                signupForm.classList.add('u-hidden-visually');
+                loginForm.classList.remove('u-hidden-visually');
+                logintoggle.classList.remove('tab__unselected');
+                signuptoggle.classList.add('tab__unselected');
+                resetForm.classList.add('u-hidden-visually');
+                resetConfirm.classList.add('u-hidden-visually');
+                thankyouForm.classList.add('u-hidden-visually');
+                errorForm.classList.add('u-hidden-visually');
+                registerErrorForm.classList.add('u-hidden-visually');
+            } else {
+                signupForm.classList.remove('u-hidden-visually');
+                loginForm.classList.add('u-hidden-visually');
+                logintoggle.classList.add('tab__unselected');
+                signuptoggle.classList.remove('tab__unselected');
+                resetForm.classList.add('u-hidden-visually');
+                resetConfirm.classList.add('u-hidden-visually');
+                thankyouForm.classList.add('u-hidden-visually');
+                errorForm.classList.add('u-hidden-visually');
+                registerErrorForm.classList.add('u-hidden-visually');
+            }
+        }
+        
+       function getTrackingID()
+        {
+           
+            ga(function() { 
+            var tracker = ga.getAll()[0];
+            var trackingId = tracker.get('trackingId');   
+            jQuery('[id$=GATRACKID]').val(trackingId);              
+            var clientId = tracker.get('clientId');
+            jQuery('[id$=GACLIENTID]').val(clientId);
+            var userId = tracker.get('userId'); 
+            jQuery('[id$=GAUSERID]').val(userId);
+          });
+        }
+
+        function refreshPage()
+          {
+               document.getElementById('{!$Component.signupForm}').reset();
+            
+              //window.location.reload(); 
+          }
+          
+    </script>
+    
+    
+        <div class="modal" id="modal-1" aria-hidden="true" role="dialog" aria-labelledby="modal__heading">
+            <div class="modal__wrapper">
+                <div class="modal__content"> 
+                    <div class="modal-dialog js-modal-dialog">
+                        <button class="modal__close js-modal-close" type="button" onclick="closeConfirm()">
+                              <svg class="o-icon" >
+                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.dist_landrover, 'svg/icons.svg#icon-cross')}"></use>
+                              </svg>
+                              <span class="u-hidden-visually" >Close</span>
+                        </button>
+                        <div class="modal-dialog__content">
+                                <div class="lu_form_modal">
+                                    <div class="o-layout o-layout--gutterless modaltabs">
+                                        <div onclick="toggleTabForms('login'); return false;" class="o-layout__item o-layout--center u-width-1/1@mobile u-width-1/2@tablet u-width-1/2@desktop">
+                                            <div class="tab">
+                                               <a href="#" class="lg_tablink js_luform--login" ><span class="lg_tab" >{!$Label.Login}</span></a>
+                                            </div>
+                                        </div>
+                                        <div onclick="toggleTabForms('register'); return false;" class="o-layout__item u-width-1/1@mobile u-width-1/2@tablet u-width-1/2@desktop">
+                                            <div class="tab">
+                                                <a href="#" class="lg_tablink tab__unselected js_luform--signup" ><span class="lg_tab" >{!$Label.Register}</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-wrapper">
+                                        
+                                        <div class="error_wrapper u-hidden-visually">
+                                            <div class="error">
+                                                <h3 class="modal__heading h_error">{!$Label.An_Error_Has_Occurred}</h3>
+                                                <p class="p_error"></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <apex:form id="loginForm2">
+                                        <div class="luform__login">
+                                         <script type="text/javascript">
+                                           function noenter(e){
+                                                if(window.event){
+                                                key = window.event.keyCode; //IE
+                                                } else{
+                                                key = e.which; //firefox
+                                                }
+                                                if(key == 13) {
+                                                var ele=document.getElementById('loginForm2:loginbutton');
+                                            ele.click();
+                                                return false;
+                                                } 
+                                                  else{
+                                                return true;
+                                                }
+                                               }
+                                            </script>
+                                            <p class="lg_blurb">
+                                                {!$Label.Already_have_an_account}
+                                            </p>
+                                            <div class="form__field">
+                                                <label for="email" class="form__label">{!$Label.EMAIL_ADDRESS}</label>
+                                                <div>
+                                                    <apex:inputText id="username" styleClass="input-text" maxlength="256" value="{!loginUserName}" />
+                                                </div>
+                                            </div>
+                                            <div class="form__field">
+                                                <label for="password" class="form__label">{!$Label.PASSWORD_UDAAN}</label>
+                                                <apex:inputSecret id="passwordlogin" styleClass="input-text" maxlength="20"  value="{!loginPassword}"  onkeypress="return noenter(event);"/>
+                                            </div>
+                                            <p>
+                                            <apex:commandButton id="loginbutton" styleClass="button u-margin-top" value="{!$Label.aopcom_LoginPageLoginbutton}" onclick="modalBlock();" action="{!login}" oncomplete="showError('{!errorMsg}'); modalUnBlock(); return false;" reRender="modal-1" />
+                                            <!--<apex:commandButton id="loginbutton" styleClass="button u-margin-top" value="{!$Label.aopcom_LoginPageLoginbutton}" action="{!login}" oncomplete="showError('{!errorMsg}'); return false;" reRender="modal-1" />-->
+
+                                            </p>
+                                            <apex:actionRegion > 
+                                                <apex:commandLink value="{!$Label.Forgot_password}" onclick="forgotPasswordLink();return false;" styleClass="js-modal-reset"/>
+                                            </apex:actionRegion>
+                                        </div>
+                                        </apex:form>
+                                        
+                                        <apex:form id="signupForm">
+                                        <apex:inputHidden id="GATRACKID"  value="{!GATRACKID}"/>
+                                         <apex:inputHidden id="GAUSERID"  value="{!GAUSERID}"/>
+                                         <apex:inputHidden id="GACLIENTID"  value="{!GACLIENTID}"/>
+                                        <div class="luform__signup  u-hidden-visually">
+                                            <p class="lg_blurb">
+                                                {!$Label.Register_on_this_website}
+                                            </p>
+                                            <div class="form__field">
+                                                <label for="fname" class="form__label">{!$Label.FIRST_NAME}</label>
+                                                <div>
+                                                    <apex:inputText id="fname" value="{!firstName}" styleClass="input-text" />
+                                                </div>
+                                            </div>
+                                            <div class="form__field">
+                                                <label for="sname" class="form__label">{!$Label.LAST_NAME}</label>
+                                                <div>
+                                                    <apex:inputText id="sname" value="{!lastName}" styleClass="input-text"  />
+                                                </div>
+                                            </div>
+                                            <apex:outputPanel rendered="{!$CurrentPage.Parameters.market == 'br'}">
+                                            <div class="form__field">
+                                                <label for="fname" class="form__label">{!$Label.CPF}</label>
+                                                <div>
+                                                    <apex:inputText id="CPF" value="{!CPF}" styleClass="input-text" />
+                                                </div>
+                                            </div>
+                                            </apex:outputPanel>
+                                            <div class="form__field">
+                                                <label for="email" class="form__label">{!$Label.EMAIL_ADDRESS}</label>
+                                                <div>
+                                                    <apex:inputText id="signupaddress" styleClass="input-text" value="{!email}" />
+                                                </div>
+                                            </div>
+                                            <div class="form__field">
+                                                <label for="phone" class="form__label">{!$Label.PHONE}</label>
+                                                <div>
+                                                    <apex:inputText id="signupphone" styleClass="input-text" value="{!phone}" required="true" onkeypress="return event.charCode >= 48 && event.charCode <= 57"/>
+                                                </div>
+                                            </div>
+                                            <div class="form__field">
+                                                <label for="enquiry" class="form__label">{!$Label.Enquiry_Info}</label>
+                                                <div>
+                                                    <apex:inputText id="signupenquiry" styleClass="input-text" value="{!enquiryinfo}" />
+                                                </div>
+                                            </div>
+                                            <div class="form__field">
+                                                <label for="password" class="form__label">{!$Label.PASSWORD_UDAAN}</label>
+                                                <apex:outputPanel style="font-size: 11px;" rendered="{!$CurrentPage.parameters.market == 'sg'}">
+                                                	{!$Label.Password_Policy}
+                                                </apex:outputPanel>
+                                                <div>
+                                                    <apex:inputSecret id="passwordsignup" value="{!password}" styleClass="input-text pass" />
+                                                </div>
+                                            </div>
+                                            <div class="form__field">
+                                                <label for="password" class="form__label">{!$Label.CONFIRM_PASSWORD_UDAAN}</label>
+                                                <div>
+                                                    <apex:inputSecret id="confirmpasswordsignup" value="{!confirmPassword}" styleClass="input-text cpass" />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div style="height:150px;overflow:auto;border:1px solid #999;padding-bottom: 12px;padding-top: 12px;">
+                                                <p style="white-space:pre-wrap;">{!$Label.TsCs_Register_Context1}</p>
+                                                <p style="white-space:pre-wrap;">{!$Label.TsCs_Register_Context2}</p>
+                                                 <apex:outputPanel rendered="{!$CurrentPage.Parameters.market == 'br'}"><p style="white-space:pre-wrap;">{!$Label.TsCs_Register_Context3}</p></apex:outputPanel>
+                                            </div>
+                                            <div style="padding-bottom: 12px;padding-top:12px;vertical-align:middle;">
+                                                <span style="vertical-align:middle;"><apex:inputCheckbox value="{!agree}"/></span>
+                                                <span style="vertical-align:middle;">{!$Label.Agree}</span>
+                                            </div>
+                                            <div style="padding-bottom: 12px;padding-top:12px;vertical-align:middle;">
+                                                <span style="vertical-align:middle;"><apex:inputCheckbox value="{!emailOptedOut}"/></span>
+                                                <span>{!$Label.Email_Opt_Out}</span>
+                                                
+                                            </div>
+                                             <apex:outputPanel rendered="{!$CurrentPage.Parameters.market == 'th'}">
+                                            <div class="g-recaptcha" data-callback="undisabled" data-expired-callback="disabled" data-sitekey="{!$Label.reCaptcha_Th}" ></div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!$CurrentPage.Parameters.market != 'th'}">
+                                            <div class="g-recaptcha" data-callback="undisabled" data-expired-callback="disabled" data-sitekey="{!$Label.reCAPTCHA_Sitekey}" ></div>
+                                            </apex:outputPanel>
+                                            <!-- <div class="g-recaptcha" data-sitekey="6Ler608UAAAAABJJ-6LfkySsUAAAAACCLZbzNYMeb4XQygz3CwXvDyTCA"></div> -->
+                                            <!-- <div class="g-recaptcha" data-sitekey="6Ler608UAAAAABJJ-ZkgymYY2GkjDWJSaCeSU8SS"></div> -->
+                                            <div class="error_wrapper_register error_wrapper u-hidden-visually" style="margin-top: 20px;">
+                                                <div class="error">
+                                                    <h3 class="modal__heading h_error">{!$Label.An_Error_Has_Occurred}</h3>
+                                                    <p class="p_error_register p_error"></p>
+                                                </div>
+                                            </div>
+                                            
+                                            <p id="submitRegisterbtn">
+                                            <!-- <apex:commandButton id="registerbutton" styleClass="button u-margin-top" value="{!$Label.Register}" onclick="modalBlock();" action="{!createUserAccount}" oncomplete="createUserController({!createUserFlag},'{!errorMsg}');return false;" disabled="{!registerDisabled}" /></p> -->
+                                            <apex:commandButton id="registerbutton" styleClass="button u-margin-top" value="{!$Label.Register}"  action="{!createUserAccount}" oncomplete="createUserController({!createUserFlag},'{!errorMsg}');return false;" disabled="{!registerDisabled}" status="loginloading"  /></p>
+                                            <apex:actionFunction name="createuser" action="{!createUser}" oncomplete="registerUser('{!errorMsg}');showErrorRegister('{!errorMsg}');modalUnBlock();return false;"/>
+                                            <apex:actionRegion >
+                                                <apex:actionFunction name="undisabled" action="{!registerUnDisabled}" oncomplete="return false;" reRender="registerbutton"/>
+                                                <apex:actionFunction name="disabled" action="{!registerDisabled}" oncomplete="return false;" reRender="registerbutton"/>
+                                            </apex:actionRegion>
+                                        </div>
+                                        
+                                        <div class="luform__thankyou u-hidden-visually">
+                                            <h3 class="modal__heading">{!$Label.TITLE_THANK_YOU}</h3>
+                                            <p>
+                                                {!$Label.Thank_you_for_registering}
+                                            </p>
+                                            <div >
+                                                <p><button class="button js-modal-close" onclick="refreshPage()">{!$Label.Continue}</button></p>
+                                            </div>
+                                        </div>
+                                        </apex:form>
+
+                                        <apex:form id="resetForm">
+                                        <script type="text/javascript">
+                                             
+                                           function noenterForgotPwd(e){
+                                                if(window.event){
+                                                key = window.event.keyCode; //IE
+                                                } else{
+                                                key = e.which; //firefox
+                                                }
+                                                if(key == 13) {
+                                                var ele=document.getElementById('resetForm:forgotPwdBtn');
+                                            ele.click();
+                                                return false;
+                                                } 
+                                                  else{
+                                                return true;
+                                                }
+                                               }
+                                            </script>
+                                            <div class="luform__reset u-hidden-visually">
+                                                <h2 class="u-h4">{!$Label.Forgotten_Password}</h2>
+                                                <p class="lg_blurb">{!$Label.Please_enter_your_email_address_to_reset_your_password}</p>
+                                                <div class="form__field">
+                                                    <label for="email" class="form__label">{!$Label.EMAIL_ADDRESS}</label>
+                                                    <div><apex:inputText id="email" value="{!forgotPasswordMail}" styleClass="input-text" onkeypress="return noenterForgotPwd(event);"/></div>
+                                                </div>
+                                                <div >
+                                                    <p><apex:commandButton styleClass="button" action="{!forgotPassword}" status="loading" value="{!$Label.Continue}"  oncomplete="emailVar='{!forgotPasswordMail}';showErrorForConfirm('{!errorMsg}'); return false;" /></p>
+                                                </div>
+                                            </div>
+                                        </apex:form>
+                                        <apex:form id="ConfirmationReset">
+                                            <div class="luform__reset u-hidden-visually" id="resetFormConfirm1" >
+                                                <h2 class="u-h4">{!$Label.Forgotten_Password_Link_Sent}</h2>
+                                                <p class="lg_blurb">{!$Label.We_ve_sent_a_reset_password_email_to}&nbsp;<span id='addemail'></span><br/>
+                                                {!$Label.To_create_your_new_password_click_the_link_in_the_email_and_enter_a_new_one}<br/>{!$Label.Didn_t_receive_the_email_Check_your_junk_mail_or_send_me_another}</p>
+                                                <div >
+                                                    <p>
+                                                    <apex:commandButton styleClass="button" status="loading" value="{!$Label.Login}"  onclick="toggleTabForms('login'); return false;" />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <apex:commandButton styleClass="button" action="{!forgotPassword}" status="loading" value="{!$Label.Resend}"  oncomplete="showError('{!errorMsg}'); return false;" />
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </apex:form>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <apex:actionstatus id="loginloading">            
+               <apex:facet name="start">
+                   <div class="blockUI blockOverlay" style="z-index: 1000; border: none; margin: 0px; padding: 0px; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(0, 0, 0); opacity: 0.2; cursor: wait; position: fixed;"></div>
+                   <div class="blockUI blockMsg blockPage" style="z-index: 1011; position: fixed; padding: 0px; margin: 0px; width: 30%; top: 40%; left: 35%; text-align: center; color: rgb(0, 0, 0); border: none; cursor: wait;"><img src="{!URLFOR($Resource.BlockUIImage)}" alt="Blocking Image" /></div>
+                  </apex:facet>
+            </apex:actionstatus>
+        </div>
+ 
+</apex:component>

@@ -1,0 +1,44 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="simpleOrder" type="Object" />
+    <aura:attribute name="accountIcon" type="String" default="standard:account" />
+    <aura:attribute name="statusIcon" type="String" default="standard:stage" />
+    <aura:attribute name="priceIcon" type="String" default="custom:custom17" />
+    <aura:attribute name="vistaIcon" type="String" default="standard:shipment" />
+    <aura:attribute name="eventIcon" type="String" default="standard:event" />
+    <aura:attribute name="deliveryIcon" type="String" default="standard:thanks" />
+    <aura:attribute name="soqlError" type="String" />
+    <aura:attribute name="columnFields" type="String[]" default="['Status', 'TotalAmount', 'AccountId', 'Account.Name', 'Vista_Order_Number__c', 'Last_Event__c', 'Planned_Delivery_Date__c']" />
+      
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetFields="{!v.simpleOrder}" mode="VIEW" fields="{!v.columnFields}" targetError="{!v.soqlError}" />
+    
+    <lightning:layout>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.sfAccount}"><lightning:icon iconName="{!v.accountIcon}" size="small" /></span>
+            <aura:if isTrue="{!v.simpleOrder.Account.Name!=null}">
+                <a href="javascript:void(0)" onclick="{!c.navigateToRecord}">{!v.simpleOrder.Account.Name}</a>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.vlStatus}"><lightning:icon iconName="{!v.statusIcon}" size="small" /></span>
+            <lightning:formattedText value="{!if(v.simpleOrder.Status!=null, v.simpleOrder.Status, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Order_Amount}"><lightning:icon iconName="{!v.priceIcon}" size="small" /></span>
+            <lightning:formattedNumber value="{!if(v.simpleOrder.TotalAmount!=null, v.simpleOrder.TotalAmount, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Vista_Order_No}"><lightning:icon iconName="{!v.vistaIcon}" size="small" /></span>
+            <lightning:formattedText value="{!if(v.simpleOrder.Vista_Order_Number__c!=null, v.simpleOrder.Vista_Order_Number__c, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Order_Last_Event}"><lightning:icon iconName="{!v.eventIcon}" size="small" /></span>
+            <lightning:formattedText value="{!if(v.simpleOrder.Last_Event__c!=null, v.simpleOrder.Last_Event__c, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Order_Planned_Delivery_Date}"><lightning:icon iconName="{!v.deliveryIcon}" size="small" /></span>
+            <lightning:formattedText value="{!if(v.simpleOrder.Planned_Delivery_Date__c!=null, v.simpleOrder.Planned_Delivery_Date__c, '-')}" />
+        </lightning:layoutItem>
+	</lightning:layout>
+    
+</aura:component>

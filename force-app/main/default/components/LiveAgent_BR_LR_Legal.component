@@ -1,0 +1,84 @@
+<apex:component layout="none">
+      <style>
+    .accordion__text p:first-of-type {
+ padding-top: 0px; 
+}
+
+.accordion input:checked~.accordion__text {
+    max-height: 520px;
+}
+    </style>
+    <header class="header header--dark">
+    <div class="header__middle">
+      <button class="button button--back" onclick="showChat()">Voltar para Chat</button>
+    </div>
+  </header>
+
+    <main class="main-content main-content--dark">
+    <div class="main-content__inner">
+      <div class="liveagent__text liveagent__text--compact">
+        <h3 class="expanded">TEXTO LEGAL</h3>
+        <p>Na Land Rover nós somos comprometidos a proteger a privacidade dos usuários no nosso serviço de Chat Online. As informações abaixo te darão mais detalhes sobre o que acontece quando você visita nosso website, quais informações são obtidas sobre você (se acontecer) e como nós usamos essas informações.</p>
+    
+          <div class="accordion">
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion10" name="accordion10" />
+            <label class="accordion__title" for="accordion10">O que O LAND ROVER Chat Online faz?</label>
+            <div class="accordion__text">
+              <p>LAND ROVER Chat Online é uma tecnologia de chat e mensagens online que facilita vendas em tempo real e serviços aos consumidores no website oficial da LAND ROVER Brasil (www.LANDROVERbrasil.com.br). </p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion11" name="accordion11" />
+            <label class="accordion__title" for="accordion11">Usuários LAND ROVER Chat Online</label>
+            <div class="accordion__text">
+             <p>Que informações coletamos dos usuários do LAND ROVER Chat Online? Durante o engajamento, LAND ROVER Chat Online entra numa sessão de perguntas e respostas com um operador por chat de texto. Nós mantemos as transcrições dos diálogos dos chats. Depois do chat, nós solicitamos aos clientes LAND ROVER Chat Online que preencham um questionário de saída para feedback do serviço, que é completamente voluntário. Todos os dados são coletados apenas se você nos fornecer, exemplo: quando completar um formulário de contato. Se durante o chat o indivíduo escolher inserir dados pessoais ou profissionais (email, nomes, endereços), a divulgação destes dados só é feita por ação voluntária.  Tais informações não são divididas com nenhum terceiro ou usada para outro propósito diferente do solicitado pelo cliente. Nós guardamos informações do browser para ajudar a diagnosticar problemas de navegação com nosso servidor, agregar dados demográficos e administrar nosso site. Aceitando entrar no Chat Online, o usuário consente com logar-se e processa o endereço de IP.
+Como a Land Rover usa informações coletadas no LAND ROVER Chat Online haverá divulgação de tais informações para terceiros? Nós acessamos a informação que coletamos para um propósito definido. As informações de todos os usuários Chat Online, incluindo identificações pessoais, não serão divididas com ninguém. Nós não vendemos ou trocamos informações pessoais de clientes.</p><p></p>
+            </div>
+          </div>
+           <div class="liveagent__block">
+            <input type="checkbox" id="accordion17" name="accordion17" />
+            <label class="accordion__title" for="accordion17">Navegando com Chat Online</label>
+            <div class="accordion__text">
+             <p>Como parte do engajamento do Chat Online, você tem a opção de escoler, apertando os ícones respectivos, diferentes canais de comunicação. Você tem a opção de termianr a conversa a qualquer momento.</p>
+            </div>
+          </div>         
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion13" name="accordion13" />
+            <label class="accordion__title" for="accordion13">E sobre "cookies"?</label>
+            <div class="accordion__text">
+              <p>Cookies são partes de informações que alguns websites transferem para o computador que está acessando-o e são usados para guardar histórico de navegação. O uso de cookies faz a navegação na internet mais fácil, performando certas funções coo salvando senhas, listando compras potenciais, preferências pessoais e para cdertificar que usuários não vejam a mesma oferta ou ajuda repetidamente. Muitos consideram o uso de cookies como um padrão da indústria. Os cookies em nossos sites tem objetivo de mellhorar a experiência do usuário, reconhecendo uma visita de retorno ao site. Navegadores são usualmente configurados para aceitar cookies. Entretanto, se preferir não enviar esses dados, isso pode ser alterado na configuração do seu navegador.
+                </p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion14" name="accordion14" />
+            <label class="accordion__title" for="accordion14">Política de Opt-out</label>
+            <div class="accordion__text">
+              <p>A Jaguar Land Rover dá ao usuário opções quando necessário. Dentre elas, é possível escolher sair da sessão e  sair da lista de recebimento de comunicações, caso tenha aceitado anteriormente.</p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion15" name="accordion15" />
+            <label class="accordion__title" for="accordion15">Resumo</label>
+            <div class="accordion__text">
+              <p>Estamos comprometidos a proteger a privacidade do nosso site e dos usuários de nosso serviço de Chat Online. Usamos as informações que coletamos para prover uma experiência melhor para usuários em um uso futuro dos nossos serviços e para proover feedbacks aos nossos clientes.</p>
+            </div>
+          </div>
+            <div class="liveagent__block">
+            <input type="checkbox" id="accordion16" name="accordion16" />
+            <label class="accordion__title" for="accordion16">E&#38;OE</label>
+            <div class="accordion__text">
+              <p>Erros e omissões</p>
+            </div>
+          </div>
+        </div>
+              
+              
+              
+         
+      </div>
+    </div>
+  </main>
+
+</apex:component>

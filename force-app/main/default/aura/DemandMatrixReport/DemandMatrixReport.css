@@ -1,0 +1,9 @@
+.THIS thead th { background-color: #BF9000; position: sticky; top: 0; z-index:4 !important;position: -webkit-sticky;}
+.THIS thead th:first-child {z-index:5 !important;}
+/*.THIS thead th:nth-child(2) {z-index:5 !important;}*/
+
+.THIS .cust tr>th:first-child { background-color: #BF9000; position: sticky; left: 0; z-index:3;position: -webkit-sticky;}
+.THIS .cust tr>td:first-child { position: sticky; left: 0; z-index:3;position: -webkit-sticky;}
+
+/*.THIS .cust tr>th:nth-child(1) { position: sticky; left: 50px; z-index:3;position: -webkit-sticky;}
+.THIS .cust tr>td:nth-child(1) { position: sticky; z-index:3;position: -webkit-sticky;}*/

@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Event template" >
+ 	<aura:attribute name="tabName" type="String"/>
+    <aura:attribute name="iconName" type="String"/>
+</aura:event>

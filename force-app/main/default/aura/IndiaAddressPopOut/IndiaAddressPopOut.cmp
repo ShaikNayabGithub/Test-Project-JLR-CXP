@@ -1,0 +1,9 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+         
+     <aura:attribute name="recordId" type="Id" />
+    <lightning:button variant="brand"
+                          label=" Address Lookup"
+                          title=" Address lookup"
+                          onclick="{! c.openPopOut }" />
+	
+</aura:component>

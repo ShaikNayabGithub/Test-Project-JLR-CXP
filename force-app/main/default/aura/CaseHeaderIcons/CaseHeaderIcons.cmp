@@ -1,0 +1,68 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="simpleCase" type="Object" />
+    <!--<aura:attribute name="priorityIcon" type="String" default="standard:custom_notification" />
+    <aura:attribute name="statusIcon" type="String" default="standard:campaign" />
+    <aura:attribute name="numberIcon" type="String" default="standard:password" />
+    <aura:attribute name="accountIcon" type="String" default="standard:account" />
+    <aura:attribute name="contactIcon" type="String" default="standard:contact" />
+    <aura:attribute name="assetIcon" type="String" default="custom:custom31" />
+    <aura:attribute name="brandIcon" type="String" default="custom:custom11" />
+    <aura:attribute name="ageIcon" type="String" default="custom:custom16" />
+    <aura:attribute name="categoryIcon" type="String" default="standard:environment_hub" />-->
+	<aura:attribute name="numberImg" type="String" default="/More/Icon_CaseNumber.png" />
+    <aura:attribute name="accountImg" type="String" default="/Contact/Icon_Account.png" />
+    <aura:attribute name="priorityImg" type="String" default="/More/Icon_Priority.png" />
+    <aura:attribute name="ageImg" type="String" default="/More/Icon_CaseAge.png" />
+    <aura:attribute name="categoryImg" type="String" default="/More/Icon_Category.png" />
+    <aura:attribute name="columnFields" type="String[]" default="['Priority', 'Status', 'CaseNumber', 'AccountId', 'Account.Name', 'ContactId', 'Contact.Name', 'AssetId', 'Asset.Name', 'Brand__c', 'Type', 'OpenDaysOfCase__c']" />
+    
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetFields="{!v.simpleCase}" mode="VIEW" fields="{!v.columnFields}" />
+    
+    <lightning:layout>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="{!$Label.c.Case}"><img src="{!$Resource.MENAHeaderIcons + v.numberImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!v.simpleCase.CaseNumber}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="{!$Label.c.sfAccount}"><img src="{!$Resource.MENAHeaderIcons + v.accountImg}" style="width:40px; height:40px" /></span>
+            <aura:if isTrue="{!v.simpleCase.AccountId!=null}">
+            	<a href="javascript:void(0)" onclick="{!c.navigateToRecord}">{!v.simpleCase.Account.Name}</a>
+            	<aura:set attribute="else">-</aura:set>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="{!$Label.c.Priority}"><img src="{!$Resource.MENAHeaderIcons + v.priorityImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleCase.Priority!=null, v.simpleCase.Priority, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="{!$Label.c.Case_Age}"><img src="{!$Resource.MENAHeaderIcons + v.ageImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedNumber value="{!v.simpleCase.OpenDaysOfCase__c}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="{!$Label.c.Case_Category}"><img src="{!$Resource.MENAHeaderIcons + v.categoryImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleCase.Type!=null, v.simpleCase.Type, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="3" padding="horizontal-small">
+            <aura:if isTrue="{!v.simpleCase.Brand__c == 'Jaguar'}">
+	       		<img src="{!$Resource.LightningBrandJaguar}" />
+            </aura:if>
+            <aura:if isTrue="{!v.simpleCase.Brand__c == 'Land Rover'}">
+                <img src="{!$Resource.LightningBrandLandRover}" />
+            </aura:if>
+        </lightning:layoutItem>
+<!--
+        <lightning:layoutItem size="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.sfContact}"><lightning:icon iconName="{!v.contactIcon}" size="small" /></span>
+            <aura:if isTrue="{!v.simpleCase.ContactId!=null}">
+            	<a href="javascript:void(0)" onclick="{!c.navigateToRecord}">{!v.simpleCase.Contact.Name}</a>
+            </aura:if>
+        </lightning:layoutItem>
+		<lightning:layoutItem size="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Asset}"><lightning:icon iconName="{!v.assetIcon}" size="small" /></span>
+            <aura:if isTrue="{!v.simpleCase.AssetId!=null}">
+                <a href="javascript:void(0)" onclick="{!c.navigateToRecord}">{!v.simpleCase.Asset.Name}</a>
+            </aura:if>
+        </lightning:layoutItem>
+-->
+	</lightning:layout>
+</aura:component>

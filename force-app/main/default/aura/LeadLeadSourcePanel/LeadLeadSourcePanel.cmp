@@ -1,0 +1,8 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="fieldList" type="List" default="['Current_Vehicle_Brand__c', 'Primary_Model_Interest__c', 'Current_Vehicle__c', 'LeadSource', 'Account__c']" />
+	
+	<lightning:card title="{!$Label.c.Lead_Source}" iconName="standard:lead" class="slds-p-around_xx-small">
+        <lightning:recordForm aura:id="editLead" recordId="{!v.recordId}" objectApiName="Lead" fields="{!v.fieldList}" mode="edit" columns="2" onsuccess="{!c.handleSuccess}" />
+   	</lightning:card>
+    
+</aura:component>

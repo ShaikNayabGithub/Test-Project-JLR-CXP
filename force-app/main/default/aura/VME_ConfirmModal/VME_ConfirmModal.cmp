@@ -1,0 +1,47 @@
+<aura:component controller="VME_Category_Adjustment_Ctrl"> 
+    <aura:attribute name="title" type="String" required="true"/>
+    <aura:attribute name="bodyMsg" type="String" required="true"/>
+    <aura:attribute type="String" name="CompId"/>
+     <aura:attribute type="String" name="schemeId"/>
+    <aura:attribute type="Boolean" name="showOkay" />
+    <aura:attribute type="Boolean" name="showBoth" />
+    <aura:attribute name="CurrentVME" type="VME_Campaign__c" />
+    <aura:attribute name="CurrentScheme" type="VME_Schemes__c" />
+    <aura:attribute name="CompName" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:registerEvent name="savedRecordDetailsEvt" type="c:VME_SavedRecordDetailsEvent" />
+    <aura:registerEvent name="refreshCmpEvt" type="c:VME_OpenModel" />
+    <aura:registerEvent  name="adjustVariantEvt" type="c:VME_OpenAdjustVariantModel" />
+    <aura:registerEvent name="statusEvent" type="c:VME_Confirm_Event"/> 
+      <aura:registerEvent name="statusEvent1" type="c:VME_Confirm_Event"/> 
+     <div class="demo-only"  style="height: 100%;">
+            <section  class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="width: 35%;">
+                    <header class="slds-modal__header">
+                         <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            {!v.title}    </h2>
+                        </header>
+                    <div class="slds-modal__content slds-p-around_medium" > 
+                        <p>
+                            <center>{!v.bodyMsg}</center>
+                        </p> 
+                    </div>
+                    <footer class="slds-modal__footer"> 
+                        <div class="slds-align_absolute-center">
+                        <aura:if isTrue="{!v.showOkay}">
+                               <lightning:button variant="brand" label="OK" title="Ok" onclick="{! c.confirm}" />
+                        </aura:if>	
+                         <aura:if isTrue="{!(!v.showOkay)}">
+                           <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeMe}" />
+                        </aura:if>
+                        <aura:if isTrue="{!v.showBoth}">
+                               <lightning:button variant="brand" label="OK" title="Ok" onclick="{! c.confirm}" />
+                        </aura:if>	
+                    </div>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+</aura:component>

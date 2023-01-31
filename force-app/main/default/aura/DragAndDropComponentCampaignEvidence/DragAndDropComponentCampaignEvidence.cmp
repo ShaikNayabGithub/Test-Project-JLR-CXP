@@ -1,0 +1,34 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="CoopCampaignEvidenceController">
+    
+    <aura:attribute name="disabled" type="Boolean" default="true"/>
+    <aura:attribute name="showNew" type="Boolean" default="true"/>
+    <aura:attribute name="activities" type="Campaign_Activity_Evidence__c[]" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="CommunityRecordId" type="String" />
+    <aura:attribute name="selectedEvidenceId" type="String" />
+    <aura:attribute name="selectedEvidenceName" type="String" />
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="VariableA" type="String" default="Nuthing" />
+	<aura:attribute name="multiple" type="Boolean" default="true"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.loadCampaignActivitiesEvidence}" />
+    <aura:handler name="evidenceDragAndDrop" event="c:FileDragAndDropEvent" action="{!c.loadCampaignActivitiesEvidence}"/>
+    <aura:handler name="evidanceCreated" event="c:EvidenceSuccessEvent" action="{!c.loadCampaignActivitiesEvidence}"/>
+    
+    
+    
+    <div style="height:40px; margin-bottom:15px; background-color: #c9c9c9 !important;">
+        <div style="height:40px; float:left; padding-top:3px"><h1>{!$Label.c.LC_COOP_Activity_Evidence}</h1></div>
+    </div>
+    <div class="slds-box slds-m-bottom--small slds-theme_alert-texture">
+        <lightning:select aura:id="evidenceSelect" name="Select Evidence" label="Select Evidence" value="{!v.selectedEvidenceId}" onchange="{!c.onChangeSetValue}">
+            <option value="none">Create New</option>
+            <aura:iteration var="activity" items="{!v.activities}">       
+                <option value="{!activity.Id}" selected="{!if(v.selectedEvidenceId==activity.Id,true,false)}">{!activity.Name}</option>
+            </aura:iteration>
+        </lightning:select>   
+        <aura:if isTrue="{!v.showNew}">
+            <c:CampaignActivityEvidenceEditForm evidencerecordId="{!if(v.selectedEvidenceId !='none',v.selectedEvidenceId,null)}" evidencerecordName="{!if(v.selectedEvidenceId !='none',v.selectedEvidenceName,null)}" parentId="{!v.recordId}" />      
+        </aura:if>
+    </div>
+</aura:component>

@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT" description="Event template" >
+	<aura:attribute name="updateSchemeList" type="VME_Schemes__c[]" />
+	<aura:attribute name="openAdjustModel" type="boolean" default="false" />
+	<aura:attribute name="updateVMECampWrapperList" type="VME_Category_Adjustment_Ctrl.VMECampaignWrapper" />
+</aura:event>

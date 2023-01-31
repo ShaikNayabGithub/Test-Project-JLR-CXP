@@ -1,0 +1,79 @@
+<template>
+    <lightning-card>
+        <div class="slds-text-heading--small slds-truncate linksHeader">
+            <h2 class="header-title-container"><b>{label.linksHeader}</b></h2>
+        </div>
+        <div class="slds-var-p-around_medium linksBody">
+            <p class="linksBodyChild" if:true={firstLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={firstLink} label={firstLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={secondLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={secondLink} label={secondLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={thirdLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={thirdLink} label={thirdLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={fourthLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={fourthLink} label={fourthLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={fifthLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={fifthLink} label={fifthLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={sixthLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={sixthLink} label={sixthLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={seventhLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={seventhLink} label={seventhLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={eighthLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={eighthLink} label={eighthLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={ninthLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={ninthLink} label={ninthLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+            <p class="linksBodyChild" if:true={tenthLink}>
+                <lightning-icon icon-name="utility:link" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+                <lightning-formatted-url class="bodyLinks" value={tenthLink} label={tenthLinkLabel} target="_blank"></lightning-formatted-url>
+                <lightning-icon icon-name="utility:pop_in" alternative-text="Connected" size="xx-small">
+                </lightning-icon>
+            </p>
+        </div>
+    </lightning-card>
+</template>

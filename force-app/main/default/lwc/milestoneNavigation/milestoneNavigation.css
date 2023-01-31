@@ -1,0 +1,20 @@
+/**
+ * Created by caleb on 30/01/2020.
+ */
+.jlr-milestone-navigation-button
+{
+    text-transform: uppercase;
+    background-color: white;
+    border-style: solid;
+    border-color: black;
+    border-width: thin;
+    padding: 10px;
+    text-align: center;
+    width: available;
+    cursor: pointer;
+}
+
+.jlr-milestone-navigation-card
+{
+    background-color: #f8f8f8;
+}

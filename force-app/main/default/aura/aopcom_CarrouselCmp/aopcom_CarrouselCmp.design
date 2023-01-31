@@ -1,0 +1,25 @@
+<design:component>
+    <design:attribute name="EventTitle" label="Event Title"/>
+	<design:attribute name="Image1" label="Image Smart Cones"/>
+    <design:attribute name="Title1" label="Title Smart Cones"/>
+    <design:attribute name="Description1" label="Description Smart Cones"/> 
+    <design:attribute name="Image2" label="Image Demo Laps" />
+    <design:attribute name="Title2" label="Title Demo Laps"/>
+    <design:attribute name="Description2" label="Description Demo Laps"/>   
+    <design:attribute name="Image3" label="Image Guided Laps"/>
+    <design:attribute name="Title3" label="Title Guided Laps"/>
+    <design:attribute name="Description3" label="Description Guided Laps"/>  
+    <design:attribute name="Image4" label="Image Dynamic Driving"/>
+    <design:attribute name="Title4" label="Title Dynamic Driving"/>
+    <design:attribute name="Description4" label="Description Dynamic Driving"/>   
+    <design:attribute name="Image5" label="Image Spa"/>
+    <design:attribute name="Title5" label="Title Spa"/>
+    <design:attribute name="Description5" label="Description Spa"/>    
+    <design:attribute name="Image6" label="Image Golf"/>
+    <design:attribute name="Title6" label="Title Golf"/>
+    <design:attribute name="Description6" label="Description Golf"/>
+    <design:attribute name="Image7" label="Image Road Drive"/>
+    <design:attribute name="Title7" label="Title Road Drive"/>
+    <design:attribute name="Description7" label="Description Road Drive"/>
+
+</design:component>

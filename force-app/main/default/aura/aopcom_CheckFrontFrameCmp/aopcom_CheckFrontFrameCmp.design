@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="serchingAvailability" label="Serching availability message" />
+    <design:attribute name="checkfrontActivJS" label="Link to checkfront security booking" />
+</design:component>

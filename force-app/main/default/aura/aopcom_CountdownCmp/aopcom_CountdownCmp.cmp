@@ -1,0 +1,44 @@
+<aura:component controller="aopcom_CountdownCmp" implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doCountDown}"/>
+   <aura:attribute name="startDate" type="String" default="april 01, 2016 17:30:00"/>
+    <aura:attribute name="day" type="String"/>
+    <aura:attribute name="hour" type="String"/>
+    <aura:attribute name="min" type="String"/>
+	<aura:attribute name="sec" type="String"/>
+    <aura:attribute name="daylabel" type="String"/>
+    <aura:attribute name="hourlabel" type="String"/>
+    <aura:attribute name="minlabel" type="String"/>
+	<aura:attribute name="seclabel" type="String"/>
+    <aura:attribute name="title" type="String"/>
+	<aura:attribute name="description" type="String"/>
+	<div class="content-wrapper">
+		<div class="section">
+			<div class="grid">
+				<div class="section__header">
+					<h2 class="section__heading">{!v.title}</h2>
+				</div>
+				<div class="countdown-timer_a" data-eventDate_e="{!v.startDate}">
+					<div class="countdown-timer__element_a countdown-timer__days_a">
+						<span class="countdown-timer__counter_a">{!v.day}</span>
+						<span class="countdown-timer__label_a">{!v.daylabel}</span>
+					</div>
+					<div class="countdown-timer__element_a countdown-timer__hours_a">
+						<span class="countdown-timer__counter_a">{!v.hour}</span>
+						<span class="countdown-timer__label_a">{!v.hourlabel}</span>
+					</div>
+					<div class="countdown-timer__element_a countdown-timer__minutes_a">
+						<span class="countdown-timer__counter_a">{!v.min}</span>
+						<span class="countdown-timer__label_a">{!v.minlabel}</span>
+					</div>
+					<div class="countdown-timer__element_a countdown-timer__seconds_a">
+						<span class="countdown-timer__counter_a">{!v.sec}</span>
+						<span class="countdown-timer__label_a">{!v.seclabel}</span>
+					</div>
+				</div>
+				<div class="section__intro">
+					<p>{!v.description}</p>
+				</div>
+			</div><!-- .grid -->
+		</div>
+	</div>
+</aura:component>

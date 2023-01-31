@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>46.0</apiVersion>
+    <description>After upload, user should click a button &quot;Process WBS&quot; for running the batch for processing the uploaded data</description>
+</AuraDefinitionBundle>

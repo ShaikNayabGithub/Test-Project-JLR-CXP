@@ -1,0 +1,5 @@
+<design:component>
+	<design:attribute name="Error404Title" label="Error 404 Title" />
+    <design:attribute name="Error404Description" label="Error 404 Description"/>
+    <design:attribute name="Error404Link" label="Error 404 Link title"/>
+</design:component>

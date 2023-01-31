@@ -1,0 +1,14 @@
+.THIS {
+}
+
+    .THIS label {
+        display:none;
+    }
+
+    .THIS button {
+        margin-top:10px;
+    }
+
+    .THIS.slds-icon-utility-travel-and-places slds-icon_container svg {
+        fill:red;
+    }

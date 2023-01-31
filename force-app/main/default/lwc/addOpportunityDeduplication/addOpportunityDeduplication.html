@@ -1,0 +1,105 @@
+<!--
+ - Created by Ethan Sargent on 2/3/20.
+ -->
+
+<!-- Add Opportunity Deduplication -->
+<template>
+    <template if:false={showOpportunity}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-modal_medium slds-fade-in-open">
+            <!-- Account/Contact Deduplication Modal -->
+            <div class="slds-modal__container ">
+                <!-- Header Content -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={cancelHandler}>
+                        &times;
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Existing Records Detected</h2>
+                </header>
+                <!-- Body Content -->
+                <div class="slds-modal__content slds-p-around--medium" style="min-height: 500px;">
+                    <p>Some existing records have been detected based on the information you've provided.</p> <br>
+                    <!-- Account + Contact Content -->
+                    <template if:true={isCompany}>
+                        <p>Please select the relevant contact from the list below: </p>
+                        <c-add-opportunity-dedupe-account-table
+                                account-data={accountData}
+                                oncontactselected={handleContactSelected}
+                        ></c-add-opportunity-dedupe-account-table>
+                        <p class="slds-text-align--center"> Or,</p><br>
+                        <div style="width: 100%">
+                            <div class="slds-align_absolute-center">
+                                <button class="slds-button slds-button_brand" onclick={createNewHandler}>Create New Account and Contact</button>
+                            </div>
+                        </div>
+
+                    </template>
+
+                    <!-- Individual Content -->
+                    <template if:false={isCompany}>
+                        <p>Please select the relevant individual from the list below: </p>
+                        <div style="height: 70%">
+                            <lightning-datatable
+                                    key-field="id"
+                                    data={accountData.PersonAccounts}
+                                    columns={personColumns}
+                                    onrowselection={handleRowSelected}
+                                    max-row-selection="1"
+                            ></lightning-datatable>
+                        </div>
+                        <p class="slds-text-align--center"> Or, </p><br>
+                        <div style="width: 100%">
+                            <div class="slds-align_absolute-center">
+                                <button class="slds-button slds-button_brand" onclick={createNewHandler}>Create New Individual</button>
+                            </div>
+                        </div>
+                    </template>
+
+                </div>
+                <!-- Footer Content-->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={cancelHandler}>Cancel</button>
+
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!-- Opportunity Deduplication page -->
+    <template if:true={showOpportunity}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-modal_medium slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Header Content -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={cancelHandler}>
+                        &times;
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Existing Opportunities Found</h2>
+                </header>
+                <!-- Body Content -->
+                <div class="slds-modal__content slds-p-around--medium" style="min-height: 500px;">
+                    <p>The person you selected already has one or more open Opportunities associated with their Salesforce record. <br>
+                        Please choose an existing Opportunity or click continue to create a new opportunity. </p>
+
+                    <lightning-datatable
+                            key-field="id"
+                            data={opportunityData}
+                            columns={opportunityColumns}
+                            max-row-selection="1"
+                            onrowselection={handleOpportunitySelected}
+                    ></lightning-datatable>
+
+
+                </div>
+                <!-- Footer Content-->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={opportunityCancelHandler}>Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={createNewHandler}>Create New Opportunity</button>
+                </footer>
+            </div>
+
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

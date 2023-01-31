@@ -1,0 +1,216 @@
+<aura:component access="global" controller="RDAController" implements="forceCommunity:availableForAllPageTypes,lightning:actionOverride,force:lightningQuickAction">
+    <aura:attribute name="assetList" type="List" />
+    <aura:attribute name="rdaFilter" type="String" default="New_Retail" />
+    <aura:attribute name="rdaAssetSearch" type="String" default="" />
+    <aura:attribute name="tradeInVin" type="String" default="" />
+    <aura:attribute name="buttonInfo" type="String" default="" />
+    <aura:attribute name="showSpinner" type="boolean" default="true" />    
+    <aura:attribute name="showModal" type="Boolean" default="false"/> 
+    <aura:attribute name="showRDAModal" type="Boolean" default="false" />
+    <aura:attribute name="showAccountModal" type="Boolean" default="false" />    
+    <aura:attribute name="defaultrda" type="Object" />   
+    <aura:handler name="init" value="{!this}" action="{!c.performSearch}"/>
+    <aura:attribute name="popupMessage" type="String" />
+    <aura:attribute name="isLimitExceeded" type="Boolean" default="false" />
+    <aura:attribute name="isCommunity" type="Boolean" default="false" />
+    <aura:attribute name="userperset" type="Boolean" default="false"/>
+    <aura:attribute name="userperset1" type="Boolean" default="false"/>
+    <lightning:card title="{!if(v.userperset, $Label.c.RDA_New_Handover , 'New RDA')}">
+        <lightning:layout>
+            <lightning:layoutItem size="12">
+                <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid">
+                    <tbody>
+                        <tr>
+                            <td scope="row" style="vertical-align:top">
+                                <lightning:select value="{!v.rdaFilter}" label="{!$Label.c.Filter}">
+                                    <!--<option text="All" value="" selected ="{!v.rdaFilter == ''}" />-->
+                                    <option text="{!$Label.c.New_Retail}" value="New_Retail" selected ="{!v.rdaFilter == 'New_Retail'}" />
+                                    <option text="{!if(v.userperset, $Label.c.MENA_DealerOwned, $Label.c.Additional_Vehicle)}" value="Dealer_Owned" selected ="{!v.rdaFilter == 'Dealer_Owned'}" />
+                                    <option text="{!if(v.userperset, $Label.c.MENA_On_Sell, $Label.c.On_Sell)}" value="On_Sell" selected ="{!v.rdaFilter == 'On_Sell'}" />
+                                    <aura:if isTrue="{!not(v.isCommunity)}">
+                                    <option text="{!$Label.c.OUV}" value="OUV" selected ="{!v.rdaFilter == 'OUV'}" />
+                                     </aura:if>
+                                    <option text="{!$Label.c.Traded_In}" value="Trade_In" selected ="{!v.rdaFilter == 'Trade_In'}" />
+                                </lightning:select>
+                            </td>
+                            <td scope="row" style="vertical-align:top"><lightning:input type="text" label="{!$Label.c.Search}" value="{!v.rdaAssetSearch}" /></td>
+                            <td width="100px">&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </lightning:layoutItem>
+        </lightning:layout>
+        <aura:if isTrue="{!v.showSpinner}"><lightning:spinner /></aura:if>
+        <!-- Asset Search Results -->
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12">
+                <table class="slds-table slds-table_bordered" role="grid">
+                    <thead>
+                        <tr height="40px">
+                            <!--<th class="slds-is-resizable slds-is-sortable" scope="col"></th>-->
+                            <th scope="col">&nbsp;{!$Label.c.Asset}</th>
+                            <aura:if isTrue="{! and(v.rdaFilter != 'Dealer_Owned', v.rdaFilter != 'OUV')}" >
+                            <th scope="col">&nbsp;{!$Label.c.Account}</th>
+                            </aura:if>
+                            <th scope="col">&nbsp;{!$Label.c.Sales_Exec}</th>
+                            <th scope="col">&nbsp;{!$Label.c.Stock_Search_Brand}</th>
+                            <th scope="col">&nbsp;{!$Label.c.ProductInformation}</th>
+                            <th scope="col">&nbsp;{!$Label.c.Sale_Type_Code}</th>
+                            <!--<th scope="col">&nbsp;{!$Label.c.Purchase_Type}</th>-->
+                            <th scope="col" width="120px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.assetList}" var="asset">
+                            <aura:if isTrue="{!and(or(v.rdaFilter == '', asset.rdaType == v.rdaFilter), or(v.rdaAssetSearch == '', asset.rdaAsset.Name == v.rdaAssetSearch))}">
+                                <tr aria-selected="false" class="slds-hint-parent">
+                                    <!--<td scope="row">
+                                        <aura:if isTrue="{!asset.rdaType=='New_Retail'}">
+                                            <center><lightning:icon iconName="action:check" size="xx-small" /><p>{!$Label.c.New_Retail}</p></center>
+                                        </aura:if>
+                                        <aura:if isTrue="{!asset.rdaType=='Dealer_Owned'}">
+                                            <center><lightning:icon iconName="action:canvas" size="xx-small" /><p>{!$Label.c.Additional_Vehicle}</p></center>
+                                        </aura:if>
+                                        <aura:if isTrue="{!asset.rdaType=='Trade_In'}">
+                                            <center><lightning:icon iconName="action:lead_convert" size="xx-small" /><p>{!$Label.c.Traded_In}</p></center>
+                                        </aura:if>
+                                        <aura:if isTrue="{!asset.rdaType=='On_Sell'}">
+                                            <center><lightning:icon iconName="action:user_activation" size="xx-small" /><p>{!$Label.c.On_Sell}</p></center>
+                                        </aura:if>
+                                        <aura:if isTrue="{!asset.rdaType=='OUV'}">
+                                            <center><lightning:icon iconName="action:share_poll" size="xx-small" /><p>{!$Label.c.OUV}</p></center>
+                                        </aura:if>
+                                    </td>-->
+                                    <td scope="row" class="slds-truncate"><a href="{!'/CXP/s/asset/' + asset.rdaAsset.Id + '/' + asset.rdaAsset.Name}">{!asset.rdaAsset.Name}</a></td>
+                                     <aura:if isTrue="{! and(v.rdaFilter != 'Dealer_Owned', v.rdaFilter != 'OUV')}"  >
+                                    <td scope="row" class="slds-truncate"><a href="{!'/CXP/s/account/' + asset.opp.AccountId + '/' + asset.opp.Account.Name}">{!asset.opp.Account.Name}</a></td>
+                                     </aura:if>
+                                    <td scope="row" class="slds-truncate"><a href="{!'/CXP/s/opportunity/' + asset.opp.Id + '/' + asset.opp.Name}">{!asset.oppOwnerName}</a></td>
+                                    <td scope="row" class="slds-truncate">{!asset.rdaAsset.Brand__r.Name}</td>
+                                    <td scope="row" class="slds-cell-wrap" title="{!asset.rdaAsset.Product2.Product_Description__c}">{!asset.rdaAsset.Product2.Product_Description__c}</td>
+                                    <td scope="row" class="slds-truncate">{!asset.rdaAsset.Common_Sale_Type__c}</td>
+                                    <!--<td scope="row" class="slds-truncate"><a href="{!'/CXP/s/opportunity/' + asset.oppId + '/' + asset.opp.Name}">{!asset.opp.Purchase_Type__c}</a></td>-->
+                                   	<!-- <td scope="row"><lightning:button name="{!asset.rdaAsset.Id +'-' + asset.oppId +'-' + asset.accId +'-' + asset.rdaType}" label="{!$Label.c.New_RDA}" onclick="{!c.newRDA}" /></td>-->
+                                    
+                                    <td scope="row" style="width:120px">
+                                        <aura:if isTrue="{!asset.rdaAllowNew}"  >
+                                            <!-- test {!asset.rdaAccountMismatched} -->
+                                            <!--aura:if isTrue="{!not(asset.rdaAccountMismatched)}"-->
+                                                <aura:if isTrue="{!asset.rdaAccountMismatched}">
+                                                   <lightning:button name="accountModalButtonId" label="{!if(v.userperset, 'NewHandover' , 'New RDA')}" onclick="{!c.accountModal}" />  
+                                                 <aura:set attribute="else">  
+                                                     <lightning:button name="{!asset.rdaAsset.Id +'-' + asset.opp.Id +'-' + asset.accId +'-' + asset.rdaType}" label="{!if(v.userperset, $Label.c.RDA_New_Handover , 'New RDA')}" onclick="{!c.quatosValidation}" />                                         
+                                                </aura:set>
+                                            </aura:if>
+                                </aura:if>
+                                        </td>
+                                    
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    
+    <!--<aura:if isTrue="{!v.rdaFilter == 'Trade_In'}">
+    <lightning:card title="Trade In">
+        <lightning:layout>
+            <lightning:layoutItem size="4">
+                <div class="slds-form slds-form_horizontal slds-p-around_small">
+                    <lightning:input type="text" label="VIN" value="{!v.tradeInVin}" />
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="8">
+                <div class="slds-form slds-p-around_medium">
+                    <lightning:button label="Trade In" onclick="{!c.tradeIn}" />
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    </aura:if>-->
+    
+    <aura:if isTrue="{!v.showRDAModal}">
+        <div class="slds-scrollable_y" style="height: 640px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 80rem !important; max-height: 640px !important;"> 
+                        <header class="slds-modal__header">
+                        	<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{!$Label.c.Close}" onclick="{!c.closeModal}">
+                            	<lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="close"  variant="error" />
+                            	<span class="slds-assistive-text">{!$Label.c.Close}</span>
+                        	</button>
+                            <aura:if isTrue="{!not(v.userperset)}">
+                        	<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">RDA Creation Form</h2>
+                            <aura:set attribute="else">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!$Label.c.Handover_Creation_Form}</h2>
+                                </aura:set>
+                                </aura:if>
+                            </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <c:NewRDA userperset="{!v.userperset1}" defaultRDA="{!v.defaultrda}" assetid="{!v.defaultrda.Asset__c}" oppid="{!v.defaultrda.Opportunity__c}" accountid="{!v.defaultrda.Account__c}" rdaType="{!v.rdaFilter}"  />
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showModal}">
+        <div style="height: 640px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">  
+                        <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{!$Label.c.Close}" onclick="{!c.closeModal}">
+                            <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="{!$Label.c.Close}"  variant="error" />
+                            <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-1">
+                        <div class="slds-align_absolute-center">{!v.popupMessage}</div>
+                        
+                        <aura:if isTrue="{!v.isLimitExceeded}">
+                            <div class="button slds-align_absolute-center">
+                                <lightning:button aura:id="createButton" class="button" variant="brand" label="{!$Label.c.YES}" title="{!$Label.c.YES}" name="{!$Label.c.YES}" onclick="{!c.newRDA}"/>
+                                <lightning:button aura:id="updateButton" class="button" variant="brand" label="{!$Label.c.NO}" title="{!$Label.c.NO}" name="{!$Label.c.NO}"  onclick="{!c.closeModal}"/>
+                            </div>
+                        </aura:if>
+                        
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+    
+    
+    
+     <aura:if isTrue="{!v.showAccountModal}">
+        <div style="height: 640px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">  
+                        <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{!$Label.c.Close}" onclick="{!c.closeModal}">
+                            <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="{!$Label.c.Close}"  variant="error" />
+                            <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Common Type of Sale is invalid for Customer Type:
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-1">
+                        <div class="slds-align_absolute-center">You cannot use a business Common Sale Type for a Private Sale, nor a private Common Sale Type for a Business Sale. Change the Common Sale Type in Vista, or convert the current account to correct account type. (Individual or Corporate).</div>
+                        
+            
+                        
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+    
+</aura:component>

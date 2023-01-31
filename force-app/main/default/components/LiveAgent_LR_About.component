@@ -1,0 +1,52 @@
+<apex:component layout="none" >
+    <header class="header header--dark">
+    <div class="header__middle">
+      <button  class="button button--back" onclick="showChat()">Return to Chat</button>
+    </div>
+  </header>
+ <main class="main-content main-content--dark">
+    <div class="main-content__inner">
+      <div class="liveagent__text liveagent__text--compact">
+        <h3 class="expanded">About live Help</h3>
+        <div class="accordion">
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion1" name="accordion1" />
+            <label class="accordion__title" for="accordion1">What is Live Help?</label>
+            <div class="accordion__text">
+              <p> Land Rover Live Help is a new online service for customers browsing our website or certain social media channels. In the case of the website, it allows you to text chat with one of our helpful online agents. In the case of social media, it allows you to use Facebook Messenger to message your enquiries to our online agents. It is a fast and efficient way of asking for help whenever you need it. </p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion2" name="accordion2" />
+            <label class="accordion__title" for="accordion2">How do I know if Live help is available?</label>
+            <div class="accordion__text">
+              <p>Live Help is available Monday to Sunday between the hours of 7am and 9pm. Whenever, Live Help is available, a ‘Live Help’ tab will appear on the bottom right-hand side of your browser window. If all our agents are currently engaged in customer chats, the ‘Live Help’ tab not appear, and you will not be able to start a chat.</p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion3" name="accordion3" />
+            <label class="accordion__title" for="accordion3">What happens if all agents are busy?</label>
+            <div class="accordion__text">
+              <p>Our assistants may be busy helping other customers, so you have the option to wait for the next available assistant.</p>
+            </div>
+          </div>
+             <div class="liveagent__block">
+            <input type="checkbox" id="accordion4" name="accordion4" />
+            <label class="accordion__title" for="accordion4">How do I get help?</label>
+            <div class="accordion__text">
+              <p> Whenever you need help or assistance, simply click the ‘Live Help’ tab, submit the simple pre-chat survey, and your chat with one of our online agents will begin once accepted by one of our agents. If all our agents are currently engaged in customer chats, the ‘Live Help’ tab will not appear, and you will not be able to start a chat. </p>
+            </div>
+          </div>
+             <div class="liveagent__block">
+            <input type="checkbox" id="accordion5" name="accordion5" />
+            <label class="accordion__title" for="accordion5">What about my privacy?</label>
+            <div class="accordion__text">
+              <p> We very much respect customers’ privacy and adhere to a strict Code of Conduct. For further information, please click <a href="https://www.LandRover.in/privacy-policy.html" target="_blank">here</a> to view our Privacy Policy. Please note, selecting the link will require chat session to end.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+    
+    </apex:component>

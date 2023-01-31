@@ -1,0 +1,19 @@
+<aura:component implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" controller="AssetOppLineItem_LC_Controller">
+	<aura:attribute name="recordId" type="String" />
+    <aura:attribute name="communityRecordId" type="String" />
+    <aura:attribute name="assetId" type="String" />
+	<lightning:card title="{!$Label.c.Add_Existing_Asset}" iconName="utility:travel_and_places" class="slds-p-around_xx-small">
+		<lightning:recordEditForm objectApiName="OpportunityLineItem">
+			<lightning:layout >
+				<lightning:layoutItem size="8">
+					<lightning:inputField fieldName="Asset__c" value="{!v.assetId}" />
+				</lightning:layoutItem>
+				<lightning:layoutItem size="4">
+					<div style="padding-top:20px;padding-left:10px;">
+						<lightning:button type="button" label="{!$Label.c.Save}" onclick="{!c.createProduct}" />
+					</div>
+				</lightning:layoutItem>
+			</lightning:layout>
+		</lightning:recordEditForm>
+	</lightning:card>
+</aura:component>

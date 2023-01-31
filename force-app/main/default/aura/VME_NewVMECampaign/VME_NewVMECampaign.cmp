@@ -1,0 +1,162 @@
+<aura:component controller="VME_NewVMECampaignCtrl">
+     <aura:attribute name="makeCountryDisabled" type="boolean" default="false"/>
+    <aura:attribute name="isOpenComp" type="boolean" default="false" />
+   <aura:attribute name="countrycode" type="String" />
+    <aura:attribute name="showtypes" type="boolean" default="true" />
+    <aura:attribute name="parentCamp" type="Campaign" />
+    <aura:attribute name="recordTypesList" type="List" />
+    <aura:attribute name="categorySubcategoryMap" type="Map" />
+    <aura:attribute name="categoryMarketMap" type="Map" />
+    <aura:attribute name="categoryBrandMap" type="Map" />
+    <aura:attribute name="vmeCampList" type="VME_Campaign__c[]" />
+    <aura:attribute name="VMEcampObj" type="VME_Campaign__c" />
+    <aura:attribute name="selectedRecordType" type="String" />
+    <aura:attribute name="selectedRecordTypeName" type="String" />
+    <aura:attribute name="compIdentity" type="String" />
+    <aura:attribute name="selectedCountry" type="String" />
+    <aura:attribute name="minDate" type="Date" />
+    <aura:attribute name="maxDate" type="Date" />
+    <aura:attribute name="startDate" type="Date" />
+    <aura:attribute name="endDate" type="Date" />
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    <aura:registerEvent name="sendRecordDetails" type="c:VME_SavedRecordDetailsEvent" />
+     <aura:handler event="aura:waiting" action="{!c.showSpinnerApex}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinnerApex}"/>
+  <!--create a component attributs -->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <aura:handler name="refreshCmpEvt" event="c:VME_OpenModel" action="{!c.closeConfirmModel}" />
+     <aura:handler name="savedRecordDetailsEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.closeConfirmModel}" />    
+            <aura:if isTrue="{!v.isOpenComp}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container ModalCss">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeConfirmModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New L2 VME Category</h2>
+                </header>
+                                    <aura:if isTrue="{!v.Spinner}">
+                        <div aura:id="spinnerId" class="slds-spinner_container">
+                           <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                             <span class="slds-assistive-text">Loading</span>
+                             <div class="slds-spinner__dot-a"></div>
+                             <div class="slds-spinner__dot-b"></div>
+                           </div>
+                        </div>
+                                </aura:if>
+                    <lightning:recordEditForm objectApiName="VME_Campaign__c" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}" recordTypeId="{!v.selectedRecordType}" aura:id="form" onerror="{!c.handleError}">
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <div class="slds-align--absolute-center" style="position: relative;">
+                                <div aura:id="ModalDialogPlaceholder" />
+                                <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide" style="position: fixed !important;" />
+                            </div>
+                            <aura:if isTrue="{!v.showtypes}">
+                                <lightning:radioGroup name="recordtypes" label="Select VME Type" options="{! v.recordTypesList }" value="{! v.selectedRecordType }" type="radio" class="radioBtnCss" />
+                            </aura:if>
+                            <aura:if isTrue="{!(!v.showtypes)}">
+                                 <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right slds-scrollable_y" style="height: 25rem;">
+                                        <lightning:messages />
+                                        <lightning:layout>
+                                            <lightning:layoutItem size="1"></lightning:layoutItem>
+                                            <lightning:layoutItem size="4" class="requiredCss">
+                                                <lightning:inputField fieldName="VME_Category__c" aura:id="requiredField" />
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1"></lightning:layoutItem>
+                                            <lightning:layoutItem size="4" class="requiredCss">
+                                                <lightning:inputField fieldName="VME_Sub_Category__c" aura:id="requiredField" />
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="1"></lightning:layoutItem>
+                                        </lightning:layout>
+                                <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="VME_Fiscal_Year__c" value="{!v.parentCamp.VME_Fiscal_Year__c}" disabled="true" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="VME_Quarter__c" value="{!v.parentCamp.QMSP_Quarter__c}" disabled="true" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                                <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="VME_Model__c" value="{!v.parentCamp.QMSP_Model__c}" disabled="true" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="VME_Brand__c" value="{!v.parentCamp.VME_Brand__c}" disabled="true" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                                <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="VME_Country_ISO_Code__c" value="{!v.selectedCountry}" disabled="{!v.makeCountryDisabled}" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="VME_Market_Code__c" value="{!v.parentCamp.Market__c}" disabled="true" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                                <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="QMSP_Campaign__c" value="{!v.parentCamp.Id}" disabled="true" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss">
+                                  
+                                      <lightning:inputField fieldName="RecordTypeId" disabled="true"></lightning:inputField>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                                 <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss">
+                                        <lightning:inputField fieldName="VME_Start_Date__c" aura:id="requiredField" value="{!v.startDate}"></lightning:inputField>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss">
+                                        <lightning:inputField fieldName="VME_End_Date__c" aura:id="requiredField" value="{!v.endDate}" disabled="true"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                              
+
+                                <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss">
+                                        <lightning:inputField fieldName="VME_Adjusted_PU_Amount__c" aura:id="requiredField" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss">
+                                        <lightning:inputField fieldName="VME_Adjusted_Volume__c" aura:id="requiredField" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                         
+                            </div>
+                            </aura:if>
+                           
+                            <ul class="slds-list_horizontal"></ul>
+                        </div>
+
+                        <aura:if isTrue="{!(!v.showtypes)}">
+                            <footer class="slds-modal__footer">
+                                <lightning:button variant="brand" label="Save and Next" title="Save and Next" type="submit"  value="saveModal"/>
+                            
+                                <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeConfirmModel}" />
+                            </footer>
+                        </aura:if> 
+                          </lightning:recordEditForm>               
+                <aura:if isTrue="{!v.showtypes}">
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="brand" label="Next" title="Next" onclick="{! c.Next}" />
+                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeConfirmModel}" />
+                    </footer>
+                </aura:if>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

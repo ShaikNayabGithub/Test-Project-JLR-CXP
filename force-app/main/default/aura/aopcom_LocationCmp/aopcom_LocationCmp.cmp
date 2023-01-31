@@ -1,0 +1,68 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="aopcom_LocationCmp">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="location" type="String" default=" " />
+    <aura:attribute name="location_label" type="String" />
+    <aura:attribute name="time" type="String" />
+    <aura:attribute name="time_label" type="String" />
+    <aura:attribute name="date" type="String" />
+    <aura:attribute name="date_label" type="String" />
+    <aura:attribute name="title" type="String" default=" " />
+    <aura:attribute name="description" type="String" default=" " />
+    <aura:attribute name="link_label" type="String" default="Link to full details" />
+    <aura:attribute name="TitleHTGT" type="String" default="GOOGLE MAPS LINK"/>
+    <aura:attribute name="DescriptionHTGT" type="String" />
+    <aura:attribute name="Link_labelHTGT" type="String" default="LINK TO GOOGLE MAPS"/>
+    <aura:attribute name="googleMapsUrl" type="String" />
+	<aura:attribute name="TitleED" type="String"/>
+    <aura:attribute name="LinkED" type="String"/>    
+    <aura:attribute name="CommunityUrl" type="String"/>
+    
+    <div class="grid">
+        <div class="grid__row">
+            <div class="grid__col span-4 medium--span-8 medium--offset-2">
+                        <div class="section section--secondary">
+                            <h4 class="section__heading text-left--large text-left--small">{!V.TitleED}</h4>
+        
+                            <ul class="event-details event-details--block" >
+                                <li>
+                                    <p class="event-details__label">{!v.location_label}:</p>
+                                    <p class="event-details__value">{!v.location}</p>
+                                </li>
+                                <li>
+                                    <p class="event-details__label">{!v.date_label}:</p>
+                                    <p class="event-details__value">{!v.date}</p>
+                                </li>
+                                <li>
+                                    <p class="event-details__label">{!v.time_label}:</p>
+                                    <p class="event-details__value">{!v.time}</p>
+                                </li>
+                            </ul>
+        
+                            <div class="section__footer text-left--large">
+                                <a href="#modal_amend-booking" class="button js-modal-inline">{!V.LinkED}<i class="button-icon button-icon--right icon icon--chevron-right"></i></a>
+                            </div>
+                        </div>
+            </div>
+            <div class="grid__col span-4 medium--span-8 medium--offset-2">
+                <div class="section section--secondary">
+                    <h4 class="section__heading text-left--large text-left--small">{!v.title}</h4>
+                    <p>{!v.description}</p>
+                    <div class="section__footer text-left--large">
+                        <a href="{!'/'+v.CommunityUrl+'/s/my-event/'}" class="button">{!v.link_label}<i class="button-icon button-icon--right icon icon--chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+ 			<div class="grid__col span-4 medium--span-8 medium--offset-2">
+                <div class="section section--secondary">
+                    <h4 class="section__heading text-left--large text-left--small">{!v.TitleHTGT}</h4>
+
+                    <p>{!v.DescriptionHTGT}</p>
+
+                    <div class="section__footer text-left--large">
+                        <a href="{!v.googleMapsUrl}" class="button" target="_blank">{!v.Link_labelHTGT}<i class="button-icon button-icon--right icon icon--chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    </aura:component>

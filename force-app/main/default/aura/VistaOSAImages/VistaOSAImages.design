@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="baseUrl" label="Base Url" description="Please provide the BaseUrl" />
+    <design:attribute name="notAvailableUrl" label="Not Available Image Url" description="Please provide Not Available Image Url" />
+</design:component>

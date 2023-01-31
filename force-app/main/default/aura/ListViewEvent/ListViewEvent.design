@@ -1,0 +1,6 @@
+<design:component>
+        <design:attribute name="eventTitle" label="Component Title" />     
+    <design:attribute name="whereQueryProp" label="Where Query" />
+    <design:attribute name="limitNumProp" label="Max return" />      
+    <design:attribute name="justMineProp" label="Just My Activities " />
+</design:component>

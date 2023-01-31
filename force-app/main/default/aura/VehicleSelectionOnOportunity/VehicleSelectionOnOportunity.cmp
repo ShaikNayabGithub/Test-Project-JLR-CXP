@@ -1,0 +1,84 @@
+<aura:component controller="VehicleSelectionOnOpportunityController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>    
+    <aura:attribute name="isButtonVisible" type="Boolean" default="false"/>  
+    <aura:attribute name="showModal" type="Boolean" default="false"/>    
+    <aura:attribute name="hasLineItem" type="Boolean" default="false"/>
+    <aura:attribute name="isPriceBookSelected" type="Boolean" default="false"/>
+    <aura:attribute name="currentOpportunity" type="Opportunity" default="{ 'sobjectType': 'Opportunity' }"/> 
+    <aura:attribute name="selectedPriceBook" type="String" /> 
+    <aura:attribute name="priceBookList" type="List" /> 
+	<aura:attribute name="simpleOpp" type="Object" />
+    <aura:attribute name="fieldColumns" type="String[]" default="['Id', 'Lightning_Show_Send_to_DMS__c', 'Approved_for_DMS_Hidden__c', 'Name', 'Account.PersonContact.Salutation', 'Account.PersonContact.LastName', 'Account.PersonContact.FirstName', 'Account.Phone', 'Account.PersonContact.OtherPhone', 'Account.PersonContact.MobilePhone', 'Account.PersonContact.Email', 'Account.PersonContact.Email2__c', 'Account.PersonContact.Language__c', 'Account.PersonContact.Gender__c', 'Account.Name', 'Account.PersonContact.MailingStreet', 'Account.PersonContact.MailingCity', 'Account.PersonContact.MailingState', 'Account.PersonContact.MailingPostalCode', 'Account.PersonContact.MailingCountry', 'Purchase_Type__c', 'Account.ntt_Jaguar_Status__c', 'Account.ntt_Land_Rover_Status__c', 'LeadSource', 'Retailer_Name__c', 'Retailer_Primary_Code__c', 'Retailer_Secondary_Code__c', 'Owner.Name', 'Amount', 'Budget__c']" />
+    <aura:attribute name="showDMS" type="boolean" default="true" />
+    <aura:attribute name="showExtract" type="boolean" default="true" />
+    <aura:attribute name="showLock" type="boolean" default="true" />
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+    
+    <force:recordData aura:id="oppLoader" recordId="{!v.recordId}" mode="VIEW" targetFields="{!v.simpleOpp}" fields="{!v.fieldColumns}" />
+	<aura:html tag="style">
+    .slds-modal__container {
+     min-width: 60vw;
+    }
+</aura:html>
+   <!--  <lightning:layout>
+        <aura:if isTrue="{!v.showLock}">
+        	<lightning:layoutItem padding=".1rem">
+                <c:UnlockRecordButton recordId="{!v.recordId}" recordTypeName="Opportunity" />
+            </lightning:layoutItem>
+        </aura:if>
+       	<lightning:layoutItem padding=".1rem">
+            <lightning:button class="slds-align_absolute-right" disabled="{!v.isButtonVisible==false}" variant="Neutral" label="{!$Label.c.Product_Vehicle_Selection}" title="{!$Label.c.Vehicle_Selection}"  onclick="{!c.showModal}"/> 
+        </lightning:layoutItem>
+      	<aura:if isTrue="{!v.showExtract}">
+            <lightning:layoutItem padding=".1rem">
+                <c:OpportunityExtractOpportunityPanel recordId="{!v.recordId}" simpleOpp="{!v.simpleOpp}" disabled="{!v.simpleOpp.Approved_for_DMS_Hidden__c == false}" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.showDMS}">
+        	<lightning:layoutItem padding=".1rem">
+            	<c:Opportunity_DMSButton recordId="{!v.recordId}" disabled="{!v.simpleOpp.Lightning_Show_Send_to_DMS__c == false}" />
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout> 
+
+    <aura:if isTrue="{!v.showModal}">
+        <div style="height: 800px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 70rem !important;"> -->
+                    <header class="slds-modal__header">
+                       <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModal}">
+                            <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="close"  variant="error" />
+                            <span class="slds-assistive-text">{!$Label.c.Close}</span> 
+                        </button> -->
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            <img class="slds-align_absolute-center" src="{!$Resource.CXP_logo_lightning_home_page}"/>
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" >
+                        <aura:if isTrue="{!v.hasLineItem}">
+                            <p class="slds-align_absolute-center slds-p-bottom_large">{!$Label.c.OpportunityProduct_Delete_Message}</p>
+                            <div class="slds-align_absolute-center">
+                                <lightning:button variant="brand" label="{!$Label.c.Proceed}" title="{!$Label.c.Proceed}"  onclick="{!c.removeLineItem}"/> 
+                                <lightning:button variant="brand" label="{!$Label.c.Cancel}" title="{!$Label.c.Cancel}"  onclick="{!c.closeModal}"/> 
+                            </div>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.isPriceBookSelected}"> 
+                                    <lightning:select aura:id="field" label="Price Book" name="flavor" value="{!v.selectedPriceBook}" class="slds-p-bottom_large">
+                                        <aura:iteration items="{!v.priceBookList}" var="pb">
+                                            <option text="{!pb.label}" value="{!pb.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>  
+                                    <lightning:button class="slds-align_absolute-center" variant="brand" label="{!$Label.c.Save}" title="{!$Label.c.Save}" onclick="{!c.updatePriceBook}"/>
+                                    <aura:set attribute="else">
+                                        <c:AssetProductSearch recordId="{!v.recordId}"/>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+              <!--    </div>
+          </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if> -->
+</aura:component>

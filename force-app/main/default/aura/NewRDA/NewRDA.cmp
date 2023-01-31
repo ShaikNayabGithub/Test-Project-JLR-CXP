@@ -1,0 +1,501 @@
+<aura:component controller="NewRDA_LC_Controller" implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:attribute name="defaultRDA" type="Object" />
+    <aura:attribute name="assetid" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="contactid" type="String" />
+    <aura:attribute name="rdaType" type="String" />
+    <aura:attribute name="minDate" type="date" />
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="oppid" type="String" />
+    <aura:attribute name="selectedLocality" type="String" />
+    <aura:attribute name="serviceplanid" type="String" />
+    <aura:attribute name="loaded" type="Boolean" default="true" />
+    <aura:attribute name="accountid" type="String" />
+    <aura:attribute name="account" type="Object" />
+    <aura:attribute name="asset" type="Object" />
+    <aura:attribute name="opportunity" type="Object" />
+    <aura:attribute name="opportunityLineItem" type="Object" />
+    <aura:attribute name="isTradeIn" type="boolean" default="false" />
+    <aura:attribute name="isLoyaltyPointsEligible" type="boolean" default="false" />
+    <aura:attribute name="isJLRTradeIn" type="boolean" default="false" />
+    <aura:attribute name="isAccountEdited" type="boolean" default="false" /> 
+    <aura:attribute name="isCorporateSP" type="boolean" default="false" />
+    <aura:attribute name="isRetailSP" type="boolean" default="false" />
+    <aura:attribute name="isCompSP" type="boolean" default="false" />																  
+    <aura:attribute name="isFMO" type="boolean" default="false" />
+    <aura:attribute name="isNotFMO" type="boolean" default="false" />
+    <aura:attribute name="fmoTrueList" type="List"/>
+    <aura:attribute name="istempFMOFlag" type="boolean" />    
+    <aura:attribute name="retailSP" type="String"/>
+    <aura:attribute name="tradeInAssetId" type="String" />
+    <aura:attribute name="tradeIn" type="Object" />
+    <aura:attribute name="assetLabelMap" type="Object" />
+    <aura:attribute name="rdaLabelMap" type="Object" />
+    <aura:attribute name="affinityProgramStatus" type="Object" />
+    <aura:attribute name="showCorporatePlan" type="boolean" default="false" />
+    <aura:attribute name="availableLocalities" type="Object[]" />
+    <aura:attribute name="loyaltyTransaction" type="Object" />
+    <aura:attribute name="servicePlanContracts" type="Object[]" /> 
+    <aura:attribute name="options" type="List" access="PRIVATE"/>
+    <aura:attribute name="selectedValue" type="String" access="PRIVATE"/>															   
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="updateExpense" type="c:servicePlanUpdate"  />
+    <aura:handler name="updateExpense" event="c:servicePlanUpdate" action="{!c.handleUpdateExpense}"/>
+    <!-- Added for CXPD-1434-->
+    <aura:attribute name="servicePlanScheme" type="String" />
+    <aura:attribute name="servicePlanSchemeName" type="String" />
+    <aura:attribute name="showCorpAccSPErrorMsg" type="Boolean" default="false" />
+    <aura:attribute name="userperset" type="Boolean" default="false"/>
+    
+    <aura:if isTrue="{!v.defaultRDA.Is_Locked__c != null}">
+        <center><p style="font-size:1.1em; font-style:bold; vertical-align:middle">{!$Label.c.RDA_You_cannot_Edit_this_RDA_as_it_is_locked}</p></center>
+        <aura:set attribute="else">
+            <aura:if isTrue="{!and(v.recordId!=null, v.defaultRDA.Submitted_Status__c!='Submitted', v.defaultRDA.Submitted_Status__c!='Success')}">
+                <center><p style="font-size:1.1em; font-style:bold; vertical-align:middle">{!$Label.c.RDA_You_cannot_Edit_this_RDA_as_it_is_not_yet_Submitted_or_Successful}</p></center>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{! v.loaded }">
+                        <lightning:spinner aura:id="mySpinnerAll" alternativeText="Submitting Details" title="Submitting Details" />
+                    </aura:if>
+                    <div class="slds-scrollable_y">
+                        <lightning:recordEditForm aura:id="editForm"  onsubmit="{!c.handleSubmit}" objectApiName="RDA__c" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}" recordId ="{!v.recordId}" onload="{!c.handleOnLoad}" >
+                            <lightning:messages></lightning:messages>
+                            <lightning:layout multipleRows="true" class="slds-form">
+                                <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.Vehicle_Info}</span></lightning:layoutItem>
+                                <lightning:layout multipleRows="true" class="slds-box slds-form">
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Asset__c" value="{!v.defaultRDA.Asset__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="RecordTypeId" value="{!v.defaultRDA.RecordTypeId}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="productname">{!$Label.c.RDA_Product_Name}</label><div id="productname" class="slds-form-element__control slds-wrap">{!v.asset.Product2.Product_Description__c}</div></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Is_APO__c" value="{!v.defaultRDA.Is_APO__c}" variant="label-stacked" disabled="false" /></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="make">{!$Label.c.Extended_Warranty}</label><div id="EW" class="slds-form-element__control">{!v.asset.Extended_Warranty_Type__c}</div></lightning:layoutItem>   
+                                    <lightning:layoutItem padding="around-small" size="6"/>													   
+                                    <!--aura:if isTrue="{!and(v.asset.Extended_Warranty_Type__c != '', v.asset.Extended_Warranty_Type__c != null)}" >    
+          <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Add_Extended_Warranty__c" value="{!v.defaultRDA.Add_Extended_Warranty__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+          <aura:set attribute="else">
+           <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Add_Extended_Warranty__c" value="{!v.defaultRDA.Add_Extended_Warranty__c}" variant="label-stacked" disabled="false" /></lightning:layoutItem>
+          </aura:set>
+                                    </aura:if-->
+                                    <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="make">{!$Label.c.Make}</label><div id="make" class="slds-form-element__control">{!v.asset.Brand__r.Name}</div></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="model">Model</label><div id="model" class="slds-form-element__control">{!v.asset.Product2.Model_Alternative__c}</div></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField  fieldName="Registration_Number__c" value="{!v.asset.Registration_Number__c}" variant="label-stacked" /></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="modelyear">Model Year</label><div id="modelyear" class="slds-form-element__control">{!v.asset.Product2.Model_Year__c}</div></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="colour">{!$Label.c.RDA_Colour}</label><div id="colour" class="slds-form-element__control">{!v.asset.Exterior_Colour__c}</div></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="colour">{!$Label.c.RDA_Specification_Pack_Alternative}</label><div id="colour" class="slds-form-element__control">{!v.asset.Product2.Specification_Pack_Alternative__c}</div></lightning:layoutItem>
+                                </lightning:layout>
+                            </lightning:layout>
+                            
+                            <lightning:layout multipleRows="true" class="slds-form">
+                                <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.RDA_Customer_Info}</span></lightning:layoutItem>
+                                <lightning:layout multipleRows="true" class="slds-box slds-form">
+                                    <lightning:layoutItem padding="around-small" size="12"><lightning:inputField fieldName="Account__c" value="{!v.defaultRDA.Account__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                    <aura:if isTrue="{!v.account.IsPersonAccount == true}" >
+                                        <lightning:recordEditForm  aura:id="accountEditForm" objectApiName="Account" onsuccess="{!c.handleSuccess1}" onerror="{!c.handleError1}" recordId ="{!v.accountid}">
+                                            <lightning:messages></lightning:messages>
+                                            <lightning:layout multipleRows="true" class="slds-form">
+                                                <lightning:layoutItem padding="around-small" size="6"><lightning:inputField onchange="{!c.handleOnChangeEditField}"  required="true" fieldName="FirstName" value="{!v.account.FirstName}" variant="label-stacked" disabled="false" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><lightning:inputField onchange="{!c.handleOnChangeEditField}"  required="true" fieldName="LastName" value="{!v.account.LastName}" variant="label-stacked" disabled="false" aura:id="accountLastName" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><lightning:inputField onchange="{!c.handleOnChangeEditField}"  required="true" fieldName="PersonEmail" value="{!v.account.PersonEmail}" variant="label-stacked" disabled="false" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><lightning:inputField onchange="{!c.handleOnChangeEditField}"  required="true" fieldName="PersonMobilePhone" value="{!v.account.PersonMobilePhone}" variant="label-stacked" disabled="false" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><label>{!$Label.c.RDA_Phone}</label><lightning:inputField onchange="{!c.handleOnChangeEditField}"  fieldName="Phone" value="{!v.account.Phone}" variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><label>{!$Label.c.Home_Phone}</label><lightning:inputField onchange="{!c.handleOnChangeEditField}" fieldName="PersonHomePhone" value="{!v.account.PersonHomePhone }" variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                                <aura:if isTrue="{!not(v.userperset)}">
+                                                <lightning:layoutItem padding="around-small" size="6"> 
+                                                    <label class="slds-form-element__label slds-no-flex"><abbr title="required" class="slds-required">*</abbr>{!$Label.c.Street}</label>
+                                                    <lightning:inputField  required="true" onchange="{!c.handleOnChangeEditField}" fieldName="BillingStreet" value="{!v.account.BillingStreet}"  variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"> 
+                                                    <label class="slds-form-element__label slds-no-flex"><abbr title="required" class="slds-required">*</abbr>{!$Label.c.Post_Code}</label>
+                                                    <lightning:inputField aura:id="PostalIDA" onchange="{!c.handleOnChangeEditPostalFieldAccount}" required="true"  fieldName="BillingPostalCode" value="{!v.account.BillingPostalCode}" variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                                  <aura:set attribute="else">
+                                                <lightning:layoutItem padding="around-small" size="6">            
+                                                    <label class="slds-form-element__label slds-no-flex">{!$Label.c.Street}</label>
+                                                    <lightning:inputField  onchange="{!c.handleOnChangeEditField}" fieldName="BillingStreet" value="{!v.account.BillingStreet}"  variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"> 
+                                                    <label class="slds-form-element__label slds-no-flex">{!$Label.c.Post_Code}</label>
+                                                    <lightning:inputField aura:id="PostalIDA" onchange="{!c.handleOnChangeEditPostalFieldAccount}"   fieldName="BillingPostalCode" value="{!v.account.BillingPostalCode}" variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                                    </aura:set>
+                                                </aura:if>
+                                                
+                                                <aura:if isTrue="{!not(v.userperset)}">
+                                                <aura:if isTrue="{!v.defaultRDA.Opportunity__c != null}">
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:select  aura:id="localityA" onchange="{!c.handleOnChangeLocalityFieldAccount}" required="true" value="{!v.defaultRDA.AU_Locality__c}" label="Locality">                                     
+                                                            <aura:if isTrue="{!v.availableLocalities.length == 0}">
+                                                                <option value="">No Localities Found. Please Update Billing Address</option>
+                                                            </aura:if> 
+                                                            <aura:if isTrue="{!v.availableLocalities.length > 0}">
+                                                                <option value="">Please Select..</option>
+                                                            </aura:if> 
+                                                            <aura:iteration items="{!v.availableLocalities}" var="loc">
+                                                                <option value="{!loc.Id}">{!loc.Name + ' - ' + loc.PMA_Postcode__r.Name}</option>
+                                                            </aura:iteration>
+                                                            <lightning:inputField  class="slds-hidden"  required="true" fieldName="AU_Locality__c" value="{!v.selectedLocality}" />
+                                                        </lightning:select>
+                                                    </lightning:layoutItem>
+                                                </aura:if>
+                                                <lightning:layoutItem padding="around-small" size="6">
+                                                    <label>{!$Label.c.City}</label>
+                                                    <lightning:inputField aura:id="cityIDA" onchange="{!c.handleOnChangeEditField}" variant="label-hidden"  required="true" fieldName="BillingCity" value="{!v.account.BillingCity}" disabled="true" />
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6">
+                                                    <label>{!$Label.c.State}</label><lightning:inputField aura:id="stateIDA" variant="label-hidden" onchange="{!c.handleOnChangeEditField}" fieldName="BillingState" value="{!v.account.BillingState}"  disabled="true" />
+                                                </lightning:layoutItem>
+                                                    <aura:set attribute="else">
+                                                        <lightning:layoutItem padding="around-small" size="6">
+                                                    <label class="slds-form-element__label slds-no-flex"><abbr title="required" class="slds-required">*</abbr>{!$Label.c.City}</label>
+                                                    <lightning:inputField aura:id="cityIDA" onchange="{!c.handleOnChangeEditField}" variant="label-hidden"  required="true" fieldName="BillingCity" value="{!v.account.BillingCity}"  />
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6">
+                                                    <label>{!$Label.c.State}</label><lightning:inputField aura:id="stateIDA" variant="label-hidden" onchange="{!c.handleOnChangeEditField}" fieldName="BillingState" value="{!v.account.BillingState}"   />
+                                                </lightning:layoutItem>
+                                                    </aura:set>
+                                                </aura:if>
+                                            </lightning:layout>
+                                        </lightning:recordEditForm>    
+                                    </aura:if>     
+                                    
+                                    <!--HERE CONTACT CHANGE START -->
+                                    <aura:if isTrue="{!and(v.account.IsPersonAccount != true, v.opportunity.Primary_Contact__c != null)}" >
+                                        <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.Primary_Contact_Information}</span></lightning:layoutItem>
+                                        
+                                        <lightning:recordEditForm  class="slds-box" aura:id="contactEditForm1" objectApiName="Contact" onsuccess="{!c.handleSuccess1}" onerror="{!c.handleError1}" recordId ="{!v.opportunity.Primary_Contact__r.Id}">                                                            <lightning:layout multipleRows="true" >
+                                            <lightning:messages></lightning:messages> 
+                                            <lightning:layout multipleRows="true" class="slds-form">
+                                                <lightning:layoutItem padding="around-small" size="6"> <lightning:inputField variant="label-stacked" required="true" fieldName="FirstName" value="{!v.opportunity.Primary_Contact__r.FirstName}" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"> <lightning:inputField  variant="label-stacked" required="true" fieldName="LastName" value="{!v.opportunity.Primary_Contact__r.LastName}" /></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"> <lightning:inputField  variant="label-stacked" required="true" fieldName="MobilePhone" value="{!v.opportunity.Primary_Contact__r.MobilePhone}" /> </lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"> <lightning:inputField   variant="label-stacked" required="true" fieldName="Email" value="{!v.opportunity.Primary_Contact__r.Email}" /> </lightning:layoutItem>
+                                            </lightning:layout>
+                                            <aura:if isTrue="{!not(v.userperset)}">
+                                            <lightning:layoutItem padding="around-small" size="6">            
+                                                <label class="slds-form-element__label slds-no-flex"><abbr title="required" class="slds-required">*</abbr>{!$Label.c.Street}</label>
+                                                <lightning:inputField  required="true" onchange="{!c.handleOnChangeEditField}" fieldName="MailingStreet" value="{!v.opportunity.Primary_Contact__r.MailingStreet}"  variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"> 
+                                                <label class="slds-form-element__label slds-no-flex"><abbr title="required" class="slds-required">*</abbr>{!$Label.c.Post_Code}</label>
+                                                <lightning:inputField aura:id="PostalIDC" onchange="{!c.handleOnChangeEditPostalFieldContact}" required="true"  fieldName="MailingPostalCode" value="{!v.opportunity.Primary_Contact__r.MailingPostalCode}" variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                                       <aura:set attribute="else">   
+                                            <lightning:layoutItem padding="around-small" size="6">            
+                                                <label class="slds-form-element__label slds-no-flex">{!$Label.c.Street}</label>
+                                                <lightning:inputField   onchange="{!c.handleOnChangeEditField}" fieldName="MailingStreet" value="{!v.opportunity.Primary_Contact__r.MailingStreet}"  variant="label-hidden" disabled="false" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"> 
+                                                <label class="slds-form-element__label slds-no-flex">{!$Label.c.Post_Code}</label>
+                                                <lightning:inputField aura:id="PostalIDC" onchange="{!c.handleOnChangeEditPostalFieldContact}"  fieldName="MailingPostalCode" value="{!v.opportunity.Primary_Contact__r.MailingPostalCode}" variant="label-hidden" disabled="false" /></lightning:layoutItem>    
+                                                </aura:set>
+                                            </aura:if>
+                                                <aura:if isTrue="{!not(v.userperset)}">
+                                                <aura:if isTrue="{!v.defaultRDA.Opportunity__c != null}">
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:select  aura:id="localityC" onchange="{!c.handleOnChangeLocalityFieldContact}" required="true" value="{!v.defaultRDA.AU_Locality__c}" label="Locality">                                     
+                                                            <aura:if isTrue="{!v.availableLocalities.length == 0}">
+                                                                <option value="">No Localities Found. Please Update Billing Address</option>
+                                                            </aura:if> 
+                                                            <aura:if isTrue="{!v.availableLocalities.length > 0}">
+                                                                <option value="">Please Select..</option>
+                                                            </aura:if> 
+                                                            <aura:iteration items="{!v.availableLocalities}" var="loc">
+                                                                <option value="{!loc.Id}">{!loc.Name + ' - ' + loc.PMA_Postcode__r.Name}</option>
+                                                            </aura:iteration>
+                                                            <lightning:inputField  class="slds-hidden"  required="true" fieldName="AU_Locality__c" value="{!v.selectedLocality}" />
+                                                        </lightning:select>
+                                                    </lightning:layoutItem>
+                                                </aura:if>
+                                                <lightning:layoutItem padding="around-small" size="5">
+                                                <label>{!$Label.c.Street}</label>
+                                                <lightning:inputField aura:id="cityIDC" onchange="{!c.handleOnChangeEditField}" variant="label-hidden"  required="true" fieldName="MailingCity" value="{!v.opportunity.MailingCity}" disabled="true" />
+                                            </lightning:layoutItem>
+                                            
+                                            <lightning:layoutItem padding="around-small" size="5">
+                                                <label>{!$Label.c.Post_Code}</label>
+                                                <lightning:inputField aura:id="stateIDC" variant="label-hidden" onchange="{!c.handleOnChangeEditField}" fieldName="MailingState" value="{!v.opportunity.MailingState}"  disabled="true" />
+                                            </lightning:layoutItem>
+                                            
+                                                    <aura:set attribute="else">
+                                                        <lightning:layoutItem padding="around-small" size="6">
+                                                    <label class="slds-form-element__label slds-no-flex"><abbr title="required" class="slds-required">*</abbr>{!$Label.c.City}</label>
+                                                    <lightning:inputField aura:id="cityIDC" onchange="{!c.handleOnChangeEditField}" variant="label-hidden"  required="true" fieldName="MailingCity" value="{!v.opportunity.MailingCity}" />
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6">
+                                                    <label>{!$Label.c.State}</label><lightning:inputField aura:id="stateIDC" variant="label-hidden" onchange="{!c.handleOnChangeEditField}" fieldName="MailingState" value="{!v.opportunity.MailingState}"   />
+                                                </lightning:layoutItem>
+                                                    </aura:set>
+                                                </aura:if>
+                                            
+                                            </lightning:layout>
+                                        </lightning:recordEditForm>                                                      
+                                        
+                                    </aura:if>  
+                                    <!--HERE CONTACT CHANGE END-->
+                                    
+                                    <!--FLEET BUSINESS start here -->
+                                    <aura:if isTrue="{!not(v.userperset)}">
+                                    <lightning:layout multipleRows="true" class="slds-form">
+                                        <lightning:layoutItem padding="around-small" size="12">
+                                            <lightning:inputField fieldName="Is_Fleet_Management_Organisation__c" value="{!v.defaultRDA.Is_Fleet_Management_Organisation__c}" disabled="{!v.defaultRDA.Is_Fleet_Management_Organisation__c}" variant="label-stacked" aura:id="isFMOid" onchange="{!c.setFMOType}"/>
+                                        </lightning:layoutItem>
+                                        
+                                        <aura:if isTrue="{!v.isFMO}" >
+                                            <lightning:layoutItem padding="around-small" size="12">  
+                                                <lightning:inputField variant="label-stacked" required="true" fieldName="Select_Lessee__c" value="{!v.defaultRDA.Select_Lessee__c}" />   
+                                                <aura:if isTrue="{!v.account.IsPersonAccount == false}" >
+                                                    <lightning:inputField   variant="label-stacked" fieldName="Driver__c" value="{!v.defaultRDA.Driver__c}" />                                                        
+                                                </aura:if>  
+                                            </lightning:layoutItem>
+                                        </aura:if>
+                                    </lightning:layout>
+                                    </aura:if>
+                                    <!--FLEET BUSINESS End here -->
+                                    <div style="z-index:-333">
+                                        <aura:if isTrue="{!v.opportunity.Primary_Contact__c != null}" > 
+                                            <lightning:inputField  class="slds-hidden" fieldName="Contact__c" value="{!v.opportunity.Primary_Contact__c}" />
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.account.IsPersonAccount == true}" >
+                                            <lightning:inputField  class="slds-hidden" fieldName="Contact__c" value="{!v.account.PersonContactId}" />                                                        
+                                        </aura:if>                                    
+                                    </div>
+                                    <aura:if isTrue="{!v.defaultRDA.Opportunity__c != null}">
+                                        <aura:if isTrue="{!not(v.userperset)}">
+                                        <lightning:layoutItem padding="around-small" size="12">  <label>JLRA Marketing Permission Granted</label><lightning:inputField fieldName="Marketing_Indicator__c" variant="label-hidden"  /></lightning:layoutItem>
+                                        <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Opportunity__c" value="{!v.defaultRDA.Opportunity__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                    <aura:set attribute="else">
+                                        <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Opportunity__c" value="{!v.defaultRDA.Opportunity__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                            </aura:set>
+                                            </aura:if> 
+                                    </aura:if>
+                                </lightning:layout>
+                                <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.Sales_Info}</span></lightning:layoutItem>
+                                <lightning:layout multipleRows="true" class="slds-box slds-form"> 
+                                    <aura:if isTrue="{!not(v.userperset)}"> 
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Handover_Date__c" value="{!v.defaultRDA.Handover_Date__c}" variant="label-stacked" disabled="true"/></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Retail_Offer__c" value="" variant="label-stacked" /></lightning:layoutItem>
+                                    <aura:set attribute="else">
+                                        <lightning:messages aura:id="OppMessage" />
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField  fieldName="Handover_Date__c" value="{!v.defaultRDA.Handover_Date__c}"  variant="label-stacked"  /></lightning:layoutItem>
+                                        
+                                        </aura:set>
+                                        </aura:if>
+                                        <aura:if isTrue="{! v.rdaType != 'Trade_In'}"> 
+                                        
+                                        <lightning:layoutItem padding="around-small" size="6">
+                                            <lightning:inputField aura:id="commonSaleTypeId" fieldName="Common_Sale_Type__c" value="{!v.asset.Common_Sale_Type__c}" variant="label-stacked" disabled="true" />
+                                        </lightning:layoutItem>
+                                        <aura:set attribute="else">   
+                                            <lightning:messages aura:id="CstMessage" />
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <lightning:select  required="true" name="selectCommonSaleTypeId"  messageWhenValueMissing="Choose one!" onchange="{!c.setCommonSaleType}" label="Select Common Type of Sale:" aura:id="selectCommonSaleTypeId" value="{!v.selectedValue}">
+                                                    <aura:iteration items="{!v.options}" var="option">
+                                                        <option text="{!option.label}" value="{!option.label}" selected="{!option.selected}"/>
+                                                    </aura:iteration>
+                                                    <lightning:inputField    aura:id="commonSaleTypeId" fieldName="Common_Sale_Type__c"  value="{!v.asset.Common_Sale_Type__c}" /> 
+                                                </lightning:select>                                                       
+                                            </lightning:layoutItem>
+                                        </aura:set>
+                                    </aura:if>
+                                    <aura:if isTrue="{! and(v.rdaType != 'Dealer_Owned', v.rdaType != 'OUV')}" >
+                                        <lightning:layoutItem padding="around-small" size="6">
+                                            <lightning:input aura:id="salesperson" disabled="true" value="{!v.opportunity.Owner.Name}" label="Sales Person" />
+                                        </lightning:layoutItem>
+                                    </aura:if>
+                                </lightning:layout>
+                            </lightning:layout>  
+                            <div style="{!if(v.userperset, 'display:none','')}">
+                            <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">Service Plan</span></lightning:layoutItem>
+                            
+                            <!-- SERVICE PLAN STUFF -->
+                            <lightning:layout multipleRows="true" class="slds-box slds-form slds-size_12-of-12">
+                                <lightning:layout multipleRows="true" class="slds-form">
+                                    
+                                    <!--  EXISTING STUFF -->
+                                    <aura:if isTrue="{!and(v.servicePlanContracts != null, v.servicePlanContracts.length > 0)}">
+                                        <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title"><div style="  ">Existing Service Plan:</div> </span></lightning:layoutItem>
+                                        <aura:iteration items="{!v.servicePlanContracts}" var="spc">
+                                            
+                                            <lightning:layoutItem padding="around-small" size="6"> <lightning:formattedRichText value="Reference: "/><lightning:formattedText value="{!spc.Service_Plan_Reference__c}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"><lightning:formattedRichText value="Assigment Type:  "/> <lightning:formattedText value="{!spc.Assignment_Type__c}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"> <lightning:formattedRichText value="Service Plan Type: "/> <lightning:formattedText value="{!spc.Service_Plan_Product__r.Name}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"><lightning:formattedRichText value="Start Date:  "/>  <lightning:formattedText value="{!spc.Start_Date__c}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"> <lightning:formattedRichText value="End Date:  "/> <lightning:formattedText value="{!spc.End_Date__c}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"> <lightning:formattedRichText value="Corporate Account: "/><lightning:formattedText value="{!spc.Corporate_Partner__r.Name}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"> <lightning:formattedRichText value="Months:  "/><lightning:formattedText value="{!spc.Months__c}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"><lightning:formattedRichText value="Mileage: "/><lightning:formattedText value="{!spc.Mileage__c}" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="12"></lightning:layoutItem>
+                                            
+                                        </aura:iteration>
+                                        <aura:set attribute="else">                                           
+                                            
+                                            <aura:if isTrue="{!v.isCompSP == true}" >
+                                                <lightning:layoutItem padding="around-small" size="4">
+                                                    <lightning:input disabled="true" type="checkbox" label="Add New Retailer Service Plan" aura:id="retailSPRo" name="retailSP" onchange="{!c.setAssignmentType}"/>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="4">
+                                                    <lightning:input  disabled="true" type="checkbox" label="Add Corporate Service Plan" aura:id="CorporateSPRo" name="CorporateSP" onchange="{!c.setAssignmentType}"/>
+                                                </lightning:layoutItem> 
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.isCompSP == false}" > 
+                                                <lightning:layoutItem padding="around-small" size="4">
+                                                    <lightning:input type="checkbox" label="Add New Retailer Service Plan" aura:id="retailSP" name="retailSP" onchange="{!c.setAssignmentType}"/>
+                                                </lightning:layoutItem>
+                                                <aura:if isTrue="{!v.showCorporatePlan}">
+                                                    <lightning:layoutItem padding="around-small" size="4">
+                                                        <lightning:input type="checkbox" label="Add Corporate Service Plan" aura:id="CorporateSP" name="CorporateSP" onchange="{!c.setAssignmentType}"/>
+                                                    </lightning:layoutItem>
+                                                </aura:if> <br/>
+                                            </aura:if>
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <lightning:inputField aura:id="Assignment_Type__c" fieldName="Assignment_Type__c"  disabled="true"/>
+                                            </lightning:layoutItem>
+                                           <aura:if isTrue="{!v.isCorporateSP}" >
+                                                <lightning:layoutItem padding="around-small" size="12">  
+                                                    <c:AutoComplete Derivative_Product2Id="{!v.asset.Product2Id}" isPerson="{!v.account.IsPersonAccount}" aura:id="plan-record" label="Corporate Account Service Plan"   objectApiName="Offers__c" idFieldApiName="Corporate_Partner__c"  valueFieldApiName="AccountName__c"  maxRecords="10" /> 
+                                                </lightning:layoutItem>
+                                                <aura:if isTrue="{!v.showCorpAccSPErrorMsg}">
+                                                    <div class = "corpAccSPErrorMsg">Corporate Account Service Plan is required</div>
+                                                </aura:if>
+                                                <lightning:inputField class="slds-hidden"  fieldName="Offer__c" aura:id="offer__c"  />
+                                            </aura:if>
+                                            
+                                            <aura:if isTrue="{!and(v.opportunityLineItem != null, v.opportunityLineItem.Product2 != null)}">
+                                                <lightning:layoutItem padding="around-small" size="12"><lightning:inputField  fieldName="Service_Plan_Type__c" aura:id="ServicePlanID1"  onchange="{!c.handleOnChangeServicePlanField}" value="{!v.opportunityLineItem.Product2Id}" variant="label-hidden" disabled="true" /></lightning:layoutItem>
+                                                <aura:set attribute="else">
+                                                    <lightning:layoutItem padding="around-small" size="12"><lightning:inputField aura:id="ServicePlanID"  onchange="{!c.handleOnChangeServicePlanField}" fieldName="Service_Plan_Type__c"  variant="label-hidden" disabled="true" /></lightning:layoutItem>
+                                                </aura:set>
+                                            </aura:if> 
+                                            <aura:if isTrue="{!and(v.opportunityLineItem != null, v.opportunityLineItem.Product2 != null)}">
+                                                <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="spType">Service Plan Type</label><div id="spType" class="slds-form-element__control">{!v.opportunityLineItem.Product2.Service_Plan_Type__c}</div></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="spCode">Service Plan Code</label><div id="spCode" class="slds-form-element__control">{!v.opportunityLineItem.Product2.Service_Plan_Code__c}</div></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="spCorpProgramme">Corporate Programme Code</label><div id="spCorpProgramme" class="slds-form-element__control">{!v.opportunityLineItem.Product2.Corporate_Programme_Code__c}</div></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="spMileageMonths">Mileage/Months</label><div id="spMileageMonths" class="slds-form-element__control">{!v.opportunityLineItem.Product2.Mileage_Months__c}</div></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="spMilesKM">Miles/Kilometers</label><div id="spMilesKM" class="slds-form-element__control">{!v.opportunityLineItem.Product2.Miles_Kilometers__c + ' ' + v.opportunityLineItem.Product2.Mileage_Measure__c}</div></lightning:layoutItem>
+                                                <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="spMonths">Months</label><div id="spMonths" class="slds-form-element__control">{!v.opportunityLineItem.Product2.Months__c}</div></lightning:layoutItem>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if>
+                                    
+                                </lightning:layout>
+                            </lightning:layout>
+                            </div>
+                            <!--END SERVICE PLAN STUFF -->
+                            
+                            <aura:if isTrue="false">
+                                <aura:if isTrue="{! or(v.rdaType == 'New_Retail', v.rdaType == 'On_Sell')}">                                
+                                    <lightning:recordEditForm aura:id="LPTeditForm" objectApiName="Loyalty_Points_Transaction__c" onerror="{!c.handleError1}" onsuccess="{!c.LPTSuccess}" recordId ="{!v.loyaltyTransaction.Id}">                                    
+                                        <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">Loyalty Points Info</span></lightning:layoutItem>                                    
+                                        <lightning:layout multipleRows="true" class="slds-box slds-form">
+                                            <lightning:layout multipleRows="true" class="slds-form">
+                                                
+                                                <lightning:recordEditForm aura:id="LPTAccount" objectApiName="Account" recordId ="{!v.accountid}">
+                                                    <lightning:layout multipleRows="true" class="slds-form">
+                                                        <lightning:layoutItem padding="around-small" size="6"> 
+                                                            <lightning:input type="checkbox" name="togglelp" label="Is Eligible For Loyalty Points"  class="slds-p-vertical_small" checked="{!v.isLoyaltyPointsEligible}" onchange="{!c.toggleLoyalty}" />
+                                                            
+                                                        </lightning:layoutItem>
+                                                        <aura:if isTrue="{!v.isLoyaltyPointsEligible == true}">  
+                                                            <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="LPT_Loyalty_Scheme__c" fieldName="Loyalty_Scheme__c"  onBlur="{!c.handleOnChangeLoyaltyInfo}" variant="label-stacked"  /></lightning:layoutItem>
+                                                            <lightning:layoutItem padding="around-small" size="6">
+                                                                <aura:if isTrue="{!v.account.IsPersonAccount == true}" >                                                        
+                                                                    <label>Last Name</label>                                  
+                                                                    <lightning:inputField aura:id="LPT_Account_Name__c" disabled="true" fieldName="Account_Name__c" variant="label-hidden" value="{!v.account.LastName}"  />
+                                                                    <aura:set attribute="else">
+                                                                        <label>Company Name</label>
+                                                                        <lightning:inputField aura:id="LPT_Account_Name__c"  disabled="true" fieldName="Account_Name__c" variant="label-hidden" value="{!v.account.Name}"  />
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                                
+                                                            </lightning:layoutItem>
+                                                            
+                                                            <lightning:layoutItem padding="around-small" size="6"> 
+                                                                <aura:if isTrue="{!v.account.IsPersonAccount == true}" >                                                        
+                                                                    <label>QFF Reference Number</label>                               
+                                                                    <aura:set attribute="else">
+                                                                        <label>QBR Reference Number</label>
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                                <lightning:spinner aura:id="mySpinner" alternativeText="Loading alternative" title="Validating Qantas Reference" />
+                                                                <lightning:inputField aura:id="LPT_Loyalty_Scheme_Reference__c" variant="label-hidden"  fieldName="Loyalty_Scheme_Reference__c" value="{!v.loyaltyTransaction.Loyalty_Scheme_Reference__c}"  onBlur="{!c.handleOnChangeLoyaltyInfo}" />     
+                                                            </lightning:layoutItem>
+                                                            
+                                                            <!--lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="LPT_Rejection_Reason__c" fieldName="Rejection_Reason__c"  variant="label-stacked" disabled="true" /></lightning:layoutItem-->
+                                                            <lightning:layoutItem padding="around-small" size="6">
+                                                                <aura:if isTrue="{!v.account.IsPersonAccount == true}" >                                                        
+                                                                    <label>QFF Number Validation Status</label>                                
+                                                                    
+                                                                    <aura:set attribute="else">
+                                                                        <label>QBR Number Validation Status</label>
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                                <lightning:inputField aura:id="LPT_Loyalty_Points_Validation_Status__c" fieldName="Loyalty_Points_Validation_Status__c"  variant="label-hidden" disabled="true"/>
+                                                            </lightning:layoutItem>
+                                                            <lightning:layoutItem padding="around-small" ><label class="slds-form-element__label" for="spMilesKM">Total Points</label><div id="spMilesKM" class="slds-form-element__control">{! add(v.loyaltyTransaction.Bonus_Points__c *1, v.loyaltyTransaction.Base_Points__c *1)}</div></lightning:layoutItem>
+                                                        </aura:if>
+                                                    </lightning:layout>
+                                                    
+                                                </lightning:recordEditForm>
+                                                <aura:if isTrue="{!v.isLoyaltyPointsEligible == true}">  
+                                                    
+                                                    <lightning:inputField class= "slds-hide" fieldName="Loyalty_Points__c" value="{!v.loyaltyTransaction.Loyalty_Points__c}" variant="label-stacked" />
+                                                    <lightning:inputField aura:id="LPTrda" class= "slds-hide" fieldName="RDA__c" variant="label-stacked" />
+                                                </aura:if>
+                                            </lightning:layout>
+                                            
+                                        </lightning:layout>
+                                    </lightning:recordEditForm>
+                                </aura:if>
+                            </aura:if> 
+                            
+                            <!-- TRADE IN START -->					   
+                            <lightning:layout multipleRows="true" class="slds-form ">
+                                <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.Trade_In}</span></lightning:layoutItem>
+                                <lightning:layout multipleRows="true" class="slds-box slds-form slds-size_12-of-12">
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="Trade_in_Vehicle__c" fieldName="Trade_in_Vehicle__c" onchange="{!c.toggleTradeIn}" variant="label-stacked" /></lightning:layoutItem>
+                                    <aura:if isTrue="{!v.isTradeIn}">  
+                                        <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="Trade_in_JLR_Vehicle__c" fieldName="Trade_in_JLR_Vehicle__c" onchange="{!c.toggleJLRTradeIn}" variant="label-stacked" /></lightning:layoutItem>
+                                        
+                                        <lightning:layoutItem padding="around-small" size="12">
+                                            <label class="slds-form-element__label">{!$Label.c.VIN_or_Registration_number}</label>  
+                                            <lightning:inputField aura:id="vinENT" fieldName="VIN_entered__c" fieldLevelHelp="Help text goes here"  onchange="{!c.onChangeOfManuallyEnteredVin}" variant="label-hidden" />
+                                        </lightning:layoutItem>
+                                        <aura:if isTrue="{!v.isJLRTradeIn}">
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <label>{!$Label.c.CXP_Vehicle}</label>
+                                                <lightning:inputField aura:id="vinCXP" disabled="true"  fieldName="VIN__c" value="{!v.tradeInAssetId}" variant="label-hidden" /> <!--onchange="{!c.getTradeInAsset}" -->
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="tradeinmake">{!$Label.c.Make}</label><div id="tradeinmake" class="slds-form-element__control">{!v.tradeIn.Brand__r.Name}</div></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="tradeinmodel">Model</label><div id="tradeinmodel" class="slds-form-element__control">{!v.tradeIn.Model__r.Model_Vehicle_Spec__r.Name}</div></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"><label class="slds-form-element__label" for="tradeinmodelyear">Model Year</label><div id="tradeinmodelyear" class="slds-form-element__control">{!v.tradeIn.Product2.Model_Year__c}</div></lightning:layoutItem>
+                                        </aura:if>
+                                        <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="Service_History__c"  fieldName="Service_History__c" variant="label-stacked" /></lightning:layoutItem>
+                                        <aura:if isTrue="{!v.isJLRTradeIn == false}">
+                                            <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="Trade_In_Make__c" fieldName="Trade_In_Make__c" variant="label-stacked" /></lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="Trade_In_Model__c"  fieldName="Trade_In_Model__c" variant="label-stacked" /></lightning:layoutItem>
+                                        </aura:if>
+                                        <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="Kilometres_Mileage__c"  fieldName="Kilometres_Mileage__c" variant="label-stacked" /></lightning:layoutItem>
+                                        <lightning:layoutItem padding="around-small" size="6"><lightning:inputField aura:id="Trade_In_Value__c"  fieldName="Trade_In_Value__c" variant="label-stacked" /></lightning:layoutItem>
+                                    </aura:if>
+                                </lightning:layout>
+                            </lightning:layout>
+                            <!-- TRADE IN END -->	
+                            
+                            <lightning:layout>
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <div style="text-align:center">
+                                        <!-- Prevent implicit submission of the form with hidden disabled -->
+                                        <lightning:button label="no" type="submit" name="save" class="slds-hidden" disabled="true" variant="brand" /> 
+                                        <lightning:button label="{!$Label.c.RDA_Submit}" type="submit" name="save" variant="brand" /> 
+                                        
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <aura:if isTrue="false">
+                                <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">Admin Use Only</span></lightning:layoutItem>
+                                <lightning:layout multipleRows="true" class="slds-box slds-form">
+                                    <lightning:layoutItem padding="around-small" size="12"><lightning:inputField fieldName="Common_Type_of_Sale_Code__c" value="{!v.defaultRDA.Common_Type_of_Sale_Code__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Buyer_Type_Number__c" value="{!v.defaultRDA.Buyer_Type_Number__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="Buyer_Type__c" value="{!v.defaultRDA.Buyer_Type__c}" variant="label-stacked" disabled="true" /></lightning:layoutItem>
+                                </lightning:layout>
+                            </aura:if>
+                        </lightning:recordEditForm>
+                    </div>
+                </aura:set>
+            </aura:if>
+            
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

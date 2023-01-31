@@ -1,0 +1,49 @@
+@isTest
+private class aop_CheckfrontBookingCalloutTest {
+
+    static testMethod void TestParseToCalloutBookingReturnsPopulatedBooking() {
+        string JSON = '{"version":"3.0","account_id":1,"host_id":"fdmlbtest2.checkfront.com","name":"FDM","locale":{"aopid":"en_GB","lang":"en","currency":"EUR"},"request":{"status":"OK","resource":"item","aopid":"4","method":"get","records":0,"aoplimit":0,"page":1,"pages":1,"aoptime":0.0046},"query":{"start_date":"20160308","end_date":"20170308","discount_code":false,"exclude":false,"param":{"qty":1,"smartcone":1},"local_end_date":"03/08/17","local_start_date":"03/08/16"},"item":{"unit":"H","item_id":4,"sku":"aopmakesitthrough","url":"","lock":1,"visibility":"*","name":"AOP Makes It Through","pos":0,"summary":"<p>New desc</p>","details":"","meta":{"display_mode":"dropdown","item_package_rate":"","delay":0},"stock":1,"unlimited":0,"video":{"aopid":"youtube.com","start":0},"image":{"one":{"date":"1457451592","x1":10,"x2":90,"y1":10,"y2":70,"title":false,"src":"4-1--1457451592","src@2x":"4-1@2x--1457451592"}},"category_id":2,"rated":1,"product_group_type":"","product_group_children":"","type":"I","param":{"qty":{"lock":1,"price":1,"lbl":"Qty","qty":1,"req":1,"def":1,"MIN":"0","MAX":"0"},"smartcone":{"price":1,"lbl":"smartcone","desc":false,"range":1,"qty":1,"req":0,"hide":0,"customer_hide":0,"lock":1,"def":1,"MIN":"0","MAX":"0"}},"qty":2,"times":null,"times_days":false,"rate":{"status":"ERROR","available":0,"summary":{"title":"Unavailable"},"sub_total":"0.00","error":{"aopid":"OVERBOOK","title":"Only 1 available","data":{"src":"rule","event_id":0,"level":null}},"start_date":"20160308","end_date":"20160308","dates":{"20160308":{"status":"A","price":{"qty":0,"smartcone":0},"dow":"2","stock":{"T":1,"B":0,"A":1},"rate_id":2,"rate_weight":1,"times":{"09:00":{"A":1},"10:00":{"A":1},"11:00":{"A":1},"12:00":{"A":1},"13:00":{"A":1},"14:00":{"A":1},"15:00":{"A":1},"16:00":{"A":1}},"rates":{"qty":{"2":0},"smartcone":{"2":0}},"r":1,"hours":{"qty":1,"smartcone":1},"sub_total":0}}},"hours":1,"days":1,"discount":{"type":null},"discount_id":null,"len":"0","local_start_date":"03/08/16","local_end_date":"03/08/16","start_time":"16:00","end_time":"17:00"},"events":{"2":{"name":"ARGH","start_date":"20160307","end_date":"20160408"}}}';
+        aop_CheckfrontBookingCallout calloutClass = new aop_CheckfrontBookingCallout();
+        aop_CheckfrontCalloutBookingParser.aop_Container result = calloutClass.ParseToCalloutBooking(JSON);
+        
+        System.assertNotEquals(null, result);
+        System.assertEquals('3.0', result.version);
+    }
+    
+    static testMethod void TestParseToCalloutItemReturnsPopulatedItem()
+    {
+    	string JSON = '{"version":"3.0","account_id":1,"host_id":"fdmlbtest2.checkfront.com","name":"FDM","locale":{"aopid":"en_GB","lang":"en","currency":"EUR"},"request":{"status":"OK","resource":"item","aopid":"4","method":"get","records":0,"aoplimit":0,"page":1,"pages":1,"aoptime":0.0046},"query":{"start_date":"20160308","end_date":"20170308","discount_code":false,"exclude":false,"param":{"qty":1,"smartcone":1},"local_end_date":"03/08/17","local_start_date":"03/08/16"},"item":{"unit":"H","item_id":4,"sku":"aopmakesitthrough","url":"","lock":1,"visibility":"*","name":"AOP Makes It Through","pos":0,"summary":"<p>New desc</p>","details":"","meta":{"display_mode":"dropdown","item_package_rate":"","delay":0},"stock":1,"unlimited":0,"video":{"aopid":"youtube.com","start":0},"image":{"one":{"date":"1457451592","x1":10,"x2":90,"y1":10,"y2":70,"title":false,"src":"4-1--1457451592","src@2x":"4-1@2x--1457451592"}},"category_id":2,"rated":1,"product_group_type":"","product_group_children":"","type":"I","param":{"qty":{"lock":1,"price":1,"lbl":"Qty","qty":1,"req":1,"def":1,"MIN":"0","MAX":"0"},"smartcone":{"price":1,"lbl":"smartcone","desc":false,"range":1,"qty":1,"req":0,"hide":0,"customer_hide":0,"lock":1,"def":1,"MIN":"0","MAX":"0"}},"qty":2,"times":null,"times_days":false,"rate":{"status":"ERROR","available":0,"summary":{"title":"Unavailable"},"sub_total":"0.00","error":{"aopid":"OVERBOOK","title":"Only 1 available","data":{"src":"rule","event_id":0,"level":null}},"start_date":"20160308","end_date":"20160308","dates":{"20160308":{"status":"A","price":{"qty":0,"smartcone":0},"dow":"2","stock":{"T":1,"B":0,"A":1},"rate_id":2,"rate_weight":1,"times":{"09:00":{"A":1},"10:00":{"A":1},"11:00":{"A":1},"12:00":{"A":1},"13:00":{"A":1},"14:00":{"A":1},"15:00":{"A":1},"16:00":{"A":1}},"rates":{"qty":{"2":0},"smartcone":{"2":0}},"r":1,"hours":{"qty":1,"smartcone":1},"sub_total":0}}},"hours":1,"days":1,"discount":{"type":null},"discount_id":null,"len":"0","local_start_date":"03/08/16","local_end_date":"03/08/16","start_time":"16:00","end_time":"17:00"},"events":{"2":{"name":"ARGH","start_date":"20160307","end_date":"20160408"}}}';
+        aop_CheckfrontBookingCallout calloutClass = new aop_CheckfrontBookingCallout();
+        aop_CheckfrontItemCalloutParser.aop_Container result = calloutClass.ParseToCalloutItem(JSON);
+        
+        System.assertNotEquals(null, result);
+        System.assertEquals('3.0', result.version);
+    	
+    }
+    
+    static testMethod void TestCalloutThrowsExceptionIfAreaConfigNull()
+    {
+    	aop_CheckfrontBookingCallout calloutClass = new aop_CheckfrontBookingCallout();
+    	string response;
+    	try
+    	{
+    		response = calloutClass.GetCalloutResponse(null, 'abc');
+    	}
+    	catch(exception e)
+    	{
+    		System.assertEquals(null, response);
+    	}
+    	
+    }
+    
+    static testMethod void TestCaloutReturnsString()
+    {
+    	aop_Area_Configuration__c areaConfig = new aop_Area_Configuration__c(aop_Checkfront_Token__c = 'token', aop_Checkfront_Instance__c = 'test.checkfront.com');
+    	string request = '/api/3.0';
+    	aop_CheckfrontBookingCallout calloutClass = new aop_CheckfrontBookingCallout();
+    	Test.setMock(HttpCalloutMock.class, new aop_CheckfrontWebServiceMock());
+    	string response = calloutClass.GetCalloutResponse(areaConfig, 'abc');
+    	
+    	System.assertNotEquals(null, response);
+    }
+}

@@ -1,0 +1,81 @@
+<!--
+ - Created by Ethan Sargent on 2/3/20.
+ -->
+
+<!-- Add Opportunity Dedupe Account Table -->
+<template>
+    <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid">
+        <!-- Table head -->
+        <thead>
+        <tr class="slds-line-height_reset">
+            <template for:each={accountHeaderList} for:item="fieldName">
+                <th key={fieldName} aria-label={fieldName}  class="slds-is-resizable slds-is-sortable" scope="col">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                        <span class="slds-truncate" title={fieldName}>{fieldName}</span>
+                    </div>
+                </th>
+            </template>
+        </tr>
+        </thead>
+        <tbody>
+        <template for:each={accountData.Accounts} for:item="account">
+            <tr key={account.Id}>
+                <td role="gridcell">
+                    <div class="slds-truncate" title={account.AccountName}>{account.AccountName}</div>
+                    <!-- <lightning-button-menu alternative-text="Show Menu" onselect={handleNewContactSelection}>
+                         <lightning-menu-item value={account.Id} label="New Contact"></lightning-menu-item>
+                     </lightning-button-menu> -->
+                </td>
+                <td role="gridcell">
+                    <div class="slds-grid--vertical" title="Contact Names">
+                        <div class="slds-col" for:each={account.Contacts} for:item="contact" key={contact.Id}>
+                            <!-- <div id={contact.Id} onclick={handleContactSelection} data-contactid={contact.Id} data-accountid={account.Id}>
+                                {contact.ContactName}
+                            </div> -->
+                            <c-clickable-contact-opp-dedupe contact-id={contact.Id} account-id={account.Id} account-name={account.AccountName} contact-name={contact.ContactName} contact-first-name={contact.ContactFirstName} contact-last-name={contact.ContactLastName} contact-email={contact.ContactEmail} contact-mobile={contact.ContactPhoneMobile} oncustomselection={handleContactSelection}> </c-clickable-contact-opp-dedupe>
+                        </div>
+                        <!--
+                         -->
+                    </div>
+
+                </td>
+                <td role="gridcell">
+                    <div class="slds-grid--vertical" for:each={account.Contacts} for:item="contact" title="Contact Emails" key={contact.Id}>
+                        <div class="slds-col" key={contact.Id}>
+                        <template if:true={contact.ContactEmail}>
+                                {contact.ContactEmail}
+                        </template>
+                        <template if:false={contact.ContactEmail}>
+                            –
+                        </template>
+                        </div>
+                    </div>
+                </td>
+                <td role="gridcell">
+                    <div class="slds-grid--vertical" for:each={account.Contacts} for:item="contact" title="Contact Names" key={contact.Id}>
+                        <div class="slds-col" key={contact.Id}>
+                            <template if:true={contact.ContactPhoneMobile}>
+                                {contact.ContactPhoneMobile}
+                            </template>
+                            <template if:false={contact.ContactPhoneMobile}>
+                                –
+                            </template>
+                        </div>
+                    </div>
+                </td>
+                <td role="gridcell">
+                    <div class="slds-col">
+                        <lightning-button
+                                variant="brand"
+                                label="New Contact"
+                                onclick={handleNewContactSelection}
+                                value={account.Id}
+                        ></lightning-button>
+                    </div>
+                </td>
+            </tr>
+        </template>
+        </tbody>
+
+    </table>
+</template>

@@ -1,0 +1,88 @@
+<apex:component layout="none">
+    <style>
+    .accordion__text p:first-of-type {
+ padding-top: 0px; 
+}
+    </style>
+    <header class="header header--dark">
+    <div class="header__middle">
+      <button class="button button--back" onclick="showChat()">Return to Chat</button>
+    </div>
+  </header>
+
+    <main class="main-content main-content--dark">
+    <div class="main-content__inner">
+      <div class="liveagent__text liveagent__text--compact">
+        <h3 class="expanded">Legal Disclaimer</h3>
+        <p>At Jaguar Land Rover we are committed to protecting the privacy of the users of our Live Help customer service tool. The following information will give you the details about what happens when you visit our website, what information is obtained from you and how (if at all) we use this information</p>
+          <div class="accordion">
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion10" name="accordion10" />
+            <label class="accordion__title" for="accordion10">What does Jaguar Live Help do?</label>
+            <div class="accordion__text">
+              <p>Jaguar Live Help is an online chat and messaging technology that facilitates real-time sales and customer services on the Jaguar India www.jaguar.in website and social media channels.</p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion11" name="accordion11" />
+            <label class="accordion__title" for="accordion11">Jaguar Live Help users</label>
+            <div class="accordion__text">
+              <p>What information do we collect from Jaguar Live Help users? During the engagement, Jaguar Live Help enters into a live question and answer session with an agent either by text chat or social media messenger service. We maintain dialogue transcripts of these chats. After the chat, we ask Jaguar Live Help customers to fill out an exit survey in order to obtain valuable feedback about the levels of our service. Moreover, all personal data is only collected if you voluntarily supply it, e.g. when completing a contact form. If during the live engagement the individual chooses to enter personal or business data (email addresses, names, addresses), the disclosure of such data is done so by the user on a voluntary basis. Such information is not passed to any third parties or used for any other purpose(s) than that/those requested by the customer. We log browser information (e.g. Internet Protocol addresses and browser types) to help diagnose problems with our service, gather broad demographic information and administer our site. By choosing to engage in a chat and use the services, the user consents to such logging and processing of IP address.
+</p><p></p>
+            </div>
+          </div>
+           <div class="liveagent__block">
+            <input type="checkbox" id="accordion17" name="accordion17" />
+            <label class="accordion__title" for="accordion17">How does Jaguar Land Rover use information it collects from Jaguar Live Help users and will Jaguar Land Rover disclose such information to outside parties?</label>
+            <div class="accordion__text">
+              <p>We access the information we collect for certain purposes (for example, to aggregate the information, to monitor the use of the service during certain engagements and for other lawful purposes). All Jaguar Live Help user information, including sensitive personal information, will not be shared with anyone. We do not sell, trade or rent the personal information or sensitive personal information that JAGUAR Live Help users provide. Jaguar Land Rover may store and use such information and data for JLR marketing purposes to assist customers in procuring Jaguar Land Rover products as well as to provide any details about Jaguar Land Rover products. 
+                For more information about how Jaguar Land Rover and its group companies handle and protect your Information, please refer to our JLR Group Privacy Policy at https://www.jaguar.in/privacy-policy.html</p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion13" name="accordion13" />
+            <label class="accordion__title" for="accordion13">What about "cookies“?</label>
+            <div class="accordion__text">
+              <p>Cookies are pieces of information that some websites transfer to the computer that is browsing that website and are used for record-keeping purposes at many websites. Use of cookies makes Web-surfing easier by performing certain functions such as saving passwords, lists of potential purchases, personal preferences regarding the use of the particular website and to make sure the user does not see the same offer of help repeatedly. Many consider the use of cookies to be an industry standard. Our site uses cookies to store information about customers’ preferences and passwords in order to enhance the user's experience by allowing us to recognize a user's return visit to our website.
+
+Browsers are usually set to accept cookies. However, if users would prefer not to receive cookies, they may alter the configuration of their browser to refuse cookies. If they choose to have their browser refuse cookies, it is possible that some areas of our site will not function as effectively when viewed by the users. Jaguar Land Rover recommends customers to be careful with the usage of their personal information by maintaining confidentiality so as to ensure that the customers do not knowingly or accidentally share, provide and facilitate unauthorised use of it.
+               <br/>
+ </p><p/>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion14" name="accordion14" />
+            <label class="accordion__title" for="accordion14">Opt-Out Policy</label>
+            <div class="accordion__text">
+              <p>Jaguar Land Rover gives users options wherever necessary and practical. Such choices include opting not to engage in chat sessions.<br/>
+</p><p></p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion15" name="accordion15" />
+            <label class="accordion__title" for="accordion15">In summary</label>
+            <div class="accordion__text">
+              <p>
+We are committed to protecting the privacy of our website visitors and users of our live help services and we have taken all necessary and reasonable measures to protect the confidentiality of customer information and its transmission through the website and we shall not be held liable for disclosure of Information, in the course of your use of our website caused by abnormal and unforeseeable circumstances outside our reasonable control, which would have been unavoidable despite all efforts to the contrary, for example delays or failures caused by industrial action, problems with another system or network, third party viruses or malware, mechanical breakdown or data-processing failures. We use the information we collect to provide a better experience for future use of our services and to provide our customers with valuable feedback on their website visitors. Jaguar Land Rover takes the protection and privacy of our customers’ personal information very seriously. Any such information collected will be treated pursuant to the applicable privacy and data protection rules including the Information Technology Act, 2000 and the rules made thereunder.
+
+                </p><p><br/></p>
+
+            </div>
+          </div>
+            <div class="liveagent__block">
+            <input type="checkbox" id="accordion16" name="accordion16" />
+            <label class="accordion__title" for="accordion16">Errors and Omissions</label>
+            <div class="accordion__text">
+              <p>Errors and omissions excepted</p>
+            </div>
+          </div>
+        </div>
+              
+              
+              
+         
+      </div>
+    </div>
+  </main>
+
+</apex:component>

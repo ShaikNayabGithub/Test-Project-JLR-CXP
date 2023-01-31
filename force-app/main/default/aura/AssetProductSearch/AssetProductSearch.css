@@ -1,0 +1,41 @@
+.THIS .TAB_INDENT {
+	text-indent: 20px;
+}
+
+.THIS .slds-modal__container {
+	margin: 0 auto;
+	width: 100%;
+	max-width: 90rem;
+	min-width: 30rem;
+}
+
+.THIS .modal-container {
+	min-width: 70vw !important;
+}
+
+.THIS .separator {
+	display: flex;
+	align-items: center;
+	text-align: center;
+    font-weight: bold;
+}
+
+.THIS .separator::before {
+	content: "";
+	flex: 1;
+	border-bottom: 1px solid #000;
+}
+
+.THIS .separator::after {
+	content: "";
+	flex: 1;
+	border-bottom: 1px solid #000;
+}
+
+.THIS .separator:not(:empty)::before {
+	margin-right: 0.25em;
+}
+
+.THIS .separator:not(:empty)::after {
+	margin-left: 0.25em;
+}

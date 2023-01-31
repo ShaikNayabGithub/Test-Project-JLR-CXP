@@ -1,0 +1,6 @@
+<design:component>
+	<design:attribute name="CommunityRecordId" label="Record Id"  description="The Campaign id" />
+    	<design:attribute name="VariableA" label="Variable A"  description="Variable" />
+    <design:attribute name="multiple" label="Multiple Files Allowed" description="True: Multiple Files can be uploaded at once; False: Single Files only can be uploaded at once" />
+    <design:attribute name="disabled" label="Disable File Upload" description="True: File upload for Campaign Activities disabled; False: File upload for Campaign Activities allowed" />
+</design:component>

@@ -1,0 +1,13 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="LC_ProcessInstanceComment_Controller" >
+	
+     <aura:attribute name="comment" type="string" />
+      <aura:handler name="init" value="{!this}" action="{!c.loadComment}" />
+	        <lightning:card title="Comments:" class="slds-p-around_xx-small">        	
+    		<p class="slds-p-horizontal_small">
+            	<div class="slds-grid slds-wrap">
+    				<div class="slds-size--1-of-2 slds-p-horizontal_xx-small">{!v.comment}</div>
+                 </div>
+	        </p>
+    </lightning:card>
+    
+</aura:component>

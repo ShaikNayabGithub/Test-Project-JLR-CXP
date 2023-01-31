@@ -1,0 +1,19 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="aopcom_MyEventHowToGetThereCmp">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="Title" type="String" default="How to get there"/>
+    <aura:attribute name="Description" type="String" />
+    <aura:attribute name="Link_label" type="String" default="LINK TO GOOGLE MAPS"/>
+    <aura:attribute name="googleMapsUrl" type="String" />
+    
+    <div class="section section--secondary">
+		<div class="grid">
+			<h2 class="section__heading">{!v.Title}</h2>
+			<div class="section__intro">
+				<p>{!v.Description}</p>
+			</div>
+			<div class="section__footer">
+				<a href="{!v.googleMapsUrl}" class="button" target="_blank">{!v.Link_label}<i class="button-icon button-icon--right icon icon--chevron-right"></i></a>
+			</div>
+		</div>
+	</div><!-- .section -->
+</aura:component>

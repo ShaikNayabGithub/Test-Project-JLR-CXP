@@ -1,0 +1,37 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="VehicleOptionSearchController" >
+	<aura:attribute name="simpleOpp" type="Object" />
+    <aura:attribute name="fieldColumns" type="String[]" default="['Id', 'Lightning_Show_Send_to_DMS__c', 'Approved_for_DMS_Hidden__c', 'Name', 'Account.PersonContact.Salutation', 'Account.PersonContact.LastName', 'Account.PersonContact.FirstName', 'Account.Phone', 'Account.PersonContact.OtherPhone', 'Account.PersonContact.MobilePhone', 'Account.PersonContact.Email', 'Account.PersonContact.Email2__c', 'Account.PersonContact.Language__c', 'Account.PersonContact.Gender__c', 'Account.Name', 'Account.PersonContact.MailingStreet', 'Account.PersonContact.MailingCity', 'Account.PersonContact.MailingState', 'Account.PersonContact.MailingPostalCode', 'Account.PersonContact.MailingCountry', 'Purchase_Type__c', 'Account.ntt_Jaguar_Status__c', 'Account.ntt_Land_Rover_Status__c', 'LeadSource', 'Retailer_Name__c', 'Retailer_Primary_Code__c', 'Retailer_Secondary_Code__c', 'Owner.Name', 'Amount', 'Budget__c']" />
+    <aura:attribute name="showDMS" type="boolean" default="true" />
+    <aura:attribute name="showExtract" type="boolean" default="true" />
+    <aura:attribute name="showLock" type="boolean" default="true" />
+    <aura:attribute name="showVehicleOptions" type="boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.determineButtonVisibility}" />
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+    
+    
+    <force:recordData aura:id="oppLoader" recordId="{!v.recordId}" mode="VIEW" targetFields="{!v.simpleOpp}" fields="{!v.fieldColumns}" />
+	
+    <lightning:layout>
+        <aura:if isTrue="{!v.showLock}">
+        	<lightning:layoutItem padding="around-small">
+                <c:UnlockRecordButton recordId="{!v.recordId}" recordTypeName="Opportunity" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.showExtract}">
+            <lightning:layoutItem padding="around-small">
+                <c:OpportunityExtractOpportunityPanel recordId="{!v.recordId}" simpleOpp="{!v.simpleOpp}" disabled="{!v.simpleOpp.Approved_for_DMS_Hidden__c == false}" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.showDMS}">
+        	<lightning:layoutItem padding="around-small">
+            	<c:Opportunity_DMSButton recordId="{!v.recordId}" disabled="{!v.simpleOpp.Lightning_Show_Send_to_DMS__c == false}" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.showVehicleOptions}">
+        	<lightning:layoutItem padding="around-small">
+            	<c:VehicleOptionSearchButton recordId="{!v.recordId}"  />
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+    
+</aura:component>

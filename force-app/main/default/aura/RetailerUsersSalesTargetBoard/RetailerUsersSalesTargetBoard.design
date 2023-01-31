@@ -1,0 +1,3 @@
+<design:component>	
+    <design:attribute name="targetType" label="targetType" description="Describes the Type of Target Opportunity sales or TestDrive"/>
+</design:component>

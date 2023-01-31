@@ -1,0 +1,207 @@
+<!--
+ - Created by Ethan Sargent on 30/10/19.
+ -->
+
+<!-- Pickles Vehicle Assignment -->
+<template>
+    <lightning-card title="Pickles Vehicle Allocation">
+        <lightning-input
+                type="search"
+                class="slds-m-bottom_small textbox_widths slds-float--left"
+                label="Search for a vehicle"
+                placeholder="Enter VIN or Registration Number"
+                onchange={handleSearchKeyChange}
+        ></lightning-input>
+        <lightning-button variant="brand" class="slds-m-around--medium slds-float--right" label="Assign Selected to Dealer" onclick={handleAssignmentButton} ></lightning-button>
+        <br> <br>
+        <!-- Show all vehicles from head office -->
+        <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid">
+            <!-- Table head -->
+            <thead>
+
+            <tr class="slds-line-height_reset">
+                <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                    <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                </th>
+                <template for:each={fieldHeaderList} for:item="fieldName">
+                    <th key={fieldName} aria-label={fieldName}  class="slds-is-resizable slds-is-sortable" scope="col">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title={fieldName}>{fieldName}</span>
+                        </div>
+                    </th>
+                </template>
+                <!--------------
+
+                <th aria-label="Asset Name" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0">
+                        <span class="slds-assistive-text">Sort by: </span>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Asset Name">Asset Name</span>
+
+                        </div>
+                    </a>
+                </th>
+                <th aria-label="VIN" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0">
+                        <span class="slds-assistive-text">Sort by: </span>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="VIN">VIN</span>
+
+                        </div>
+                    </a>
+
+                </th>
+                <th aria-label="Model" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0">
+                        <span class="slds-assistive-text">Sort by: </span>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                            <span class="slds-truncate" title="Model">Model</span>
+
+                        </div>
+                    </a>
+                </th>
+
+                ----------->
+            </tr>
+            </thead>
+            <!------- ASSET TABLE BODY -------->
+            <tbody>
+                <template if:true={assetList.data}>
+                    <template for:each={assetList.data} for:item="asset">
+                        <tr key={asset.Id}>
+                            <td class="slds-text-align_right" role="gridcell">
+                                <div class="slds-checkbox">
+                                    <template if:true={asset.isChecked}>
+                                        <input type="checkbox" name="options" class="assignment_checkboxes" id={asset.Id} value={asset.Id} data-vin={asset.VINString} tabindex="-1" aria-labelledby="column-group-header" onchange={handleCheckboxChange} checked/>
+                                        <label class="slds-checkbox__label" for={asset.Id}>
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label slds-assistive-text">Select {asset.Name}</span>
+                                        </label>
+                                    </template>
+                                    <template if:false={asset.isChecked}>
+                                        <input type="checkbox" name="options" class="assignment_checkboxes" id={asset.Id} value={asset.Id} data-vin={asset.VINString} tabindex="-1" aria-labelledby="column-group-header" onchange={handleCheckboxChange} />
+                                        <label class="slds-checkbox__label" for={asset.Id}>
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label slds-assistive-text">Select {asset.Name}</span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </td>
+
+                            <td role="gridcell">
+                                <div class="slds-truncate" title={asset.VINString}>{asset.VINString}</div>
+                            </td>
+                            <td role="gridcell">
+                                <div class="slds-truncate" title={asset.HandOverDateString}>{asset.HandOverDateString}</div>
+                            </td>
+                            <td role="gridcell">
+                                <div class="slds-truncate" title={asset.MakeString}>{asset.MakeString}</div>
+                            </td>
+                            <td role="gridcell">
+                                <div class="slds-truncate" title={asset.ModelDetailString}>{asset.ModelDetailString}</div>
+                            </td>
+                            <td role="gridcell">
+                                <div class="slds-truncate" title={asset.RegistrationNumberString}>{asset.RegistrationNumberString}</div>
+                            </td>
+                            <td role="gridcell">
+                                <div class="slds-truncate" title={asset.CommonTypeOfSaleString}>{asset.CommonTypeOfSaleString}</div>
+                            </td>
+                        </tr>
+                    </template>
+                </template>
+                <template if:false={assetList.data}>
+                    <lightning-spinner alternative-text="Loading assets, please wait."></lightning-spinner>
+                </template>
+            </tbody>
+        </table>
+
+        <!---------------- Modal Pop-up ----------------->
+        <template if:true={openModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-modal_medium slds-fade-in-open" id="assignment_modal" aria-labelledby="Select_Dealer" aria-modal="true">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                            <lightning-icon icon-name="utility:close" onclick={handleModalCancel}></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="Select_Dealer" class="slds-modal__title slds-hyphenate">Select A Dealer</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <!-- DEALER LOOKUP -->
+                        <lightning-input
+                                type="search"
+                                class="slds-m-bottom_small"
+                                label="Search for a Dealer"
+                                onchange={handleDealerNameChange}
+                                value={dealerName}
+                        ></lightning-input>
+
+                        <template if:true={dealerInformationList}>
+                            <div id="DealerDropdown" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                    <template for:each={dealerInformationList} for:item="dealer">
+                                        <li key={dealer.Id} role="presentation" class="slds-listbox__item">
+                                            <div id={dealer.Id}  data-dealerid={dealer.Id} data-dealername={dealer.Name} class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" role="option" onclick={handleDealerSelect}>
+                                                <span class="slds-media__figure slds-listbox__option-icon">
+                                                  <span class="slds-icon_container slds-icon-standard-account">
+                                                      <lightning-icon class="slds-icon slds-icon_small" icon-name="standard:account"></lightning-icon>
+                                                  </span>
+                                                </span>
+                                                <span class="slds-media__body">
+                                                     <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                                        <span> {dealer.Name}</span>
+                                                     </span>
+                                                </span>
+                                            </div>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleModalCancel}>Cancel</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" id="assignment_modal_backdrop"></div>
+
+        </template>
+
+        <!------- CONFIRM MODAL------->
+        <template if:true={confirmModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-modal_medium slds-fade-in-open" id="confirmation_modal" aria-labelledby="Select_Dealer" aria-modal="true">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                            <lightning-icon icon-name="utility:close" onclick={handleModalCancel}></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="Confirm_Dealer" class="slds-modal__title slds-hyphenate">Confirm Selection</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <p> Please confirm your selection of the dealer: {dealerName} to allocate {vehicleDisplayText}.</p>
+                        <h4>VINS:</h4>
+                        <ul>
+                            <template for:each={VinList} for:item="VIN">
+                                <li key={VIN}> - {VIN}</li>
+                            </template>
+                        </ul>
+                        <lightning-button
+                                variant="brand"
+                                value={selectedDealer}
+                                label="Assign Vehicles"
+                                onclick={handleReassignment}
+                        ></lightning-button>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleModalBack}>Back</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" id="confirmation_modal_backdrop"></div>
+
+        </template>
+    </lightning-card>
+
+</template>

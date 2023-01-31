@@ -1,0 +1,74 @@
+<!--
+ - Created by caleb on 3/02/2020.
+ -->
+
+<!-- Milestone Close Opportunity -->
+<template>
+    <div class="slds-grid slds-wrap">
+
+        <!--Won/Lost-->
+        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+            <c-milestone-radio-button-group
+                    radio-group-name="Won/Lost"
+                    options={wonLostTypes}
+                    selected-value={currentWonLost}
+                    onvaluechange={handelWonLostChange}>
+            </c-milestone-radio-button-group>
+        </div>
+        <div class="slds-col slds-size_1-of-2"></div>
+
+        <!--Lost Selected-->
+        <template if:true={isLost}>
+            <!--Lost Reason-->
+            <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                <c-milestone-drop-down
+                        class="input-lost-reason-dropdown"
+                        placeholder=" - select - "
+                        options={lostReasons}
+                        dropdown-name="Lost Reason"
+                        onvaluechange={handelLostReasonChange}>
+                </c-milestone-drop-down>
+            </div>
+            <div class="slds-col slds-size_1-of-2"></div>
+
+            <!--Lost Description-->
+            <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small">
+                <c-milestone-long-text-area
+                        text-area-name="Lost Description"
+                        text={lostDescription}
+                        onvaluechange={handelLostDescriptionChange}>
+                </c-milestone-long-text-area>
+            </div>
+
+        </template>
+
+        <!--Won Selected-->
+        <template if:false={isLost}>
+            <!--Handover Date-->
+            <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small">
+                <c-milestone-date-picker
+                        class="input-handover-date"
+                        date-picker-name="Planned Handover Date"
+                        datetime={handoverDate}
+                        onvaluechange={handelHandoverDateChange}>
+                </c-milestone-date-picker>
+            </div>
+            <div class="slds-col slds-size_1-of-2"></div>
+            <!--<div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small">
+                <c-milestone-text-input
+                        class="input-email"
+                        text-input-name="Customer Email"
+                        help-text="A valid email address is mandatory when marking an Opportunity as Won to ensure JLR can communicate order updates and other relevant information with your customer."
+                        text={opportunityEmail}
+                        onvaluechange={handelOpportunityEmailChange}>
+                </c-milestone-text-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2"></div>-->
+        </template>
+
+        <!--Errors-->
+        <template for:each={errors} for:item="item">
+            <span key={item.id} class="jlr-errors">{item.message}</span>
+        </template>
+    </div>
+</template>

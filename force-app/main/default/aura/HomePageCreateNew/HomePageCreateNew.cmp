@@ -1,0 +1,93 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+	<article class="slds-card">
+		<div class="slds-card__header slds-grid">
+    		<header class="slds-media slds-media_center slds-has-flexi-truncate">
+      			<div class="slds-media__body">
+        			<h2 class="header-title-container">
+                        <span class="slds-text-heading--small slds-truncate"><b>Create New</b></span>
+                    </h2>
+      			</div>
+    		</header>
+  		</div>
+  		<div class="slds-card__body slds-card__body_inner">
+            <ul>
+                <li class="slds-p-vertical_xx-small">
+                    <b>Event</b>
+                    <div class="slds-p-horizontal_small">
+                    	<ul>
+                        	<li class="slds-p-vertical_xxx-small">
+                				<c:HomePageSFObjectLink iconName="standard:event" iconSize="x-small" objectName="Event" recordTypeId="01224000000TXPWAA4" mode="create" displayText="Meeting" />
+                        	</li>
+                        	<li class="slds-p-vertical_xxx-small">
+	                			<c:HomePageSFObjectLink iconName="standard:event" iconSize="x-small" objectName="Event" recordTypeId="012240000002q2QAAQ" mode="create" displayText="Repair" />
+	                        </li>
+	                        <li class="slds-p-vertical_xxx-small">
+	                			<c:HomePageSFObjectLink iconName="standard:event" iconSize="x-small" objectName="Event" recordTypeId="012240000002q2RAAQ" mode="create" displayText="Roadside" />
+	                        </li>
+    	                    <li class="slds-p-vertical_xxx-small">
+        	        			<c:HomePageSFObjectLink iconName="standard:event" iconSize="x-small" objectName="Event" recordTypeId="012240000002q2SAAQ" mode="create" displayText="Service Appointment" />
+            	            </li>
+                	        <li class="slds-p-vertical_xxx-small">
+                				<c:HomePageSFObjectLink iconName="standard:event" iconSize="x-small" objectName="Event" recordTypeId="012240000002q2TAAQ" mode="create" displayText="Showroom Appointment" />
+                        	</li>
+                        	<li class="slds-p-vertical_xxx-small">
+	                			<c:HomePageSFObjectLink iconName="standard:event" iconSize="x-small" objectName="Event" recordTypeId="01224000000TXPXAA4" mode="create" displayText="Test Drive" />
+    	                    </li>
+        	            </ul>
+                    </div>
+                </li>
+        		<li class="slds-p-vertical_xx-small">
+                    <b>Task</b>
+                    <div class="slds-p-horizontal_small">
+                        <lightning:buttonMenu iconName="standard:task" onselect="{!c.createTask}">
+                            <lightning:menuItem label="Task" value="01224000000TXPdAAO" />
+                            <lightning:menuItem label="Private Task" value="01224000000kJyPAAU" />
+                        </lightning:buttonMenu>
+                    </div>
+                </li>
+                <li class="slds-p-vertical_xx-small">
+                    <b>Case</b>
+                    <div class="slds-p-horizontal_small">
+                        <lightning:buttonMenu iconName="standard:case" onselect="{!c.createCase}">
+                            <lightning:menuItem label="Enquiry" value="01224000000kJrlAAE" />
+                            <lightning:menuItem label="CRC" value="01224000000kJrmAAE" />
+                            <lightning:menuItem label="Importer" value="012240000006uHaAAI" />
+                            <lightning:menuItem label="Retailer" value="01224000000kJrnAAE" />
+                            <lightning:menuItem label="Email Temporary" value="01224000000kJrkAAE" />
+                            <lightning:menuItem label="CXP Support" value="0121o00000038HkAAI" />
+                        </lightning:buttonMenu>
+                    </div>
+            	</li>
+                <li class="slds-p-vertical_xx-small">
+                    <b>Account</b>
+                    <div class="slds-p-horizontal_small">
+                        <lightning:buttonMenu iconName="standard:account" onselect="{!c.createAccount}">
+                        	<lightning:menuItem label="Retailer" value="01224000000TXPHAA4" />
+                            <lightning:menuItem label="Corporate" value="01224000000kGLJAA2" />
+                            <lightning:menuItem label="Individual" value="01224000000TXPcAAO" />
+                        </lightning:buttonMenu>
+                    </div>
+            	</li>
+                <li class="slds-p-vertical_xx-small">
+					<b>Contact</b>
+                    <div class="slds-p-horizontal_small">
+                        <lightning:buttonMenu iconName="standard:contact" onselect="{!c.createContact}">
+	                        <lightning:menuItem label="JLR Contact" value="01224000000TXPUAA4" />
+                            <lightning:menuItem label="Retailer Contact" value="01224000000TXPVAA4" />
+                            <lightning:menuItem label="Employee Contact" value="01224000000TXPTAA4" />
+                        </lightning:buttonMenu>
+                    </div>
+            	</li>
+                <!--<li class="slds-p-vertical_xx-small">
+                    <c:HomePageSFObjectLink iconName="standard:report" iconSize="small" objectName="Report" mode="create" displayText="Report" />
+            	</li>
+                <li class="slds-p-vertical_xx-small">
+                    <c:HomePageSFObjectLink iconName="standard:solution" iconSize="small" objectName="Idea" mode="create" displayText="Idea" />
+            	</li>
+                <li class="slds-p-vertical_xx-small">
+                    <c:HomePageSFObjectLink iconName="standard:pricebook" iconSize="small" objectName="Pricebook" mode="create" displayText="Pricebook" />
+            	</li>-->
+            </ul>
+        </div>
+	</article>
+</aura:component>

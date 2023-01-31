@@ -1,0 +1,22 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+	
+	<lightning:recordEditForm aura:id="editLead" recordId="{!v.recordId}" objectApiName="Lead" onsuccess="{!c.handleSuccess}">
+    	<lightning:card title="{!$Label.c.Finance}" iconName="standard:lead" class="slds-p-around_xx-small">
+        	<aura:set attribute="actions">
+            	<lightning:button label="{!$Label.c.sfSave}" type="submit" name="save" variant="brand" />
+        	</aura:set>
+    		<p class="slds-p-horizontal_small">
+            	<div class="slds-grid slds-wrap">
+    				<div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Financed__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Finance_Product_of_Interest__c" /></div>
+					<div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Finance_Interest__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Finance_Term_Months__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Finance_Monthly_Budget__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Likely_to_take_finance_Prop__c" /></div>
+                    <div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Initial_Payment__c" /></div>
+                </div>
+	        </p>
+    	</lightning:card>
+    </lightning:recordEditForm>
+    
+</aura:component>

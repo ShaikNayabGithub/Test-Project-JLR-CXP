@@ -1,0 +1,9 @@
+/**
+ * Created by Ethan Sargent on 20/11/19.
+ */
+
+.textbox_widths {
+    min-width: 100px;
+    max-width: 500px;
+    margin: 10px;
+}

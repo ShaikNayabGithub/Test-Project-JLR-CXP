@@ -1,0 +1,59 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+	<article class="slds-card">
+		<div class="slds-card__header slds-grid">
+    		<header class="slds-media slds-media_center slds-has-flexi-truncate">
+      			<div class="slds-media__body">
+        			<h2 class="header-title-container">
+                        <span class="slds-text-heading--small slds-truncate"><b>Links</b></span>
+                    </h2>
+      			</div>
+    		</header>
+  		</div>
+  		<div class="slds-card__body slds-card__body_inner slds-border_bottom">
+			<ul>
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:trailhead" urlLink="https://trailhead.salesforce.com/en/home" displayText="Trailhead" isPopOut="true" />
+            	</li>
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:trailhead" urlLink="https://trailhead.salesforce.com/en/modules/lightning-experience-for-salesforce-classic-users" displayText="Trailhead (Lightning vs Classic)" isPopOut="true" />
+            	</li>
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:trailhead" urlLink="https://trailhead.salesforce.com/trails/lex_admin_implementation/modules/lex_implementation_basics" displayText="Trailhead (CRM for Lightning)" isPopOut="true" />
+            	</li>
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:search" urlLink="/apex/AssetInquiry" displayText="Vehicle Lookup" />
+            	</li>
+        		<!--<li class="slds-p-vertical_xxx-small"><c:HomePageExternalLink iconName="utility:user" urlLink="https://www.proprofs.com/classroom/?ID=2179254" displayText="CXP e-Learning" isPopOut="true" /></li>-->
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:salesforce1" urlLink="https://login.salesforce.com/_ui/core/chatter/groups/GroupProfilePage?g=0F9240000008RUF" displayText="CRM Frequently Asked Questions" isPopOut="true" />
+                </li>
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:display_text" urlLink="https://drive.google.com/open?id=0B_7zrlhEqgMgeDEyS3UzS05ZLW8" displayText="CRM Usage Policy" isPopOut="true" />
+                </li>
+                <!--<li class="slds-p-vertical_xxx-small"><c:HomePageExternalLink iconName="utility:left_align_text" urlLink="https://drive.google.com/open?id=0B_7zrlhEqgMgeER5TU1FeDlNRG8" displayText="CRM Support Document" isPopOut="true" /></li>-->
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:standard_objects" urlLink="https://login.salesforce.com/sfc/p/24000000qZQN/a/24000000PEvr/gCQWVRGKBs37gIiurhFmIFm1rwlfp4UBow.qif5_pC4" displayText="CRM Data Standards" isPopOut="true" />
+                </li>
+                <!--<li class="slds-p-vertical_xxx-small"><c:HomePageSFObjectLink iconName="utility:salesforce1" objectName="Idea" displayText="CXP Idea Platform" /></li>-->
+                <!--<li class="slds-p-vertical_xxx-small"><c:HomePageExternalLink iconName="utility:world" urlLink="http://www.jaguar.in/" displayText="Jaguar Website" isPopOut="true" /></li>-->
+                <!--<li class="slds-p-vertical_xxx-small"><c:HomePageExternalLink iconName="utility:world" urlLink="http://www.landrover.in/" displayText="Land Rover Website" isPopOut="true" /></li>-->
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:questions_and_answers" urlLink="https://loyalty.gfk.com/" displayText="Customer Survey Scores (GFK)" isPopOut="true" />
+                </li>
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:news" urlLink="http://newsroom.jaguarlandrover.com/en-in/jaguar/" displayText="JLR Newsroom" isPopOut="true" />
+                </li>
+                <li class="slds-p-top_xxx-small slds-p-bottom_small">
+                    <c:HomePageExternalLink iconName="utility:help" urlLink="https://www.jlrinsite.com/en-gb/account/signin" displayText="Insite" isPopOut="true" />
+                </li>
+            </ul>
+        </div>
+		<div class="slds-card__body slds-card__body_inner">
+            <ul>
+                <li class="slds-p-vertical_xxx-small">
+                    <c:HomePageExternalLink iconName="utility:warning" urlLink="/6AC?src=10#" displayText="Unresolved Items" />
+                </li>
+            </ul>
+        </div>
+	</article>
+</aura:component>

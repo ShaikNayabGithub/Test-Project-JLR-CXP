@@ -1,0 +1,26 @@
+.THIS .QMSPModel {
+	width: 9%;	
+}
+.THIS .QMSPRegion {
+	width: 9%;	
+}
+.THIS .QMSPStartDate {
+	width: 10%;	
+}
+.THIS .QMSPEndDate {
+	width: 11%;	
+}
+.THIS .QMSPPU {
+	width: 20%;	
+}
+.THIS .QMSPUO {
+	width: 25%;	
+}
+.THIS .QMSPBrand {
+	width: 10%;
+	padding-top: 1.5%;	
+}
+.THIS .slds-form-element__icon .slds-button_icon {
+    position: relative;
+    display: none;
+}

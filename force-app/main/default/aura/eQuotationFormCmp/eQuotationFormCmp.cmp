@@ -1,0 +1,511 @@
+<aura:component controller="EQuotationFormController" implements="forceCommunity:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" access="global" >
+    <aura:attribute name="recordId" type="Id" default=""/>
+    <aura:attribute name="isEnabled" type="Boolean" default="false"/>
+    <aura:attribute name="QuoteId" type="Id" default=""/>
+    <aura:attribute name="opportunityId" type="Id"/>
+    <aura:attribute name="quoteInitWrap" type="object"/>
+    <aura:attribute name="newVehVinResults" type="object[]" />    
+    <aura:attribute name="openNewVehDropDown" type="Boolean" default="false" />
+    <aura:attribute name="trdeInVinResults" type="object[]" />    
+    <aura:attribute name="openTradeInDropDown" type="Boolean" default="false" />
+    <aura:attribute name="inputSearchTradeIn" type="Object" />
+    <aura:attribute name="inputSearchNewVeh" type="Object" />
+    <aura:attribute name="searchVin" type="String"/>
+    <aura:attribute name="otherInsuranceComp1" type="String"/>
+    <aura:attribute name="otherInsuranceComp2" type="String"/>
+    <aura:attribute name="otherFinanceComp" type="String"/>
+    <aura:attribute name="buttonClicked" type="String"/>
+    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        height:unset !important;
+        max-height:unset !important;
+        }
+        
+        .slds-modal__container{
+        width:80% !important;
+        max-width:unset !important;
+        }
+    </aura:html>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>-->
+    <aura:if isTrue="{!v.isEnabled}">
+    <div style="position: fixed;z-index: 30;" class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading–medium">Create Quote</h4>
+    </div>
+    
+    <br/>
+    <div aura:id="Id_spinner" class="slds-spinner_container">
+        <lightning:spinner variant="brand" size="large" />
+    </div>
+    <div class="slds-modal__content slds-p-around--x-small slds-align_absolute-center slds-size_1-of-1 slds-is-relative">
+        
+        <aura:if isTrue="{!v.quoteInitWrap!=null}">
+            <lightning:accordion>
+                <lightning:recordEditForm onerror="{!c.hideSpinner}" recordId="{!v.QuoteId}" objectApiName="Quote__c" onsubmit="{!c.handleSubmitJs}" onsuccess="{!c.handleSaveSuccess}">
+                    
+                    <aura:if isTrue="{!v.opportunityId !=null}">
+                        <lightning:inputField class="slds-hide" fieldName="Opportunity__c" value="{!v.opportunityId}"/>
+                        <lightning:inputField class="slds-hide" fieldName="Country_ISO_Code__c" value="{!v.quoteInitWrap.userDetail.countryIsoCode}"/>
+                    </aura:if>
+                    
+                    <lightning:messages />
+                    <lightning:layout class="slds-m-around_large" multipleRows="true"> 
+                        <!-- Form Input-->
+                        <lightning:layoutItem padding="around-small" size="12">
+                            <div class="page-section page-main">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem padding="around-small" size="6">
+                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Pricelist_Reference_No__c}" fieldName="Pricelist_Reference_No__c" disabled="true"/>                    
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6">
+                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Date__c}" fieldName="Date__c" disabled="true" /> 
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </lightning:layoutItem>
+                        
+                        <!-- Customer Details-->
+                        <c:auraIfContains items="{!v.quoteInitWrap.visibleSectionLst}"  element="Customer Details"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <div class="page-section page-main">
+                                    <lightning:accordionSection name="Customer Details" label="Customer Details">
+                                        <lightning:layout multipleRows="true">
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Customer_Name__c}" fieldName="Customer_Name__c" disabled="true" />                    
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Contact_No__c}" fieldName="Contact_No__c" disabled="true" />                    
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Email__c}" fieldName="Email__c" disabled="true" />                    
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:accordionSection>
+                                </div>
+                            </lightning:layoutItem>
+                        </c:auraIfContains>
+                        
+                        
+                        <!--New Vehicle Details-->
+                        <c:auraIfContains items="{!v.quoteInitWrap.visibleSectionLst}"  element="New Vehicle Details"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <div class="page-section page-main">
+                                    <lightning:accordionSection name="New Vehicle Details" label="New Vehicle Details">
+                                        <lightning:layout>
+                                            <lightning:layoutItem padding="around-small" size="4">
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="8">
+                                                <lightning:layout multipleRows="true">
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <div class="slds-form-element">
+                                                            <div class="slds-form-element__control">
+                                                                <div class="slds-combobox_container">
+                                                                    <div class="{! v.openNewVehDropDown ? 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'}"
+                                                                         aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                                                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                                            
+                                                                            <lightning:input label="Chassis" variant="label-inline" name="Chassis" aura:id="newVehVin" value="{!v.searchVin}" onchange="{!c.getNewVehVinJs}" onblur="{!c.checkModels}"/>
+                                                                            <aura:if isTrue="{! empty(v.searchVin)}">
+                                                                                <span
+                                                                                      class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                                                                                    <lightning:icon iconName="utility:search" size="x-small" />
+                                                                                </span>
+                                                                                <aura:set attribute="else">
+                                                                                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                                                                            title="Clear the text input" onclick="{!c.clearOption}">
+                                                                                        <lightning:icon iconName="utility:clear" size="x-small" />
+                                                                                    </button>
+                                                                                </aura:set>
+                                                                            </aura:if>
+                                                                        </div>
+                                                                        <div id="listbox-id-11" style="top: 35px;left:66%;z-index:10;" class="slds-dropdown slds-size_8-of-12 slds-dropdown_length-5 slds-dropdown_fluid"
+                                                                             role="listbox">
+                                                                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                                                <aura:iteration items="{!v.newVehVinResults}" var="result" indexVar="index">
+                                                                                    <li role="presentation" class="slds-listbox__item" data-id="{!index}"
+                                                                                        data-value="{!result.Name}" onclick="{!c.newVehOptionClickHandler}">
+                                                                                        <div
+                                                                                             class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                                                             role="option">
+                                                                                            <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                                                            <span class="slds-media__body">
+                                                                                                <span class="slds-truncate" style="width:100%">
+                                                                                                    <span>{!result.Name}</span>
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                </aura:iteration>
+                                                                            </ul>
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>                      
+                                                        <lightning:inputField class="slds-hide" variant="label-inline" value="{!v.quoteInitWrap.quoteObj.VIN__c}" fieldName="VIN__c" />                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <div class="slds-form slds-form_horizontal">
+                                                            <lightning:select name="Model" variant="label-inline" label="Model" aura:id="Model" value="{!v.quoteInitWrap.ModelName}" onchange="{!c.refreshDerivative}" disabled="{!if(v.quoteInitWrap.quoteObj.VIN__c !=null,true,false)}">
+                                                                <aura:iteration items="{!v.quoteInitWrap.Models}" var="option">
+                                                                    <option text="{!option}" value="{!option}" selected="{!option == v.quoteInitWrap.ModelName}" />
+                                                                </aura:iteration>
+                                                            </lightning:select>
+                                                        </div>  
+                                                        <lightning:inputField class="slds-hide" variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Model__c}" fieldName="Model__c" />                    
+                                                    </lightning:layoutItem>                              
+                                                    <!--<lightning:layoutItem padding="around-small" size="12">
+                                                    <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Model__c}" fieldName="Model__c" />                    
+                                                </lightning:layoutItem>-->
+                                                    <!--<lightning:layoutItem padding="around-small" size="12">
+                                                    <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Derivative__c}" fieldName="Derivative__c" />                    
+                                                </lightning:layoutItem>-->
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <div class="slds-form slds-form_horizontal">
+                                                            <lightning:select name="Derivative" variant="label-inline" label="Derivative" aura:id="Derivative" onchange="{!c.refreshSP}" value="{!v.quoteInitWrap.quoteObj.Derivative__c}" disabled="{!if(v.quoteInitWrap.quoteObj.VIN__c !=null,true,false)}">
+                                                                <aura:iteration items="{!v.quoteInitWrap.Derivatives}" var="option">
+                                                                    <option text="{!option.label}" value="{!option.value}" selected="{!option.value == v.quoteInitWrap.quoteObj.Derivative__c}" data-id="{!option.optionalValue}" />
+                                                                </aura:iteration>
+                                                            </lightning:select>
+                                                        </div> 
+                                                        <lightning:inputField class="slds-hide" variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Derivative__c}" fieldName="Derivative__c" />                    
+                                                    </lightning:layoutItem>
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12" >
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Exterior_Color__c}" fieldName="Exterior_Color__c" disabled="{!if(v.quoteInitWrap.quoteObj.VIN__c !=null,true,false)}"/>                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Interior_color__c}" fieldName="Interior_color__c" disabled="{!if(v.quoteInitWrap.quoteObj.VIN__c !=null,true,false)}"/>                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.RRP__c}" fieldName="RRP__c" required="true" />                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Requested_Delivery_Date__c}" fieldName="Requested_Delivery_Date__c"/>                    
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:accordionSection>
+                                </div>
+                            </lightning:layoutItem>
+                        </c:auraIfContains>
+                        
+                        <!--Trade-In Offer-->
+                        <c:auraIfContains items="{!v.quoteInitWrap.visibleSectionLst}"  element="Trade-In Offer"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <div class="page-section page-main">
+                                    <lightning:accordionSection name="Trade-In Offer" label="Trade-In Offer">
+                                        <lightning:layout>
+                                            <lightning:layoutItem size="6">
+                                                <lightning:layout multipleRows="true">
+                                                    <lightning:layoutItem padding="around-small" size="12" >
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Vehicle_No__c}" fieldName="Vehicle_No__c"/>                    
+                                                    </lightning:layoutItem>
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Trade_In_Make_Model__c}" fieldName="Trade_In_Make_Model__c"/>                    
+                                                    </lightning:layoutItem>
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Trade_In_Registration_Date__c}" fieldName="Trade_In_Registration_Date__c"/>                    
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="6">
+                                                <lightning:layout multipleRows="true">
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                            <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Mileage__c}" fieldName="Mileage__c" />                    
+                                                            <span class="slds-icon_container slds-input__icon slds-input__icon_right slds-m-right_small" >
+                                                                Km
+                                                            </span>
+                                                        </div>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12" >
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Valuation_Offer__c}" fieldName="Valuation_Offer__c"/>                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Overtrade__c}" fieldName="Overtrade__c"/>                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:input variant="label-inline" type="number" name="input1" label="Total Trade-in Value" value="{!add(v.quoteInitWrap.quoteObj.Valuation_Offer__c*1,v.quoteInitWrap.quoteObj.Overtrade__c*1)}" formatter="currency" disabled="true"/>                  
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Less_Outstanding_Loan__c}" fieldName="Less_Outstanding_Loan__c"/>                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:input variant="label-inline" type="number" name="input1" label="Trade-In Balance" value="{!sub(add(v.quoteInitWrap.quoteObj.Valuation_Offer__c*1,v.quoteInitWrap.quoteObj.Overtrade__c*1), v.quoteInitWrap.quoteObj.Less_Outstanding_Loan__c)}" formatter="currency" disabled="true"/>                                      
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:accordionSection>
+                                </div>
+                            </lightning:layoutItem>
+                        </c:auraIfContains>
+                        
+                        <!--Insurance and Financing-->
+                        <c:auraIfContains items="{!v.quoteInitWrap.visibleSectionLst}"  element="Insurance &amp; Financing"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <div class="page-section page-main">
+                                    <lightning:accordionSection name="Insurance and Financing" label="Insurance &amp; Financing">
+                                        <lightning:layout>
+                                            <lightning:layoutItem padding="around-small" size="4"/>
+                                            <lightning:layoutItem padding="around-small" size="8">
+                                                <lightning:layout multipleRows="true">
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Insurance_Company__c}" fieldName="Insurance_Company__c" aura:id="Insurance_Company__c" onchange="{!c.resetInsuranceFields}" />                    
+                                                    </lightning:layoutItem>
+                                                    <aura:if isTrue="{!v.quoteInitWrap.quoteObj.Insurance_Company__c=='Other'}">
+                                                        <lightning:layoutItem padding="around-small" size="12">
+                                                            <lightning:input variant="label-inline" value="{!v.otherInsuranceComp1}" label="Please Specify Insurance Company Name" required="true" />                    
+                                                        </lightning:layoutItem>
+                                                    </aura:if>
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Insurance_Premium__c}" aura:id="Insurance_Premium__c" disabled="{! if(or(v.quoteInitWrap.quoteObj.Insurance_Company__c=='',v.quoteInitWrap.quoteObj.Insurance_Company__c==null),true,false)}" fieldName="Insurance_Premium__c" />                    
+                                                    </lightning:layoutItem>
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Insurance_Company_2__c}" fieldName="Insurance_Company_2__c" aura:id="Insurance_Company_2__c" onchange="{!c.resetInsuranceFields}" />                    
+                                                    </lightning:layoutItem>
+                                                    <aura:if isTrue="{!v.quoteInitWrap.quoteObj.Insurance_Company_2__c=='Other'}">
+                                                        <lightning:layoutItem padding="around-small" size="12">
+                                                            <lightning:input variant="label-inline" value="{!v.otherInsuranceComp2}" label="Please Specify Insurance Company Name" required="true" />                    
+                                                        </lightning:layoutItem>
+                                                    </aura:if>
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Insurance_Premium_2__c}" aura:id="Insurance_Premium_2__c" disabled="{! if( or(v.quoteInitWrap.quoteObj.Insurance_Company_2__c=='', v.quoteInitWrap.quoteObj.Insurance_Company_2__c==null),true,false)}" fieldName="Insurance_Premium_2__c" />                    
+                                                    </lightning:layoutItem>
+                                                    
+                                                    <lightning:layoutItem padding="around-small" size="12" >
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Finance_Company__c}" fieldName="Finance_Company__c" aura:id="Finance_Company__c" onchange="{!c.resetInsuranceFields}" />                    
+                                                    </lightning:layoutItem>
+                                                    <aura:if isTrue="{!v.quoteInitWrap.quoteObj.Finance_Company__c=='Other'}">
+                                                        <lightning:layoutItem padding="around-small" size="12">
+                                                            <lightning:input variant="label-inline" value="{!v.otherFinanceComp}" label="Please Specify Finance Company Name" required="true"  />                    
+                                                        </lightning:layoutItem>
+                                                    </aura:if>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Loan_Amount__c}" aura:id="Loan_Amount__c" disabled="{! if( or(v.quoteInitWrap.quoteObj.Finance_Company__c=='', v.quoteInitWrap.quoteObj.Finance_Company__c==null),true,false)}" fieldName="Loan_Amount__c" onchange="{!c.resetInsuranceFields}" />                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                            <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Interest_Rate__c}" aura:id="Interest_Rate__c" disabled="{! if( or(v.quoteInitWrap.quoteObj.Loan_Amount__c==0, v.quoteInitWrap.quoteObj.Loan_Amount__c==''),true,false)}" fieldName="Interest_Rate__c" />                    
+                                                            <span class="slds-icon_container slds-input__icon slds-input__icon_right slds-m-right_small" >
+                                                                %
+                                                            </span>
+                                                        </div>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                            <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Tenure__c}" aura:id="Tenure__c" disabled="{! if( or(v.quoteInitWrap.quoteObj.Loan_Amount__c==0, v.quoteInitWrap.quoteObj.Loan_Amount__c==''),true,false)}" fieldName="Tenure__c"/>                    
+                                                            <span class="slds-icon_container slds-input__icon slds-input__icon_right slds-m-right_small" style="width: 2.5rem;" >
+                                                                Months
+                                                            </span>
+                                                        </div>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:input variant="label-inline" type="number" name="input2" label="Monthly Instalment" value="{!((v.quoteInitWrap.quoteObj.Loan_Amount__c* div(v.quoteInitWrap.quoteObj.Interest_Rate__c/100)* (v.quoteInitWrap.quoteObj.Tenure__c/12 ))+ (v.quoteInitWrap.quoteObj.Loan_Amount__c*1))/(v.quoteInitWrap.quoteObj.Tenure__c)}" formatter="currency" disabled="true"/>                                      
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Lease_Offer__c}" disabled="{! if( or(v.quoteInitWrap.quoteObj.Finance_Company__c=='', v.quoteInitWrap.quoteObj.Finance_Company__c==null),true,false)}" fieldName="Lease_Offer__c"/>                    
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:accordionSection>
+                                </div>
+                            </lightning:layoutItem>
+                        </c:auraIfContains>
+                        
+                        
+                        <!--COE-->
+                        <c:auraIfContains items="{!v.quoteInitWrap.visibleSectionLst}"  element="COE"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <div class="page-section page-main">
+                                    <lightning:accordionSection name="COE" label="COE">
+                                        <lightning:layout multipleRows="true">
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.No_of_COE_Bids__c}" fieldName="No_of_COE_Bids__c" />                    
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6">
+                                                <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Gauranted__c}" fieldName="Gauranted__c" />                    
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="around-small" size="6"/>
+                                            
+                                            <lightning:layoutItem size="6">
+                                                <lightning:layout multipleRows="true">
+                                                    <lightning:layoutItem padding="around-small" size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.COE_Rebate_Amount__c}" fieldName="COE_Rebate_Amount__c" />                    
+                                                    </lightning:layoutItem>
+                                                    
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:accordionSection>
+                                </div>
+                            </lightning:layoutItem>
+                        </c:auraIfContains>
+                        
+                        <!--Complimentary-->
+                        <c:auraIfContains items="{!v.quoteInitWrap.visibleSectionLst}"  element="Complimentary"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <div class="page-section page-main">
+                                    <lightning:accordionSection name="Complimentary" label="Complimentary">
+                                        <lightning:layout>
+                                            <lightning:layoutItem padding="around-small" size="4"/>
+                                            <lightning:layoutItem padding="around-small" size="8">
+                                                <lightning:layout multipleRows="true">
+                                                    <aura:iteration items="{!v.quoteInitWrap.complementaryProdLst}" var="complementoryItem">
+                                                        <lightning:layoutItem padding="around-small" size="12">
+                                                            <aura:if isTrue="{! if(complementoryItem.inputType=='Checkbox',true,false)}">
+                                                                <ui:inputCheckbox label="{!complementoryItem.productName}" disabled="{!if(complementoryItem.uniqueName=='servicePlan',true,false)}" labelClass="slds-p-right--xx-large slds-float--left" class="slds-float--right" value="{!complementoryItem.isSelected}"/>
+                                                            </aura:if>
+                                                            <aura:if isTrue="{! if(complementoryItem.inputType=='Currency',true,false)}">
+                                                                <lightning:input aura:id="inputCompPrice" variant="label-inline" type="number" label="{!complementoryItem.productName}" value="{!complementoryItem.inputPrice}" formatter="currency" onblur="{!c.resetCurrencyToZero}"/>
+                                                            </aura:if>
+                                                        </lightning:layoutItem>
+                                                    </aura:iteration>
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:accordionSection>
+                                </div>
+                            </lightning:layoutItem>
+                        </c:auraIfContains>
+                        
+                        <!--Accessories & Options-->
+                        <c:auraIfContains items="{!v.quoteInitWrap.visibleSectionLst}"  element="Accessories &amp; Options"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <div class="page-section page-main">
+                                    <lightning:accordionSection name="Accessories &amp; Options" label="Accessories &amp; Options">
+                                        <lightning:layout multipleRows="true">
+                                            <lightning:layoutItem padding="around-small" size="4"/>
+                                            <lightning:layoutItem padding="around-small" size="8">
+                                                <lightning:layout multipleRows="true">
+                                                    <lightning:layoutItem size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.JLR_Accessories_Total_Price__c}" fieldName="JLR_Accessories_Total_Price__c" />                    
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="12">
+                                                        <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Accessories__c}" fieldName="Accessories__c" />                    
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:accordionSection>
+                                </div>
+                            </lightning:layoutItem>
+                        </c:auraIfContains>
+                        
+                        <!--Balance Payment -->
+                        <lightning:layoutItem padding="around-small" size="12">
+                            <div class="page-section page-main">
+                                <lightning:accordionSection name="Balance Payment " label="Balance Payment ">
+                                    <lightning:layout>
+                                        <lightning:layoutItem padding="around-small" size="4">
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem padding="around-small" size="8">
+                                            <lightning:layout multipleRows="true">
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.RRP__c}" fieldName="RRP__c" disabled="true" />                    
+                                                </lightning:layoutItem>
+                                                
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.JLR_Accessories_Total_Price__c}" fieldName="JLR_Accessories_Total_Price__c" disabled="true" />                    
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Less_Discounts__c}" fieldName="Less_Discounts__c"/>                    
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:input variant="label-inline" type="number" name="input1" label="Net New Vehicle Price" value="{!add(sub(v.quoteInitWrap.quoteObj.RRP__c,v.quoteInitWrap.quoteObj.Less_Discounts__c),(v.quoteInitWrap.quoteObj.JLR_Accessories_Total_Price__c*1))}" formatter="currency" disabled="true"/>                                      
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:input variant="label-inline" type="number" name="input2" label="Less Trade In Value" value="{!sub(add(v.quoteInitWrap.quoteObj.Valuation_Offer__c*1,v.quoteInitWrap.quoteObj.Overtrade__c*1), v.quoteInitWrap.quoteObj.Less_Outstanding_Loan__c)}" formatter="currency" disabled="true"/>                                      
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:input variant="label-inline" type="number" name="input3" label="Cost of Change" value="{!sub(add(sub(v.quoteInitWrap.quoteObj.RRP__c,v.quoteInitWrap.quoteObj.Less_Discounts__c), (v.quoteInitWrap.quoteObj.JLR_Accessories_Total_Price__c*1) ),sub(add(v.quoteInitWrap.quoteObj.Valuation_Offer__c*1,v.quoteInitWrap.quoteObj.Overtrade__c*1), v.quoteInitWrap.quoteObj.Less_Outstanding_Loan__c))}" formatter="currency" disabled="true"/>                                      
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:input variant="label-inline" type="number" name="input4" label="Less Loan Amount" value="{!v.quoteInitWrap.quoteObj.Loan_Amount__c}" formatter="currency" disabled="true"/>                                      
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Less_Booking_Fee__c}" fieldName="Less_Booking_Fee__c" />                    
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.quoteObj.Add_No_Retention_Fee__c}" fieldName="Add_No_Retention_Fee__c" />                    
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <lightning:input variant="label-inline" type="number" name="input5" label="Balance Payable" value="{!add(add(sub(sub(sub(sub((v.quoteInitWrap.quoteObj.RRP__c*1),(v.quoteInitWrap.quoteObj.Less_Discounts__c*1)),sub(add((v.quoteInitWrap.quoteObj.Valuation_Offer__c*1),(v.quoteInitWrap.quoteObj.Overtrade__c*1)),(v.quoteInitWrap.quoteObj.Less_Outstanding_Loan__c*1))),(v.quoteInitWrap.quoteObj.Loan_Amount__c*1)),(v.quoteInitWrap.quoteObj.Less_Booking_Fee__c*1)),(v.quoteInitWrap.quoteObj.Add_No_Retention_Fee__c*1)),(v.quoteInitWrap.quoteObj.JLR_Accessories_Total_Price__c*1))}" formatter="currency" disabled="true"/>                                      
+                                                </lightning:layoutItem>
+                                                
+                                            </lightning:layout>
+                                        </lightning:layoutItem>
+                                        
+                                    </lightning:layout>
+                                </lightning:accordionSection>
+                            </div>
+                        </lightning:layoutItem>
+                        
+                        <lightning:layoutItem padding="around-small" size="12">
+                            <lightning:inputField value="{!v.quoteInitWrap.quoteObj.Total_Effective_Savings__c}" fieldName="Total_Effective_Savings__c" />                    
+                        </lightning:layoutItem>
+                        
+                        <lightning:layoutItem padding="around-small" size="12">
+                            <lightning:inputField value="{!v.quoteInitWrap.quoteObj.Remarks__c}" fieldName="Remarks__c" />                    
+                        </lightning:layoutItem>
+                        
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.userDetail.Name}" fieldName="Sales_Consultant_Name__c" disabled="true" />                    
+                        </lightning:layoutItem>
+                        
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.userDetail.Phone}" fieldName="Sales_Consultant_Contact_Number__c" disabled="true" />                    
+                        </lightning:layoutItem>
+                        
+                        <lightning:layoutItem padding="around-small" size="6">
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <lightning:inputField variant="label-inline" value="{!v.quoteInitWrap.userDetail.Email}" fieldName="Sales_Consultant_Email__c" disabled="true" />                    
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <button aura:id="editForm" id="editForm" class="slds-hide" variant="brand" type="submit" name="update" label="update"/>
+                </lightning:recordEditForm>
+            </lightning:accordion>
+            <br/>
+            
+            
+        </aura:if>
+    </div>
+    <aura:if isTrue="{!v.quoteInitWrap!=null}">
+        
+        <div class="slds-docked-form-footer" style="display:unset;text-align:center;">
+            <lightning:layout>
+                <lightning:layoutItem size="4">
+                    
+                </lightning:layoutItem>
+                <lightning:layoutItem  size="4">
+                    <aura:if isTrue="{!v.QuoteId !=null}">
+                        <lightning:button aura:id="button2" variant="brand" type="button" name="Save As New" label="Save As New" onclick="{!c.saveAsButton}" />
+                    </aura:if>                
+                </lightning:layoutItem>
+                <lightning:layoutItem size="4" >
+                    <lightning:button aura:id="button1" variant="brand" type="button" name="Save" label="Save" onclick="{!c.saveButton}" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </aura:if>
+    </aura:if>
+</aura:component>

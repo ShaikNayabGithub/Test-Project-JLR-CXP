@@ -1,0 +1,47 @@
+<template>
+  <div class="form-container">
+    <div class="form-header">
+      <div class="form-row">
+        <lightning-input label="Trade-In" class="" type="checkbox" data-id="tradecheckbox" onchange={handleTradeIn}></lightning-input>
+        <lightning-input label="Trade-In JLR Vehicle" class="jlr-trade-checkbox jlr-hidden" data-id="jlrcheckbox" type="checkbox" onchange={handleJlrTradeIn}></lightning-input>
+      </div>
+    </div>
+    <div class="form-body jlr-hidden">
+      <div class="form-item">
+        <lightning-input class="" type="text" label="VIN/Reg" onchange={handleVinChange} value={vin}></lightning-input>
+      </div>
+      <div class="form-row">
+        <div class="form-column">
+          <lightning-input disabled class="jlr-trade-item2 jlr-hidden" type="text" label="CXP Vehicle" value={assetValue}></lightning-input>
+          <c-lookup sobject-name="Vehicle_Specification__c"
+          title="Name"
+          subtitle="id"
+          onselected={handleMakeLookup}
+          icon-name="standard:record"
+          field-label="Make"
+          where={makeSoql}
+          value={makeValue}
+          read-only={readOnly}></c-lookup>
+          <lightning-input type="number" label="Mileage" onchange={updateMileageValue} value={mileageValue}></lightning-input>
+          <c-picklist field-a-p-i-name="Service_History__c" obj-a-p-i-name="Opportunity" onselected={handleServiceChange} value={serviceValue}></c-picklist>
+        </div>
+        <div class="form-column">
+          <lightning-input disabled class="jlr-trade-item1 jlr-hidden" type="text" label="Model Year" value={modelYear} onchange={handleYearChange}></lightning-input>
+              <c-lookup sobject-name="Vehicle_Specification__c"
+              title="Name"
+              subtitle="id"
+              onselected={handleModelLookup}
+              icon-name="standard:record"
+              field-label="Model"
+              where={modelSoql}
+              value={modelValue}
+              read-only={readOnly}></c-lookup>
+              <lightning-input type="number" label="Trade-in Value" formatter="decimal" onchange={updateTradeValue} value={tradeValue}></lightning-input>
+        </div>
+      </div>
+      <div class="form-row">
+        <lightning-button class="button" label="Update Opportunity" onclick={updateOpportunity}></lightning-button>
+      </div>
+    </div>
+  </div>
+</template>

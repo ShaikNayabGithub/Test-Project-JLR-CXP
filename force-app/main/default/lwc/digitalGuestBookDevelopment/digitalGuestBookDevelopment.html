@@ -1,0 +1,319 @@
+<template>
+    <br>
+  <h2  class="slds-text-heading_large slds-align_absolute-center guestbookTitle"> 재규어 랜드로버 방명록(Dev) </h2> <!-- JAGUAR LAND ROVER URBAN DRIVE   --> <!--style="text-align:center"-->
+  <br><br>
+    <div class="heroImage">
+        <lightning-carousel>
+            <lightning-carousel-image
+                src={digitalGuestBookLandingImage1}
+                header={retailerName}
+                description={showroomName}
+                class="guestbookCarousel slds-text-heading_large"
+            >
+            </lightning-carousel-image>
+            <!--
+            <lightning-carousel-image
+                src={digitalGuestBookLandingImage3}
+                header={retailerName}
+                description={showroomName}
+            >
+            </lightning-carousel-image>
+            <lightning-carousel-image
+                src={digitalGuestBookLandingImage3}
+                header={retailerName}
+                description={showroomName}
+
+                size="1"
+            >-->
+            </lightning-carousel-image>
+        </lightning-carousel>
+    </div>
+    <div id="register">
+      <lightning-layout multiple-rows horizontal-align="center" pull-to-boundary="small" class="slds-form"> 
+        
+        <lightning-layout-item class="slds-form_horizontal" size="12"    large-device-size="8" medium-device-size="12" small-device-size="12" >
+          <div class="slds-form__row">
+            
+              
+              <lightning-combobox
+                  name="Campaign"
+                  label="캠페인 방명록 선택" 
+                  value={selectedCampaign}
+                  options={campaigns}
+                  onchange={handleCampaignSelection} ></lightning-combobox>
+                </div> <!--  Select an Event or Campaign -->
+              
+          
+            <div if:true={campaignSelected} class="slds-form__row">
+              
+
+                <lightning-input type="input"
+                  onchange={handleCampaignMemberSearchTermChange}
+                  label="조회"
+                  placeholder="이름으로 조회"
+                  value={campaignMemberSearchTerm}
+                  class="slds-m-top_x-small campaignMemberSearchTerm"
+                ></lightning-input> <!-- label: Search placeholder: Search by Name  -->
+            </div>
+            <div if:true={campaignMembers} class="slds-form__row">
+              <lightning-combobox
+                name="Pre_Registered_Customer"
+                label="등록 고객"
+                placeholder="선택하세요"
+                value={selectedCampaignMember}
+                options={campaignMembers}
+                onchange={handleCampaignMemberSelection} >
+            </lightning-combobox> <!-- Registered Customers -->
+          
+        </div>
+        <div if:true={zeroResultsForCampaignMembersSearch} class="slds-align_absolute-center">
+          <p>조회 결과 없음</p> <!-- No pre-registered customers for this search. -->
+        </div>
+        <div class="slds-form__row slds-align_absolute-center">
+          <template if:true={selectedCampaignMember}>
+              <lightning-button label="제출" title="Non-primary action" onclick={handleConfirmAttendence} class="slds-align_absolute-center slds-m-around_small"></lightning-button>
+          </template><!-- Confirm Attendence -->
+        </div>
+            
+          </lightning-layout-item>
+          <lightning-layout-item  padding="around-small" pull-to-boundary="medium" size="12"  large-device-size="8" medium-device-size="12" small-device-size="12" >
+            <br/>
+            <div class="slds-border_top"></div>
+            <br/>
+            <!-- Neutral variant (default) -->
+            <template if:false={showNewLead}>
+                <lightning-button label="신규 고객 등록" title="Non-primary action" onclick={handleClickNewRegistraiton} class="slds-align_absolute-center"></lightning-button>
+            </template> <!-- Register New Antendee  -->
+          
+          </lightning-layout-item>
+
+          
+
+      </lightning-layout>
+        <template if:true={showNewLead} >  
+                <lightning-layout multiple-rows  horizontal-align="center" class="slds-form">
+                  <lightning-layout-item class="slds-form_horizontal" padding="around-small" pull-to-boundary="medium" size="12"  large-device-size="8" medium-device-size="12" small-device-size="12" >
+                    <div class="slds-form__row">
+                      <div class="slds-form__item"><abbr class="slds-required" title="required">* </abbr>
+                        <label for="lastName" class="jlrFont">
+                          <abbr class="slds-required" title="required">* </abbr>
+                          이름(필수)
+                        </label>
+                        <lightning-input id="lastName" value={lastName} name= "LastName" onchange={handleLastNameChange}></lightning-input> 
+                      </div>
+                      <div class="slds-form__item">
+                        
+                      </div>
+                      
+                    </div>
+              
+                    <div class="slds-form__row">
+                      <div class="slds-form__item">
+                        <lightning-input value={strMobile} label="휴대폰 번호 (필수)" onchange={phoneInpChange} required></lightning-input> 
+                      </div>
+                      <div class="slds-form__item">
+                        <lightning-input value={strEmail} label="이메일" onchange={EmailInpChange} ></lightning-input> 
+                      </div>
+                    </div>
+                    <!-- HK Edit Start -->
+                    <div class="slds-form__row">
+                      <div class="slds-form__item">
+                        <c-kor-dup-account-check
+                        last-name={lastName}
+                        phone={strMobile}
+                        email={strEmail}
+                        ></c-kor-dup-account-check>
+                      </div>
+                    </div>
+                    <!-- HK Edit End -->
+                    <hr style="height:4px; border-width:0; color:rgb(10, 10, 10); background-color:rgb(10, 10, 10); ">
+              
+                    <div class="slds-form__row">
+                      <div class="slds-form__item">
+                        <lightning-combobox
+                                  name="jlrBrandSelector"
+                                  label="관심 브랜드"
+                                  value={jlrBrandSelected}
+                                  options={jlrBrandOptions}
+                                  onchange={handleJlrBrandSelection} 
+                                  required
+                                  placeholder="선택하세요"
+                                  >
+                          </lightning-combobox>
+                      </div>
+                      <div class="slds-form__item" if:true={jlrModelOptionsDisabled} >
+                        <!-- Styling gap -->
+                      </div>
+              
+                      <div class="slds-form__item" if:false={jlrModelOptionsDisabled}>
+                        <lightning-combobox
+                          name="jlrModelSelector"
+                          label="관심 모델"
+                          value={jlrModelSelected}
+                          options={jlrModelOptionsDisplayed}
+                          onchange={handleJlrModelSelection} 
+                          disabled={jlrModelOptionsDisabled}
+                          placeholder="선택하세요"
+                          required
+                          >
+                        </lightning-combobox>
+                      </div>
+                        
+                        
+                      
+                    </div>
+              
+                    <div class="slds-form__row">
+                      <div class="slds-form__item">
+                        <lightning-combobox
+                            name="currentVehicleBrandSelector"
+                            label="현재 보유 브랜드"
+                            value={currentVehcileBrandSelected}
+                            options={currentVehicleBrandOptions}
+                            onchange={handleCurrentBrandSelection} 
+                            placeholder="선택하세요"
+                            >
+                          </lightning-combobox>
+                      </div>
+                      <div class="slds-form__item" if:true={currentVehicleModelOptionsDisabled}>
+                        <!-- Styling gap -->
+                      </div>
+              
+                      <div class="slds-form__item" if:false={currentVehicleModelOptionsDisabled}>
+                        <lightning-combobox
+                          name="currentModelSelector"
+                          label="Current Model"
+                          value={currentVehicleModelSelected}
+                          options={currentVehicleModelOptionsDisplayed}
+                          onchange={handleCurrentModelSelection} 
+                          disabled={currentVehicleModelOptionsDisabled}
+                          placeholder="선택하세요"
+                          >
+                        </lightning-combobox>
+                      </div>
+                      
+                      
+                    </div>
+              
+                    <div class="slds-form__row">
+                      <div class="slds-form__item">
+                        <lightning-combobox
+                          name="PreferredretailerSelector"
+                          label="선호 전시장"
+                          value={preferredRetailerSelected}
+                          options={preferredretailerOptions}
+                          onchange={preferredRetailerChange} 
+                          placeholder="선택하세요"
+                          required
+                          >
+                        </lightning-combobox>
+                      </div>
+                      <div class="slds-form__item">
+                        <lightning-combobox
+                          name="salesConsultant"
+                          label="담당 영업직원"
+                          value={ownerValue}
+                          options={ownerOptions}
+                          onchange={leadOwnerChange} 
+                          placeholder="선택하세요"
+                          required
+                          ><!--Sales Consultant or Team-->
+                        </lightning-combobox>
+                      </div>
+                    </div>
+                    
+                    <hr style="height:4px; border-width:0; color:rgb(10, 10, 10); background-color:rgb(10, 10, 10); ">
+                    <!-- HK Editng Start -->
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                          <c-kor-address-finder
+                          onsaveaddress={handleSaveAddress}
+                          ></c-kor-address-finder>
+                        </div>
+                      <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form__column">
+                          <div class="slds-form__item">
+                            <lightning-combobox
+                              name="GenderSelector"
+                              label="성별"
+                              value={GenderValue}
+                              placeholder="선택하세요"
+                              options={GenderOptions}
+                              onchange={GenderInpChange} >
+                            </lightning-combobox>
+                          </div>
+                          <div class="slds-form__item">
+                            <lightning-input class="slds-p-around_medium" label="생년월일" type="Date"
+                                        onchange={DateofBirthInpChange}></lightning-input>  
+                          </div> <!--Date of Birth-->
+                        </div>
+                      </div>
+                    </div>
+                    <!-- HK Editng End -->
+            
+                    <hr style="height:4px; border-width:0; color:rgb(10, 10, 10); background-color:rgb(10, 10, 10); ">
+              
+                    <div class="slds-form__row">
+                      <lightning-textarea class="slds-p-around_medium" label="기타사항" max-length="3000" onchange={AdditionalInformationInpChange}></lightning-textarea> 
+                    </div> <!--Additional Information-->
+                    <br>
+                    <lightning-button variant="brand"
+                            label="Confirm"
+                            title="Save"
+                            disabled={disableCofirmButton}
+                            onclick={openModal}
+                            class="slds-align_absolute-center">
+                  </lightning-button>
+                      
+                    
+                    
+              
+                  </lightning-layout-item>
+              
+                </lightning-layout>
+              
+              
+                    <template if:true={isModalOpen}>
+                      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                          <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                              <lightning-icon icon-name="utility:close"
+                              alternative-text="close"
+                              variant="inverse"
+                              size="small" ></lightning-icon>
+                              <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">개인정보의 수집 및 이용 동의 (상세정보보기)</h2> <!--Terms and Conditions Header-->
+                          </header>
+                          <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+              
+                            <lightning-input class="slds-p-left_xx-large" type="checkbox" label="(필수) 개인정보의 수집 및 이용에 대한 동의" onchange={handleMandatoryOption1}></lightning-input> <!--Mandatory 1 -->
+                            <lightning-input class="slds-p-left_xx-large" type="checkbox" label="(필수) 개인정보의 제3자 제공에 대한 동의 " onchange={handleMandatoryOption2}></lightning-input> <!--Mandatory 2 -->
+                            <lightning-input class="slds-p-left_xx-large" type="checkbox" label="(필수) 개인정보의 국외 이전에 대한 동의 " onchange={handleMandatoryOption3}></lightning-input> <!--Mandatory 3 -->
+                            <lightning-input class="slds-p-left_xx-large" type="checkbox" label="(선택) 영리목적의 광고성 정보 전송 및 개인정보의 홍보 및 판촉 목적 이용에 대한 동의 " onchange={handleMarketingConsent}></lightning-input> <!--Optional 1 -->
+                            
+                        </div>
+                        <footer class="slds-modal__footer">
+                          <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                          <button class="slds-button slds-button_brand" disabled={disableDataSubmissionPreConsent} onclick={handlesubmit} title="OK">Submit</button>
+                      </footer>
+                        </div>
+                      </section>
+                      <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+                          <!--prag-End here-->
+                                
+                               <!-- <div class="slds-col slds-size_1-of-8 jlr-button-cell-neutral-colours"  onclick={handlesubmit} style="margin-left:18%;margin-right:18%;text-align:center">
+                                  Save
+                                </div> -->
+                                    
+                  </template>
+        
+    <!--Create new lead -->
+</div>
+    
+
+    <!--Add Existing Contact (to do)-->
+    
+</template>

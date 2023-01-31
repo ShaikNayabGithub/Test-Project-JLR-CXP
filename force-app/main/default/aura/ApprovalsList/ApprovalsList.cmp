@@ -1,0 +1,90 @@
+<aura:component controller="ApprovalList_LC_Controller" implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="approvalTitle" type="String" default="Vehicle Quote Approvals" />
+    <aura:attribute name="approvalList" type="Object[]" />
+    <aura:attribute name="approvalProcessNames" type="String" default="" />
+    <aura:attribute name="showApprove" type="boolean" default="false" />
+    <aura:attribute name="showReject" type="boolean" default="false" />
+    <aura:attribute name="approvalWorkitem" type="String" />
+    <aura:attribute name="approvalComment" type="String" default="" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    
+    <aura:if isTrue="{!v.showSpinner}"><lightning:spinner alternativeText="Loading" size="medium" /></aura:if>
+    <div style="padding:18px; background-color:#fafafa; width:100%"><span class="slds-text-heading_small">{!v.approvalTitle}</span></div>
+	<div class="slds-scrollable_y" style="height: 40.5rem;">
+		<table class="slds-table slds-table_bordered" style="width:100%; table-layout: fixed;" role="grid">
+            <thead>
+            	<tr style="height:40px">
+                    <th aria-label="Date" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="{!$Label.c.Date}">{!$Label.c.Date}</span>
+                    </th>
+                	<th aria-label="Opportunity" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Opportunity">{!$Label.c.Opportunity}</span>
+                    </th>  
+                    <!-- Opportunity Stage added for CXPD-1284 -->
+                    <th aria-label="Opportunity" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Opportunity">{!$Label.c.Stage}</span>
+                    </th>
+                    <th aria-label="Requested By" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Requested By">{!$Label.c.Requested_By}</span>
+                    </th>     
+                    <th aria-label="Comments" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Comments">{!$Label.c.Comment}</span>
+                    </th>
+                    <th aria-label="Action" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="width: 8%;"></th>  
+                </tr>
+            </thead>
+            <tbody>
+            	<aura:iteration items="{!v.approvalList}" var="appr">
+                <tr aria-selected="false" class="slds-hint-parent" >   
+                	<td  role="gridcell"><div class="slds-truncate" title="{!appr.CreatedDate}">{!appr.CreatedDate}</div></td>                   
+                    <td  role="gridcell"><div class="slds-truncate" title="{!appr.OpportunityName}"><a href="{!'/CXP/s/opportunity/' + appr.OpportunityId}" onclick="{!c.navigateToRecord}">{!appr.OpportunityName}</a></div></td>
+                    <!-- Opportunity Stage added for CXPD-1284 -->
+                    <td  role="gridcell"><div class="slds-truncate" title="{!appr.OpportunityStageName}">{!appr.OpportunityStageName}</div></td>
+                    <td  role="gridcell"><div class="slds-truncate" title="{!appr.RequesterName}"><a href="{!'/CXP/s/user/' + appr.RequesterId}" onclick="{!c.navigateToRecord}">{!appr.RequesterName}</a></div></td>   
+                    <td  role="gridcell"><div class="slds-cell-wrap" title="{!appr.Comments}">{!appr.Comments}</div></td>
+                    <td role="gridcell">
+                    	<lightning:buttonMenu aura:id="menu" menuAlignment="right" iconSize="x-small" onselect="{!c.handleSelect}">
+        					<lightning:menuItem value="{!'Approve' + appr.WorkItemId}" label="Approve" />
+                            <lightning:menuItem value="{!'Reject' + appr.WorkItemId}" label="Reject" />
+                        </lightning:buttonMenu>
+                    </td>
+                </tr>
+	            </aura:iteration>
+    	    </tbody>
+    	</table>
+    </div>
+    
+    <aura:if isTrue="{!or(v.showApprove, v.showReject)}">
+        <div style="height: 200px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">  
+                        <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{!$Label.c.Close}" onclick="{!c.closeModal}">
+                            <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="{!$Label.c.Close}"  variant="error" />
+                            <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            <aura:if isTrue="{!v.showApprove}">Approve Request</aura:if>
+                            <aura:if isTrue="{!v.showReject}">Reject Request</aura:if>
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-1">
+                        <div class="slds-align_absolute-center"><lightning:textarea name="input1" value="{!v.approvalComment}" label="Comment" /></div>
+                        <div class="slds-align_absolute-center">
+                            <lightning:button name="Cancel" label="Cancel" onclick="{!c.closeModal}" />
+                            <aura:if isTrue="{!v.showApprove}">
+                                <lightning:button name="Approve" label="Approve" variant="success" onclick="{!c.approveRequest}" />
+                            </aura:if>
+                            <aura:if isTrue="{!v.showReject}">
+                                <lightning:button name="Reject" label="Reject" variant="destructive" onclick="{!c.rejectRequest}" />
+                            </aura:if>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+</aura:component>

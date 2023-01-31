@@ -1,0 +1,61 @@
+.THIS .mainHeading{
+    font-size:1.2rem;
+    font-weight: 600;
+
+    
+}
+
+
+.THIS .subHeading{
+    font-size:0.9rem;
+    padding-left: 1rem;
+   
+}
+
+.THIS .customrow {
+  border: 1px solid black; text-align: center;
+
+}
+.THIS .boldText{
+    font-weight: bolder;
+}
+.THIS .divinput {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield; 
+    font: -moz-field;
+    font: -webkit-small-control;
+    
+}
+.THIS .slds-input {
+    border : none !important; text-align:center;
+    padding:0%;  
+   
+}
+.THIS .slds-truncate{
+    padding: 0%;
+}
+
+.THIS .customrow {
+    empty-cells: hide;
+}
+.THIS .slds-select_container {
+    width: 15%;
+
+}
+.THIS .slds-hint-parent{
+    padding: 8px;
+}
+
+.THIS .slds-truncate {
+    
+    table-layout: fixed;
+    width: 100% ;
+}
+.THIS th {
+    table-layout: fixed ;
+    width: 100% ;
+  }
+.THIS td {
+    table-layout: fixed ;
+    width: 25% ;
+  }

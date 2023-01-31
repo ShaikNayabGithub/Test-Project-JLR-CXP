@@ -1,0 +1,17 @@
+.THIS .activitybackground{
+    background-color: rgba(236, 236, 230, 0.97);
+}
+
+.THIS .DesabledClass{
+    pointer-events: none;
+    opacity: .7;
+}
+
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}
+
+.THIS .noPointerEvents{
+    pointer-events: none;
+}

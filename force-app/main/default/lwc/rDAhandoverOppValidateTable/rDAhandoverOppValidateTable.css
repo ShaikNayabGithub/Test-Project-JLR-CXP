@@ -1,0 +1,84 @@
+/**
+ * Created by GrantMillgate-EasyTe on 16/10/2019.
+ */
+
+/** Get rid of default header **/
+
+
+
+h1 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    text-align: left;
+    font-weight: 700;
+    font-size: 22px;
+    padding: 10px;
+    color: #444444;
+}
+
+.jlr-hidden{
+    display: none;
+}
+
+.jlr-pointer{
+    cursor: pointer;
+    padding: 10px;
+    color: black;
+}
+
+
+.rda-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* space/start-between = Text Left, Icon Right. flex-start = Text Left, Icon immediately after*/
+}
+.header-line {
+    border-bottom: 3px solid #444444;
+}
+.jlr-header-value{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    font-weight: 300;
+    color: #444444;
+}
+.jlr-header-headings{
+    text-transform: uppercase;   
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 12px;         
+    letter-spacing: 0.06em;    
+    color: #444444;
+}
+.jlr-is-clickable{
+    cursor: pointer;
+}
+.jlr-opportunity-header-row
+{
+    min-height: 75px;
+    padding: 15px;
+}
+.jlr-opportunity-header-row-r
+{
+    height: 55px;
+    padding-right: 15px;
+}
+.jlr-sale-type-slider{
+    margin-top:0;
+    margin-bottom: auto;
+}
+.jlr-button-cell{
+    text-transform: uppercase;
+    border-style: solid;
+    border-color: black;
+    border-width: thin;
+    padding: 10px;
+    text-align: center;
+    width: available;
+    cursor: pointer;
+    background-color: white;
+}
+.jlr-button-cell-inverse-colours{
+    background-color: black;
+    color: white;
+}

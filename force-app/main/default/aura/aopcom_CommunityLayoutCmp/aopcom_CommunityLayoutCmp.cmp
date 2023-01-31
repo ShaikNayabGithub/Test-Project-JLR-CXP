@@ -1,0 +1,184 @@
+<aura:component implements="forceCommunity:layout" access="global" controller="aopcom_CommunityLayoutCmp">
+    
+    <aura:attribute name="communityContext" type="String"/>
+
+    
+    <ltng:require styles="/resource/main_min" />
+    <ltng:require scripts="/resource/main_js/jquery.min.js" />
+    <ltng:require scripts="/resource/main_js/modernizr.min.js" />
+    <ltng:require scripts="/resource/main_js/polyfills.min.js" />
+    <ltng:require scripts="/resource/main_js/polyfills.min.js" />    
+    <ltng:require scripts="https://keytree.checkfront.co.uk/lib/interface--30.js" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>    
+    <aura:attribute name="available" type="boolean" default="true"/>
+    <aura:attribute name="myEventTab" type="boolean" default="false"/>
+    <aura:attribute name="myProfileTab" type="boolean" default="false"/>
+	<aura:attribute name="bookEventTab" type="boolean" default="false"/>    
+    <aura:attribute name="Logo_source" type="String" />
+    <aura:attribute name="AmendBooking_link" type="String" />
+    <aura:attribute name="UserName_label" type="String" default=""/>
+    <aura:attribute name="Context" type="String" />
+    <aura:attribute name="countries" type="aop_NationalityToISOCode__c[]"/>
+    <aura:attribute name="AWSUrl" type="String"/>
+    <aura:attribute name="SpotifyUrl" type="String"/>    
+    <aura:attribute name="selectedMyProf" type="String"/>
+    <aura:attribute name="selectedMyEvent" type="String"/>
+    <aura:attribute name="selectedDriving" type="String"/>
+    <aura:attribute name="selectedFaq" type="String"/>
+    <aura:attribute name="selectedBook" type="String"/>
+    <aura:attribute name="headline" type="Aura.Component[]" required="false"></aura:attribute>
+    <aura:attribute name="structure" type="Aura.Component[]" required="false"></aura:attribute>
+    <aura:attribute name="structure2" type="Aura.Component[]" required="false"></aura:attribute>    
+
+
+    
+	<div id="notifications">
+		<!--[if lt IE 9]>    
+		<div id="browser-notification" class="section-wrapper section-highlight">
+			<div class="section">
+				<div class="el width-1of1">
+					<h2>YOU MAY WANT TO UPGRADE YOUR BROWSER</h2>
+					<p>The Jaguar website works best on the latest versions of Internet Explorer. Please upgrade your browser to the latest version. To update please click <a href="http://windows.microsoft.com/en-GB/internet-explorer/download-ie" title="Internet Explorer Upgrade">here</a>.</p>
+                </div>
+                <a class="close" href="#"></a>
+			</div>
+		</div>
+            <![endif]-->
+	</div>
+	<span style="display:none" id="AWSUrl">{!v.AWSUrl}</span>
+	<span style="display:none" id="SpotifyUrl">{!v.SpotifyUrl}</span>
+	<span style="display:none" id="CommunityUrl">{!v.communityContext}</span>
+
+    <div  class="site-wrapper js-page-wrapper">
+	<div class="js-overlay site-wrapper__overlay"></div>       
+        <header class="header">
+            <div class="header-toolbar">
+                <div class="grid">
+                    <ul class="header-toolbar-list">                        
+                        <li id="amend" class="header-toolbar-list__item"><a href="#modal_amend-booking" class="header-toolbar-list__link js-modal-inline">{!$Label.c.aopcom_HeaderAmendBooking}</a></li>		
+                        <li class="header-toolbar-list__item"><span class="header-toolbar-list__link">{!v.UserName_label} |<a href="{!v.Context+'/edit-profile'}" class="header-toolbar-list__link--no-background">{!$Label.c.aopcom_HeaderEditProfile}</a></span></li>
+                        <li class="header-toolbar-list__item"><a href="{!$Label.c.aopcom_FindRetailerLink}" target="_blank" class="header-toolbar-list__link header-toolbar-list__link--retailer"><i class="icon icon--map-pin"></i>{!$Label.c.aopcom_HeaderFindRetailer}</a></li>
+                        <li class="header-toolbar-list__item hidden--medium hidden--small"><a href="#" onclick="{!c.logout}" class="main-nav__link">{!$Label.c.aopcom_HeaderLogout}</a></li>
+                    </ul>
+                </div>
+            </div><!-- .header-toolbar -->
+            <div class="header__content">
+                <div class="header__inner">
+                    <div class="logo"><a href="{!'/'+v.communityContext+'/apex/aopcom_LoginRedirectionPage'}" class="logo__inner">Jaguar - The Art of Performance Tour</a></div>
+                        <a href="#" class="header__nav-toggle js-nav-toggle"><span class="visually-hidden">Toggle Nav</span></a>
+                	</div>
+                <div class="header__nav js-nav-wrapper">
+                    <nav class="main-nav js-nav">
+                        <ul class="main-nav__list main-nav__list--secondary hidden--large">
+                            <li class="main-nav__item"><span class="main-nav__link">{!v.UserName_label}<br /><a href="{!v.Context+'/edit-profile'}">{!$Label.c.aopcom_HeaderEditProfile}</a></span></li>
+                            <li class="main-nav__item"><a href="#" onclick="{!c.logout}" class="main-nav__link">{!$Label.c.aopcom_HeaderLogout}</a></li>
+                        </ul>
+                        <ul class="main-nav__list">
+                            <aura:if isTrue="{!v.myProfileTab}">
+                            <li class="main-nav__item"><a href="{!v.Context+'/my-profile'}" class="{!'main-nav__link '+v.selectedMyProf}">{!$Label.c.aopcom_HeaderMyProfile}</a></li>
+                            </aura:if>
+                            <aura:if isTrue="{!v.bookEventTab}">
+                            <li class="main-nav__item"><a href="{!v.Context+'/book-event'}" class="{!'main-nav__link '+v.selectedBook}">{!$Label.c.aopcom_HeaderBookEvent}</a></li>
+                            </aura:if>
+                            <aura:if isTrue="{!v.myEventTab}"> 
+                            <li class="main-nav__item"><a href="{!v.Context+'/my-event'}" class="{!'main-nav__link '+v.selectedMyEvent}">{!$Label.c.aopcom_HeaderMyEvent}</a></li>
+                            </aura:if>
+                            <!--<li class="main-nav__item"><a href="#" class="main-nav__link">Results</a></li>
+                            <li class="main-nav__item"><a href="#" class="main-nav__link">Leaderboard</a></li>-->
+                            <li class="main-nav__item"><a href="{!v.Context+'/driving-tips'}" class="{!'main-nav__link '+v.selectedDriving}">{!$Label.c.aopcom_HeaderDrivingTips}</a></li>
+                            <li class="main-nav__item"><a href="{!v.Context+'/faq'}" class="{!'main-nav__link '+v.selectedFaq}">{!$Label.c.aopcom_HeaderFAQ}</a></li>
+                        </ul>
+                        <ul class="main-nav__list main-nav__list--secondary hidden--large">
+                            <li class="main-nav__item"><a href="{!$Label.c.aopcom_FindRetailerLink}" target="_blank" class="main-nav__link main-nav__link--retailer">{!$Label.c.aopcom_HeaderFindRetailer}<i class="icon icon--map-pin"></i></a></li>
+                            <li class="main-nav__item"><a href="#modal_amend-booking" class="main-nav__link js-modal-inline">{!$Label.c.aopcom_HeaderAmendBooking}</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div> <!-- .header__content -->
+        </header><!-- .header -->
+        <div id="modal_social" class="modal modal--inline mfp-hide">
+            <div class="modal__inner">
+                <h2 class="modal__heading">{!$Label.c.aopcom_ImportantInformationPopUp}</h2>        
+                <div class="">
+                    <p>{!$Label.c.aopcom_TextPopUp}</p>        
+                    <div class="button-group-buttons">
+                        <a href="#" class="button button--tertiary js-close-social-modal">{!$Label.c.aopcom_RejectPopUp}</a>
+                        <a href="#" class="button js-open-social-link">{!$Label.c.aopcom_AcceptPopUp}</a>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+        <div id="modal_amend-booking" class="modal modal--inline mfp-hide" style="background-color:white">
+                <div class="modal__inner">
+                    <h2 class="modal__heading">{!$Label.c.aopcom_AmendYourBookingTitle}</h2>        
+                    <div class="select custom-select js-select-wrapper" data-theme="grey">
+                        <select  class="js-select js-contact" required="" onchange="getPhoneMail()">
+                            <aura:iteration var="country" items="{!v.countries}">
+                                <option value="{!country.aop_Checkfront_Instance__c}">{!country.Name}</option>
+                            </aura:iteration>
+                        </select>
+                        <div class="select__selected js-select-selected">{!$Label.c.aopcom_AmendBookingSelectRegion}</div>
+                    </div>            
+                    <div class="js-contact-result">
+                        <p>{!$Label.c.aopcom_AmendYourBookingText}</p>        
+                        <p><b>{!$Label.c.aopcom_AmendYourPleaseContact}&nbsp; <span class="js-contact-value"></span></b></p>
+                    </div>
+                </div>
+            </div>	  
+        <!--</div>-->
+    <div class="content-wrapper">
+        <div class="slds model4">
+	      <aura:if isTrue="{!v.available}">
+	          <div class='block1 slds-col slds-size--1-of-1 slds-medium-size--6-of-6 slds-large-size--12-of-12'>
+				  {!v.headline}
+	        </div>
+	        <div class='block2 slds-col slds-size--1-of-1 slds-medium-size--6-of-6 slds-large-size--12-of-12'>    
+	                  {!v.structure}  
+	        </div>
+	        <div class='block1 slds-col slds-size--1-of-1 slds-medium-size--6-of-6 slds-large-size--12-of-12'>    
+	                  {!v.structure2}  
+	        </div>
+	        <aura:set attribute="else">
+	      		<p>You have no permissions to see this page</p>
+	    	</aura:set>          
+	       </aura:if>    
+		    <div class="site-wrapper js-page-wrapper">
+		        <div class="js-overlay site-wrapper__overlay"></div>
+		    		<div class="content-wrapper">
+			            <footer class="footer">
+			                <div class="footer__section">
+			                    <nav class="footer-nav">
+									<ul>
+										<li class="footer-nav__item"><a href= "{!$Label.c.aopcom_FooterContactUsLink}" target="_blank" class="footer-nav__link"> {!$Label.c.aopcom_FooterContactUsLabel}</a></li>
+										<li class="footer-nav__item"><a href= "{!$Label.c.aopcom_FooterPrivacyPolicyLink}" target="_blank" class="footer-nav__link"> {!$Label.c.aopcom_FooterPrivacyPolicyLabel} </a></li>
+										<li class="footer-nav__item"><a href= "{!'/'+v.communityContext+'/apex/aopcom_TermsConditions'}" target="_blank" class="footer-nav__link"> {!$Label.c.aopcom_FooterTermsConditionsLabel}</a></li>
+										<li class="footer-nav__item"><a href= "{!$Label.c.aopcom_FooterSiteMapLink}" target="_blank" class="footer-nav__link"> {!$Label.c.aopcom_FooterSitemapLabel} </a></li>
+										<li class="footer-nav__item"><a href= "{!$Label.c.aopcom_FooterJLRCorporateLink}" target="_blank"  class="footer-nav__link"> {!$Label.c.aopcom_FooterJaguarLandRoverLabel} </a></li>
+									</ul>
+			                    </nav>
+								<ul class="footer__social social-nav">
+			                        <li class="social-nav__item"><a href="#modal_social" target="_blank" class="social-nav__link social-nav__link--facebook js-modal-inline js-modal-inline--social" data-social-url="{!$Label.c.aopcom_FooterFacebookLink}"><span class="visually-hidden">Facebook</span></a></li>
+			                        <li class="social-nav__item"><a href="#modal_social" target="_blank" class="social-nav__link social-nav__link--twitter js-modal-inline js-modal-inline--social" data-social-url="{!$Label.c.aopcom_FooterTwitterLink}"><span class="visually-hidden">Twitter</span></a></li>
+			                        <li class="social-nav__item"><a href="#modal_social" target="_blank" class="social-nav__link social-nav__link--youtube js-modal-inline js-modal-inline--social" data-social-url="{!$Label.c.aopcom_FooterYouTubeLink}"><span class="visually-hidden">YouTube</span></a></li>
+			                        <li class="social-nav__item"><a href="#modal_social" target="_blank" class="social-nav__link social-nav__link--instagram js-modal-inline js-modal-inline--social" data-social-url="{!$Label.c.aopcom_FooterInstagramLink}"><span class="visually-hidden">Instagram</span></a></li>
+			                        <li class="social-nav__item"><a href="#modal_social" target="_blank" class="social-nav__link social-nav__link--linkedin js-modal-inline js-modal-inline--social" data-social-url="{!$Label.c.aopcom_FooterLinkedinLink}"><span class="visually-hidden">LinkedIn</span></a></li>
+			                    </ul>
+							</div>
+							<div class="footer__section">
+			                    <div class="grid">
+			                        <h2 class="logo-aop footer__logo"><div class="logo-aop__inner">Jaguar - The Art of Performance</div></h2>
+			                        <div class="footer__content">
+			                            <p class="footer__copy">&copy; Jaguar Land Rover Limited 2016</p>
+			                            <p>{!$Label.c.aopcom_FooterRegisteredOffice}<br />{!$Label.c.aopcom_FooterRegisteredOffice2}</p>
+	                        		</div>
+	                    		</div>
+	                		</div><!-- .footer__section -->
+	            		</footer><!-- .footer -->
+        			</div>
+    			</div>
+    		</div>
+    	</div>
+	</div>
+
+</aura:component>

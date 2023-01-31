@@ -1,0 +1,25 @@
+.THIS border_top{
+    border-top: 1px solid #dddbda;
+}
+
+.THIS border_bottom{
+    border-bottom: 1px solid #dddbda;
+}
+.THIS .ModalCss{
+    max-width: 70rem !important;
+    width:95% !important;
+   /* overflow-y: scroll !important;*/
+}
+.THIS .btnCss{
+ margin-bottom:8px	;
+}
+.THIS .btnCss1{
+	margin-right: 1%;
+ margin-bottom:8px	;
+}
+.THIS .removeheightCss{
+	height: 21rem;
+	}
+	.THIS .addheightCss{
+	height: 40rem;
+	}

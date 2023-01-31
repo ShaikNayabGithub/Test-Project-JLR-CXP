@@ -1,0 +1,8 @@
+<design:component>
+	<design:attribute name="daylabel" label="Enter day label"/>   
+    <design:attribute name="hourlabel" label="Enter hour label"/>    
+    <design:attribute name="minlabel" label="Enter min label"/>
+    <design:attribute name="seclabel" label="Enter sec label"/>
+    <design:attribute name="title" label="Enter text title"/>
+    <design:attribute name="description" label="Enter a text description"/>
+</design:component>

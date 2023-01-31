@@ -1,0 +1,10 @@
+<design:component>
+     <design:attribute name="showNewOpp" label="Show New Button" description="Please Set to true to show new button" />
+    <design:attribute name="NavigatetoNewOppPage" label="Aus Navigate to New Opp" description="Please Set to true to navigate to new opportunity page for australia" />   
+    <design:attribute name="useNewLeadProcess" label="Use new Lead Process" description="Please Set to true to redirect non aus to lead creation" />    
+    <design:attribute name="showOppsXDaysOld" label="Number of days old Aus Opp to show" description="Please Set How many days in past created date opportunities to show"  />
+  
+
+    
+    
+</design:component>

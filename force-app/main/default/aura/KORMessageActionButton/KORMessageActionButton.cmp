@@ -1,0 +1,102 @@
+<aura:component
+  controller="KORMessageServiceController"
+  implements="force:hasRecordId,force:lightningQuickActionWithoutHeader"
+  access="global"
+>
+  <aura:import library="lightning:confirm" property="LightningConfirm" />
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <aura:attribute name="toNumber" type="String" />
+  <aura:attribute name="content" type="String" default=""/>
+  <aura:attribute name="record" type="Account" />
+  
+  <force:recordData
+    layoutType="FULL"
+    recordId="{!v.recordId}"
+    targetFields="{!v.record}"
+    recordUpdated="{!c.recordUpdate}"
+  />
+  <aura:html tag="style">
+    .cuf-content { padding: 0 0rem !important; } .slds-p-around--medium {
+    padding: 0rem !important; } .slds-modal__content{ overflow-y:hidden
+    !important; height:unset !important; max-height:unset !important; }
+  </aura:html>
+
+  <div  class="slds-is-relative">
+    <lightning:spinner class="slds-hide" aura:id="mySpinner" />
+  <section
+    role="dialog"
+    tabindex="-1"
+    aria-modal="true"
+    aria-labelledby="modal-heading-01"
+    class=""
+  >
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+      <h2 class="title slds-modal__title slds-hyphenate">문자 발송</h2>
+    </div>
+
+    <div class="slds-modal__content slds-p-around–x-small" aura:id="form">
+      <div class="slds-m-horizontal_large">
+        <div class="slds-col slds-size_4-of-4">
+          <lightning:combobox
+            name="fromNumber"
+            label="발신번호"
+            placeholder="080-894-1000"
+          />
+        </div>
+      </div>
+      <!-- <div class="slds-m-horizontal_large">
+        <div class="slds-col slds-size_4-of-4">
+          <lightning:combobox
+            name="template"
+            label="자동메세지"
+            placeholder="직접입력합니다"
+          />
+        </div>
+      </div> -->
+
+      <div class="slds-m-horizontal_large">
+        <lightning:input
+        aura:id="field"
+        label="수신번호"
+        name="toNumInput"
+        variant="brand"
+        readonly="true"
+        messageWhenValueMissing="수신번호가 없습니다."
+        value="{!v.toNumber}"
+        required="true"
+        />
+      </div>
+      <div>
+        <lightning:textarea
+          class="slds-m-horizontal_large content_area"
+          aura:id="field"
+          maxlength="2000"
+          messageWhenTooLong="최대 2,000자를 넘을 수 없습니다."
+          messageWhenValueMissing="메시지를 입력해 주세요."
+          placeholder="메시지를 입력해 주세요."
+          name="msgbox"
+          label="메세지"
+          required="true"
+          value="{!v.content}"
+        />
+      </div>
+    </div>
+    <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+      <div class="slds-m-horizontal_small" slot="footer">
+        <lightning:button
+          class="slds-m-horizontal_xx-small"
+          variant="neutral"
+          label="Cancel"
+          onclick="{! c.cancel }"
+        />
+        <lightning:button
+          class="slds-m-horizontal_xxx-small"
+          variant="brand"
+          label="Send Message"
+          onclick="{! c.sendMessage }"
+        />
+      </div>
+    </div>
+  </section>
+</div>
+</aura:component>

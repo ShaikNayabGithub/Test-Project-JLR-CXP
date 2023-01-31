@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>48.0</apiVersion>
+    <description>Flow Screen Account Contact Duplicates</description>
+    <isExposed>true</isExposed>
+    <masterLabel>Flow Screen Account Contact Duplicates</masterLabel>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="account" type="@salesforce/schema/Account" label="Account"
+                      description="The details for the person account being converted" required="true" default="invalid" role="inputOnly"/>
+
+            <property name="companyName" type="String" label="Company Name"
+                      description="The company name that has been entered via this component. Updated if duplicate is selected" />
+
+
+            <property name="selectedContact" type="String" label="Selected Contact ID"
+                      description="The contact that has been selected via this component" role="outputOnly"/>
+
+            <property name="selectedAccount" type="String" label="Selected Account ID"
+                      description="The account that has been selected via this component" role="outputOnly" />
+
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

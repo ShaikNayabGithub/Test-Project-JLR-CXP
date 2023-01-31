@@ -1,0 +1,171 @@
+<aura:component controller="VME_Category_Adjustment_Ctrl">
+    <ltng:require 
+    scripts="{!$Resource.VME_SweetAlert}" />
+    <aura:attribute name="containBaseScheme" type="boolean" />
+    <aura:attribute name="discreationaryVME" type="boolean" default="false"/>
+    <aura:attribute name="showConfigure" type="Boolean"  default="false"/>
+    <aura:attribute name="TradeIn" type="Boolean"  default="false"/>
+    <aura:attribute name="OFBCheck" type="Boolean"  default="false"/>
+    <aura:attribute name="parentVMECampaign" type="VME_Campaign__c" />
+    <aura:attribute name="revisedScheme" type="VME_Schemes__c" />
+    <aura:attribute name="isOpenComp" type="boolean" default="true" />
+    <aura:attribute name="schemeApplicable" type="String" default="DerivativeWise" />
+    <aura:attribute name="options" type="List" default="[
+    {'label': 'Model Wise', 'value': 'ModelWise'},
+    {'label': 'Derivative Wise', 'value': 'DerivativeWise'}
+    ]" />
+    <aura:attribute name="parameterName" type="String" />
+    <aura:attribute name="minDate" type="Date" />
+     <aura:attribute name="conversionRate" type="Decimal" />
+    <aura:attribute name="schemeId" type="String" />
+    <aura:attribute name="recordTypeId" type="String" />
+    <aura:attribute name="compIdentityValue" type="String" />
+    <aura:attribute name="startDate" type="Date" />
+    <aura:attribute name="endDate" type="Date" />
+    <aura:registerEvent name="refreshCmpEvt" type="c:VME_OpenModel" />
+    <aura:registerEvent name="adjustVariantEvt" type="c:VME_OpenAdjustVariantModel" />
+    <aura:registerEvent name="VME_SavedSchemeRecordDetailsEvent" type="c:VME_SavedRecordDetailsEvent" />
+    <aura:attribute name="maxDate" type="Date" />
+     <aura:registerEvent name="sendSchemeIdToDealerEvt" type="c:VME_SavedRecordDetailsEvent" />
+     <aura:handler event="aura:waiting" action="{!c.showSpinnerApex}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinnerApex}"/>
+    <aura:handler name="adjustVariantEvt" event="c:VME_OpenAdjustVariantModel" action="{!c.handlerefreshCmpEvt}" />
+    <aura:handler name="refreshCmpEvt" event="c:VME_OpenModel" action="{!c.handlerefreshCmpEvt}" />
+    <aura:handler name="VME_SavedSchemeRecordDetailsEvent" event="c:VME_SavedRecordDetailsEvent" action="{!c.handlerefreshCmpEvt}" />
+    <aura:handler name="VME_VinMixEvt" event="c:VME_SavedRecordDetailsEvent" action="{!c.handlerefreshCmpEvt}" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+  <!--create a component attributs -->
+    <aura:attribute name="Spinner" type="boolean" default="true"/>
+    <aura:if isTrue="{!v.isOpenComp}">
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container ModalCss">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeConfirmModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New L3 VME Campaign  </h2>
+                </header>
+                      <aura:if isTrue="{!v.Spinner}">
+                        <div aura:id="spinnerId" class="slds-spinner_container">
+                           <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                             <span class="slds-assistive-text">Loading</span>
+                             <div class="slds-spinner__dot-a"></div>
+                             <div class="slds-spinner__dot-b"></div>
+                           </div>
+                        </div>
+                                </aura:if>
+
+                <lightning:recordEditForm objectApiName="VME_Schemes__c" recordId="{!v.schemeId}" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}" aura:id="form">
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-align--absolute-center" style="position: relative;">
+                            <div aura:id="ModalDialogPlaceholder" />
+                            <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide" style="position: fixed !important;" />
+                        </div>
+
+                        <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right slds-scrollable_y" style="height: 25rem;">
+                            <lightning:messages />
+                            <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:inputField fieldName="VME_Campaign__c" value="{!v.parentVMECampaign.Id}" disabled="true" />
+                                    </lightning:layoutItem>
+                                    <aura:if isTrue="{!v.TradeIn}">
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss" >
+                                            <lightning:inputField fieldName="VME_Trade_In__c" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? null : v.revisedScheme.VME_Trade_In__c}"/>
+                                               </lightning:layoutItem>
+                                        </aura:if>
+                                        <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                                <aura:if isTrue="{!v.OFBCheck}">
+                                <lightning:layout>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss">
+                                        <lightning:inputField fieldName="VME_Segment__c" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? null : v.revisedScheme.VME_Segment__c}" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" >
+                                        <lightning:inputField fieldName="VME_Sub_Division__c" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? null : v.revisedScheme.VME_Sub_Division__c}"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                                </lightning:layout>
+                                </aura:if>
+                            <lightning:layout>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4" class="requiredCss">
+                                    <lightning:inputField fieldName="VME_Start_Date__c" value="{!v.minDate}" />
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4" class="requiredCss">
+                                    <lightning:inputField fieldName="VME_End_Date__c" value="{!v.maxDate}" />
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                            </lightning:layout>
+                      
+                            <lightning:layout>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4" class="requiredCss">
+                                    <lightning:inputField fieldName="VME_JLR_Share__c"   value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? 100 : v.revisedScheme.VME_JLR_Share__c}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4" class="requiredCss">
+                                    <lightning:inputField fieldName="VME_PU_Amount__c"   value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? 0 : v.revisedScheme.VME_PU_Amount__c}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                            </lightning:layout>
+                            <aura:if isTrue="{!and((!v.TradeIn),(!v.OFBCheck))}">
+                            <lightning:layout>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4">
+                                    <lightning:inputField fieldName="VME_Market_Arrival_Start_Date__c" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? null : v.revisedScheme.VME_Market_Arrival_Start_Date__c}"></lightning:inputField>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4">
+                                    <lightning:inputField fieldName="VME_Market_Arrival_End_Date__c" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? null : v.revisedScheme.VME_Market_Arrival_End_Date__c}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4">
+                                    <lightning:inputField fieldName="VME_Manufacturing_Start_Date__c"  value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? null: v.revisedScheme.VME_Manufacturing_Start_Date__c}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4">
+                                    <lightning:inputField fieldName="VME_Manufacturing_End_Date__c" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? null : v.revisedScheme.VME_Manufacturing_End_Date__c}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                            </lightning:layout>
+                            </aura:if>
+                            <lightning:layout>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4" >
+                                        <lightning:inputField fieldName="VME_Level_3_Description__c" aura:id="requiredField" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? undefined : v.revisedScheme.VME_Level_3_Description__c}" />
+                                              </lightning:layoutItem>
+                                        <lightning:layoutItem size="1"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4" class="requiredCss">
+                                            <lightning:inputField fieldName="VME_Volume__c" value="{!or(v.revisedScheme==undefined,v.revisedScheme==' ',v.revisedScheme=='undefined') ? 0 : v.revisedScheme.VME_Volume__c}"/>
+                                                </lightning:layoutItem>
+                                    <lightning:layoutItem size="1"></lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="1"></lightning:layoutItem>
+                                <lightning:layoutItem size="4">
+                                        <lightning:radioGroup name="radioGroup" label="L3 VME Campaign Applicable" options="{! v.options }" value="{! v.schemeApplicable }" type="button" required="true" disabled="{!v.discreationaryVME}"/>
+                                    </lightning:layoutItem>
+                            </lightning:layout>
+
+                        </div>
+
+                        <ul class="slds-list_horizontal"></ul>
+                    </div>
+                    <footer class="slds-modal__footer">
+                            <lightning:button variant="brand" label="Save" title="Save " type="submit" />
+            
+                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeConfirmModel}" />
+                    </footer>
+                </lightning:recordEditForm>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

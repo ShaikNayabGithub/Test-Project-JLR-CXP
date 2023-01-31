@@ -1,0 +1,27 @@
+<!--
+ - Created by Ethan Sargent on 13/2/20.
+ -->
+
+<!-- Flow Contact Selection -->
+<template>
+    <p style="position: absolute; left: -9000px; top: -9000px; font-size: 0;">{reloadScreen}</p>
+    <lightning-datatable
+            title="Select a Contact"
+            key-field="Id"
+            data={contacts}
+            columns={columns}
+            max-row-selection="1"
+            selected-rows={selectedContacts}
+            onrowselection={handleContactRowSelection}
+    ></lightning-datatable>
+    <div style="width: 100%">
+        <div class="slds-align_absolute-center">
+            <lightning-button
+                    variant="brand"
+                    class="slds-p-around_small"
+                    label="Create new Contact"
+                    onclick={handleCreateNewContact}
+            ></lightning-button>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,26 @@
+.THIS .mainHeading{
+    font-size:1.2rem;
+    font-weight: 600;
+}
+.THIS .subHeading{
+    font-size:0.9rem;
+    padding-left: 1rem;
+}
+.THIS .customrow {
+  border: 1px solid black; text-align: center;
+}
+.THIS .boldText{
+    font-weight: bolder;
+}
+.THIS .divinput {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield; 
+    font: -moz-field;
+    font: -webkit-small-control;  
+}
+.THIS .slds-input {
+    border : none !important; text-align:center;
+}
+.THIS .customrow {
+    empty-cells: hide;
+}

@@ -1,0 +1,213 @@
+<aura:component controller="VME_ProductMixCtrl" implements="force:appHostable">
+<aura:attribute name="showFilters" type="Boolean" default="true" />
+<ltng:require scripts="{!$Resource.VME_SweetAlert}" />
+<aura:attribute name="revisedSchemeValue" type="VME_Schemes__c" />
+<aura:attribute name="currentVME" type="VME_Campaign__c" />
+<aura:attribute name="schemeId" type="String"  />
+<aura:attribute name="isOpen" type="Boolean"  />
+<aura:attribute name="existingAllCheck" type="Boolean" default="false" />
+<aura:attribute name="searchAllCheck" type="Boolean" default="false" />
+<aura:attribute name="modelValuesList" type="String[]" />
+<aura:attribute name="modelYearValuesList" type="String[]" />
+<aura:attribute name="fuelTypeValuesList" type="String[]" />
+<aura:attribute name="trimValuesList" type="String[]" />
+<aura:attribute name="engineValuesList"  type="List" default="[{'label': 'Please Select', 'value': 'Please Select'}]"/>
+<aura:attribute name="doorsValuesList" type="List" default="[{'label': 'Please Select', 'value': 'Please Select'}]" />
+<aura:attribute name="searchedProductsList" type="VME_ProductMixReqWrapper[]" />
+<aura:attribute name="paginationProductsList" type="VME_ProductMixReqWrapper[]" />
+<aura:attribute name="exitingProductsList" type="VME_ProductMixReqWrapper[]" />
+<aura:attribute name="paginationExitingProList" type="VME_ProductMixReqWrapper[]" />
+<aura:attribute name="modelValue" type="String" />
+<aura:attribute name="compIdentityValue" type="String" />
+<aura:attribute name="modelString" type="object" />
+<aura:attribute name="modelYearValue" type="String" />
+<aura:attribute name="fuelTypeValue" type="String" />
+<aura:attribute name="trimValue" type="String" />
+<aura:attribute name="engineValue" type="String"  default="Please Select"/>
+<aura:attribute name="doorsValue" type="String" default="Please Select"/>
+<aura:attribute name="pageSize" type="Integer" />
+<aura:attribute name="parameterName" type="String" />
+<aura:attribute name="pageNumber" type="Integer" default="0" />
+<aura:attribute name="totalPages" type="Integer" default="0" />
+<aura:attribute name="pageNumberExist" type="Integer" default="0" />
+<aura:attribute name="totalPagesExist" type="Integer" default="0" />
+<aura:registerEvent name="refreshCmpEvt" type="c:VME_OpenModel" />
+<aura:registerEvent name="VME_callDealerMixEvent" type="c:VME_SavedRecordDetailsEvent" />
+<aura:handler name="VME_callDealerMixEvent" event="c:VME_SavedRecordDetailsEvent" action="{!c.handleDealerMixCmpEvt}" />
+<aura:registerEvent name="adjustVariantEvt1" type="c:VME_OpenAdjustVariantModel" />
+<aura:handler name="adjustVariantEvt1" event="c:VME_OpenAdjustVariantModel" action="{!c.handleDealerMixCmpEvt}" />
+<aura:handler name="refreshCmpEvt" event="c:VME_OpenModel" action="{!c.handleDealerMixCmpEvt}" />
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+<aura:if isTrue="{!v.isOpen}">
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container ModalCss">
+            <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close"  onclick="{! c.errorConfirmModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Product MIX </h2>
+            </header>
+            <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right slds-scrollable_y" aura:id="changeDiv">
+                <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide" style="position: fixed !important;" />
+                <lightning:tabset>
+                        <aura:if isTrue="{!not(empty(v.exitingProductsList))}">
+                    <lightning:tab label="Existing Product List">
+                    <div>
+                        <lightning:card class="slds-card slds-card_boundary" title="Variant Selected Results" iconName="utility:travel_and_places" variant="base">
+                            <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+                                <table class="slds-table slds-no-row-hover slds-table_bordered" style="border-top : 1px solid #dddbda ; border-bottom : 1px solid #dddbda">
+                                    <thead >
+                                        <tr class="slds-text-title_caps border_top border_bottom">
+                                            <th>
+                                                    <lightning:input type="toggle" messageToggleActive="Deselect All"
+                                                    messageToggleInactive="Selected All" checked="{!v.existingAllCheck}" variant = "label-hidden" onchange="{!c.changeAllExistingList}"/>
+                                            </th>
+                                            <th>
+                                                <div class="slds-truncate " title="Column 1">Product Name</div>
+                                            </th>
+                                            <th>
+                                                <div class="slds-truncate " title="Column 1">Product Code</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <aura:iteration items="{!v.paginationExitingProList}" var="exisObj" indexVar="index">
+                                        <tr class="border_bottom">
+                                            <td>
+                                                <lightning:input type="checkbox-button" label="Input One" checked="{!exisObj.isSelected}" />
+                                            </td>
+                                                <td>{!exisObj.productObj.Name}</td>
+                                    
+                                            <td>{!exisObj.productObj.ProductCode}</td>
+                                        </tr>
+                                    </aura:iteration>
+                                </table>
+                            </div>
+                            <aura:set attribute="footer">
+                                    Page {!v.pageNumberExist} of {!v.totalPagesExist} &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <aura:if isTrue="{!(v.pageNumberExist > 1)}">
+                                            <lightning:button onclick="{!c.previousExistPage}" class="slds-theme_brand" variant="brand" label="Previous"></lightning:button>
+                                        </aura:if>
+                                    <aura:if isTrue="{!(v.pageNumberExist != v.totalPagesExist)}">
+                                        <lightning:button onclick="{!c.nextExistPage}" class="slds-theme_brand" variant="brand" label="Next"></lightning:button>
+                                    </aura:if>
+                                  
+                                </aura:set>
+                        </lightning:card>
+                    </div>
+                    </lightning:tab>
+                        </aura:if>
+                    <lightning:tab label="Search Layout">
+                <lightning:layout>
+                    <lightning:layoutItem size="4" padding="horizontal-small">
+                        <!--  <lightning:input label="Search Variant" disabled="true" value="{!v.modelValue.value}" type="text" variant="standard" ></lightning:input> -->
+                                <lightning:select label="Search Variant" variant="standard" value="{!v.modelValue}" disabled="true">
+                                    <option text="{!v.modelString.label}" value="{!v.modelString.value}" />
+                            </lightning:select>
+                    </lightning:layoutItem>
+                    <aura:if isTrue="{!v.showFilters}">
+                        <lightning:layoutItem size="4" padding="horizontal-small">
+                            <lightning:select label="Model Year" variant="standard" value="{!v.modelYearValue}">
+                                <aura:iteration items="{!v.modelYearValuesList}" var="option">
+                                    <option text="{!option}" value="{!option}" />
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" padding="horizontal-small">
+                            <lightning:select label="Fuel Type" variant="standard" value="{!v.fuelTypeValue}">
+                                <aura:iteration items="{!v.fuelTypeValuesList}" var="option">
+                                    <option text="{!option}" value="{!option}" />
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                    </aura:if>
+                </lightning:layout>
+                <aura:if isTrue="{!v.showFilters}">
+                    <lightning:layout>
+                        <lightning:layoutItem size="4" padding="horizontal-small">
+                            <lightning:select label="Trim" variant="standard" value="{!v.trimValue}">
+                                <aura:iteration items="{!v.trimValuesList}" var="option">
+                                    <option text="{!option}" value="{!option}" />
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" padding="horizontal-small">
+                                <lightning:combobox  name="Engine" label="Engine"  value="{!v.engineValue}" options="{!v.engineValuesList}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" padding="horizontal-small">
+                                <lightning:combobox  name="Doors" label="Doors"  value="{!v.doorsValue}" options="{!v.doorsValuesList}" />
+                          
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:if>
+                <br/>
+                <div style="display: flex;">
+                    <lightning:button onclick="{!c.searchProductsJS}" class="slds-theme_brand slds-align_absolute-center btnCss1" variant="brand" label="Search"></lightning:button>
+                        <lightning:button onclick="{!c.resetProductsJS}" class="slds-theme_brand slds-align_absolute-center btnCss" variant="brand" label="Reset"></lightning:button>
+                </div>
+
+                <aura:if isTrue="{!not(empty(v.paginationProductsList))}">
+                    <div>
+                        <lightning:card class="slds-card slds-card_boundary" title="Variant Search Results" iconName="utility:travel_and_places" variant="base">
+                            <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+                                <table class="slds-table slds-no-row-hover slds-table_bordered" style="border-top : 1px solid #dddbda ; border-bottom : 1px solid #dddbda">
+                                    <thead >
+                                        <tr class="slds-text-title_caps border_top border_bottom">
+                                            <th>
+                                                    
+                                                            <lightning:input type="toggle" messageToggleActive="Deselect All"
+                                                            messageToggleInactive="Selected All" checked="{!v.searchAllCheck}" variant = "label-hidden" onchange="{!c.changeAllSearchList}"/>
+                                                      
+                                            </th>
+                                            <th>
+                                                <div class="slds-truncate " title="Column 1">Product Name</div>
+                                            </th>
+                                            
+                                            <th>
+                                                <div class="slds-truncate " title="Column 1">Product Code</div>
+                                            </th>
+                                            
+                                        </tr>
+                                    </thead>
+
+                                    <aura:iteration items="{!v.paginationProductsList}" var="prodObj" indexVar="index">
+                                        <tr class="border_bottom">
+                                            <td>
+                                                <lightning:input type="checkbox-button" label="Input One" checked="{!prodObj.isSelected}" />
+                                            </td>
+                                            <td>{!prodObj.productObj.Name}</td>
+                                    
+                                            <td>{!prodObj.productObj.ProductCode}</td>
+                                        
+                                        </tr>
+                                    </aura:iteration>
+                                </table>
+                            </div>
+                            <aura:set attribute="footer">
+                                Page {!v.pageNumber} of {!v.totalPages} &nbsp;&nbsp;&nbsp;&nbsp;
+                                <aura:if isTrue="{!(v.pageNumber > 1)}">
+                                        <lightning:button onclick="{!c.previousPage}" class="slds-theme_brand" variant="brand" label="Previous"></lightning:button>
+                                    </aura:if>
+                                <aura:if isTrue="{!(v.pageNumber != v.totalPages)}">
+                                    <lightning:button onclick="{!c.nextPage}" class="slds-theme_brand" variant="brand" label="Next"></lightning:button>
+                                </aura:if>
+                              
+                            </aura:set>
+                        </lightning:card>
+                    </div>
+                
+                
+                </aura:if>
+            </lightning:tab>
+        </lightning:tabset>
+            </div>
+                <footer class="slds-modal__footer">
+                        <lightning:button onclick="{!c.saveProductMix}" variant="brand" label="Save &amp; Close" title="close"></lightning:button>
+                        <lightning:button variant="brand" label="Save &amp; Choose Retailers"  onclick="{! c.saveProductMix}" title="dealers"/>
+                    </footer>
+        </div>
+    </section>
+
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</aura:if>
+
+</aura:component>

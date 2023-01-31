@@ -1,0 +1,56 @@
+<aura:component >
+     <aura:attribute name="newExpense" type="Campaign_Activity_Evidence__c"
+         default="{ 'sobjectType': 'Campaign_Activity_Evidence__c',
+                        'Name': '',
+                        'Claim_Value__c': 0,
+                  Evidence_Type__c:'',
+                        'Comments__c': '',
+                  'Status__c': ''}"/>
+    <!-- PAGE HEADER -->
+    <lightning:layout class="slds-page-header slds-page-header--object-home">
+        <lightning:layoutItem >
+            <lightning:icon iconName="standard:scan_card" alternativeText="Activity Evidence"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">Activity Evidence</h1>
+                       </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / PAGE HEADER -->
+    <!-- NEW EXPENSE FORM -->
+    <lightning:layout >
+        <lightning:layoutItem padding="around-small" size="6">
+      <form class="slds-form--stacked">          
+            <lightning:input aura:id="expenseform" label="Activity Name"
+                             name="expensename"
+                             value="{!v.newExpense.Name}"
+                             required="true"/> 
+            <lightning:input type="number" aura:id="expenseform" label="Activty Value"
+                             name="expenseamount"
+                             min="0.1"
+                             formatter="currency"
+                             step="0.01"
+                             value="{!v.newExpense.Claim_Value__c}"
+                             messageWhenRangeUnderflow="Enter an amount that's at least $0.10."/>
+            <lightning:input aura:id="expenseform" label="Evidence Type"
+                             name="expenseclient"
+                             value="{!v.newExpense.Evidence_Type__c}"/>
+                             
+            <lightning:input aura:id="expenseform" label="Comments"
+                             name="expensedate"
+                             value="{!v.Comments__c.Date__c}"
+          					placeholder="ABC Co."/>
+          
+            <lightning:input aura:id="expenseform" label="Reimbursed?"  
+                             name="expreimbursed"
+                             checked="{!v.newExpense.Status__c}"/>
+            <lightning:button label="Create Expense" 
+                              class="slds-m-top--medium"
+                              variant="brand"
+                              onclick=""/>
+        </form>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / NEW EXPENSE FORM -->
+</aura:component>

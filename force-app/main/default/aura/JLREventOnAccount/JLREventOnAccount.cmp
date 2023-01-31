@@ -1,0 +1,84 @@
+<aura:component controller="JLREventOnAccountController" implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="JLREvents" type="Object[]" />
+    <aura:attribute name="JLRTasks" type="Object[]" />
+    <aura:handler name="init" value="{!this}" action="{!c.retrieveEvents}" />
+    
+	<lightning:card title="JLR Events">
+        <lightning:layout>
+            <lightning:layoutItem size="12">
+                <table class="slds-table slds-table_bordered slds-table_fixed-layout" role="grid">
+                    <thead>
+                    	<tr>
+                        	<th scope="col">Assigned To</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Start</th>
+                            <th scope="col">End</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.JLREvents}" var="ev">
+                        <tr>
+                            <td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!ev.Owner.Name}" /></td>
+                            <td scope="row" class="slds-cell-wrap">
+                                <aura:if isTrue="{!or(ev.WhatId == v.recordId, ev.WhoId == v.recordId)}">
+                                    <a href="{!'/' + ev.Id}"><lightning:formattedText value="{!ev.Subject}" /></a>
+                                	<aura:set attribute="else">
+                                        <lightning:formattedText value="{!ev.Subject}" />
+                                    </aura:set>
+                                </aura:if>
+                            </td>
+                            <td scope="row"><lightning:formattedDateTime value="{!ev.StartDateTime}" /></td>
+                            <td scope="row"><lightning:formattedDateTime value="{!ev.EndDateTime}" /></td>
+                            <td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!ev.Type}" /></td>
+                            <td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!ev.Description}" /></td>
+                        </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    
+	<lightning:card title="JLR Tasks">
+        <lightning:layout>
+            <lightning:layoutItem size="12">
+                <table class="slds-table slds-table_bordered slds-table_fixed-layout" role="grid">
+                    <thead>
+                    	<tr>
+                        	<th scope="col">Assigned To</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Due Date</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Priority</th>
+                            <th scope="col">Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.JLRTasks}" var="tk">
+                        <tr>
+                            <td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!tk.Owner.Name}" /></td>
+                            <td scope="row" class="slds-cell-wrap">
+                                <aura:if isTrue="{!or(tk.WhatId == v.recordId, tk.WhoId == v.recordId)}">
+                                    <a href="{!'/' + tk.Id}"><lightning:formattedText value="{!tk.Subject}" /></a>
+                                	<aura:set attribute="else">
+                                        <lightning:formattedText value="{!tk.Subject}" />
+                                    </aura:set>
+                                </aura:if>
+                            </td>
+                            <td scope="row"><lightning:formattedDateTime value="{!tk.ActivityDate}" /></td>
+							<td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!tk.Type}" /></td>
+                            <td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!tk.Status}" /></td>
+                            <td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!tk.Priority}" /></td>
+                            <td scope="row" class="slds-cell-wrap"><lightning:formattedText value="{!tk.Description}" /></td>
+                        </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+        
+</aura:component>

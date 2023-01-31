@@ -1,0 +1,33 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+	<aura:attribute name="simpleOpp" type="Object" />
+    <aura:attribute name="fieldColumns" type="String[]" default="['Id', 'AccountId', 'Account.RecordType.Name', 'IsClosed', 'Number_of_opp_products_with_asset__c']" />
+    <force:recordData aura:id="oppLoader" recordId="{!v.recordId}" mode="VIEW" targetFields="{!v.simpleOpp}" fields="{!v.fieldColumns}" />
+    
+	<lightning:card title="{!$Label.c.CEIP}" iconName="standard:entitlement" class="slds-p-around_xx-small">
+	    <aura:if isTrue="{!v.simpleOpp.AccountId != null}">
+         	<lightning:recordEditForm recordId="{!v.simpleOpp.AccountId}" aura:Id="recordDetail" objectApiName="Account" onsuccess="{!c.doSuccess}">
+    			<p class="slds-p-horizontal_small">
+           			<div class="slds-grid slds-wrap">
+                    	<aura:if isTrue="{!v.simpleOpp.RecordType.Name == 'Individual'}">
+                   			<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="MailingStreet" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                    		<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="MailingCity" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                    		<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="MailingPostalCode" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                    		<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="MailingCountry" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                        <aura:set attribute="else">
+                            <div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="BillingStreet" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                    		<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="BillingCity" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                    		<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="BillingPostalCode" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                    		<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="BillingCountry" disabled="{!v.simpleOpp.IsClosed}" /></div>
+                        </aura:set>
+                        </aura:if>
+                    </div>
+                </p>
+                <aura:if isTrue="{!v.simpleOpp.Number_of_opp_products_with_asset__c == 0}">
+            		<p style="padding-top:3px; font-weight:bold;">{!$Label.c.No_Opp_Line_Item_With_Asset}</p>
+        		</aura:if>
+                <p style="text-align:center; padding-top:6px;"><lightning:button label="{!$Label.c.sfSave}" type="submit" name="save" variant="brand" disabled="{!v.simpleOpp.IsClosed}" /></p>
+            </lightning:recordEditForm>
+        </aura:if>
+    </lightning:card>
+    
+</aura:component>

@@ -1,0 +1,63 @@
+<!-- 
+||	Author :Tamanna Shukla
+||	Created Date: 15/04/2019
+||	Purpose:This is the Reusablity component used to show all the filters on the QMSP Level in the Tactical Module.
+||	Modified By : Tejashree.J  
+||	Modified Date : 26/04/2019
+-->
+<aura:component controller="VME_QMSP_Filter_Ctrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+        <aura:attribute name="selectedRegion" type="String" />
+        <aura:attribute name="selectedMarket" type="String" default=" " />
+        <aura:attribute name="selectedYear" type="String" default=" " />
+        <aura:attribute name="selectedBrand" type="String" default=" " />
+        <aura:attribute name="selectedQuarter" type="String" default=" " />
+        <aura:attribute name="selectedModel" type="String" default=" " />
+        <aura:attribute name="isdependentModel" type="Boolean" default="false" />
+        <aura:attribute name="dependentModelFieldMap" type="map" description="map to store dependent values with controlling value" />
+        <aura:attribute name="map_Of_Filters" type="Map" default="{}" description="This will hold all the filters." />
+        <!--<aura:attribute name="startDate" type="Date" default=""/><aura:attribute name="endDate" type="Date"  default=""/> -->
+        <aura:attribute name="marketRegionMap" type="Map" />
+        <aura:attribute name="makeCountryDisabled" type="boolean" default="false" description="This will be disabled the Country if User CountryISO is filled."  />
+        <aura:attribute name="brandDisabledDependentFld" type="boolean" default="true" />
+        <aura:attribute name="userInfo" type="user" />
+        <aura:attribute name="RegionList" type="List" default="[{'label': 'Select Region', 'value': ' '}]" />
+        <aura:attribute name="MarketList" type="List" default="[{'label': 'Select Market', 'value': ' '}]" />
+        <aura:attribute name="YearList" type="List" default="[{'label': 'Select Fiscal Year', 'value': ' '}]" />
+        <aura:attribute name="QuarterList" type="List" default="[{'label': 'Select Quarter', 'value': ' '}]" />
+        <aura:attribute name="ModelList" type="List" default="[{'label': 'Select Model', 'value': ' '}]" />
+        <aura:attribute name="BrandList" type="List" default="[{'label': 'Select Brand', 'value': ' '}]" />
+        <aura:handler name="init" action="{!c.doInit}" value="{!this}" />  
+        <aura:registerEvent name="filterCmpEvent" type="c:VME_QMSP_Filter_Event" />
+         <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide"/>
+        <lightning:layout>
+                <lightning:layoutItem size="3">
+                        <label class="slds-form-element__label" style="margin-right: -0.2rem;padding-left: 0.25rem;"><i style="color:Red">*</i> Region / Market</label>
+                        <lightning:helptext content="Logged in user default Region / Market." class="customIcon" />
+                        <lightning:input type="text" name="Region" label="Region / Market" variant="label-hidden" value="{!v.selectedRegion}" disabled="true" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                        <lightning:combobox aura:id="requiredField" name="Country" label="Country" messageWhenValueMissing="Please select Country" fieldLevelHelp="Logged in user default Country ISO Code." value="{!v.selectedMarket}" options="{!v.MarketList}" required="true" disabled="{!v.makeCountryDisabled}" placeholder="Select Country"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                        <lightning:combobox aura:id="requiredField" name="Financial_Year" label="Fiscal Year"  messageWhenValueMissing="Please select Fiscal Year" value="{!v.selectedYear}" options="{!v.YearList}" required="true" placeholder="Select Fiscal Year"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                        <lightning:combobox aura:id="requiredField" name="Quarter" label="Quarter" value="{!v.selectedQuarter}" options="{!v.QuarterList}" messageWhenValueMissing="Please select  Quarter" required="true" />
+                </lightning:layoutItem>
+                
+        </lightning:layout>
+        <lightning:layout>
+                <lightning:layoutItem size="3">
+                        <lightning:combobox aura:id="requiredField" name="Brand" label="Brand" value="{!v.selectedBrand}" options="{!v.BrandList}"   messageWhenValueMissing="Please select Brand" required="true" onchange="{! c.BrandChangeRequest }" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                        <lightning:combobox aura:id="requiredField" name="Model" label="Model" value="{!v.selectedModel}" options="{!v.ModelList}" messageWhenValueMissing="Please select Model" required="true" disabled="{!v.brandDisabledDependentFld}" placeholder="Select Model"  /> 
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" class="paddingCss">
+                        <lightning:button iconPosition="left" variant="brand" label="Search" iconName="utility:search" onclick="{!c.validateAndSerch}"></lightning:button>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" class="paddingCss">
+                        <lightning:button iconPosition="left" variant="brand" iconName="utility:refresh" label="Reset" onclick="{!c.reset}"></lightning:button>
+                </lightning:layoutItem>
+        </lightning:layout>
+</aura:component>

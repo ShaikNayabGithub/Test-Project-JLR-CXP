@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__AppPage</target>
+    </targets>
+
+    <targetConfigs>  
+        <targetConfig targets="lightning__HomePage,lightning__RecordPage,lightning__AppPage,lightningCommunity__Default">
+            <property name="adminObjects" type="String" default="Account" label="Available Objects (API Names, Comma-Separated)" required="true"/>
+            <property name="adminOperations" type="String" default="Insert" label="Available Operations (Insert, Update, Upsert, Delete. Comma-Separated)" required="true"/>
+            <property name="adminUpdateKey" type="String" default="Id" label="Available Update Keys  (API Names of fields, Comma-Separated)" required="true"/>
+            <property name="reportId" type="String"  label="Report Id(s) for the Export Template. (Comma Separate to provide multiple)"/>
+            <property name="reportNames" type="String"  label="Report Display Names for the Export Template. (Comma Separate to provide multiple)"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

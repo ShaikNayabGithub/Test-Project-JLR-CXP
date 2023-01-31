@@ -1,0 +1,23 @@
+<!--
+ - Created by caleb on 30/01/2020.
+ -->
+
+<!-- Milestone Radio Button Group -->
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size--4-of-12">{radioGroupName}</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-radio-group
+                    class="input-group"
+                    name="radioButtonGroup"
+                    onchange={handleValueChange}
+                    options={options}
+                    value={selectedValue}
+                    type="radio">
+            </lightning-radio-group>
+            <!--<template if:true={doShowDueDateError}>
+                <span class="jlr-errors">Due Date is required</span>
+            </template>-->
+        </div>
+    </div>
+</template>

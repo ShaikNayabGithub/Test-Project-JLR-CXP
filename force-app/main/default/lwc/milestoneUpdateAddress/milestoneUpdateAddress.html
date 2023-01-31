@@ -1,0 +1,103 @@
+<!--
+ - Created by caleb on 1/07/2021.
+ -->
+
+<!-- Milestone Update Address -->
+<template>
+    <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium slds-border_bottom">
+        <strong style="font-size: large;">Confirm Customer Details</strong>
+    </div>
+
+    <div class="slds-col slds-size_2-of-2 slds-m-bottom_medium">
+        Please confirm accuracy of existing customer contact details as per contract of sale.
+        and for the title of the fields of the page add red asterisk next to it to indicate mandatory field
+    </div>
+
+    <!--Email-->
+    <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={addressIsInit}>
+        <c-milestone-text-input
+                class="input-email"
+                text-input-name="Email"
+                text={email}
+                onvaluechange={handelEmailChange}>
+        </c-milestone-text-input>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+
+    <!--Phone-->
+    <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={addressIsInit}>
+        <c-milestone-text-input
+                class="input-phone"
+                text-input-name="Mobile Phone"
+                text={mobilePhone}
+                onvaluechange={handelMobileChange}>
+        </c-milestone-text-input>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+
+    <!--Street-->
+    <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={addressIsInit}>
+        <c-milestone-text-input
+                class="input-street"
+                text-input-name="Street"
+                text={mailingStreet}
+                onvaluechange={handelStreetChange}>
+        </c-milestone-text-input>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+
+    <!--City-->
+    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={addressIsInit}>
+        <c-milestone-text-input
+                class="input-city"
+                text-input-name="City"
+                text={mailingCity}
+                onvaluechange={handelCityChange}>
+        </c-milestone-text-input>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+
+    <!--State-->
+    <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={addressIsInit}>
+        <c-milestone-text-input
+                class="input-state"
+                text-input-name="State"
+                text={mailingState}
+                onvaluechange={handelStateChange}>
+        </c-milestone-text-input>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+
+    <!--PostCode-->
+    <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={addressIsInit}>
+        <c-milestone-text-input
+                class="input-postcode"
+                text-input-name="PostCode"
+                text={mailingPostCode}
+                onvaluechange={handelPostCodeChange}>
+        </c-milestone-text-input>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+
+    <!--Country-->
+    <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={addressIsInit}>
+        <c-milestone-text-input
+                class="input-country"
+                text-input-name="Country"
+                text={mailingCountry}
+                onvaluechange={handelCountryChange}>
+        </c-milestone-text-input>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+
+    <!-- Bookworks letter opt out-->
+    <div class="slds-col slds-col slds-size_1-of-2 slds-p-bottom_small" if:true={willSendLetter}>
+        <c-milestone-checkbox
+                class="input-letter-opt-out"
+                checkbox-name="Do not send build delay letter"
+                is-checked={letterOptOut}
+                onvaluechange={handelLetterOptOutChange}>
+        </c-milestone-checkbox>
+    </div>
+    <div class="slds-col slds-size_1-of-2"></div>
+</template>

@@ -1,0 +1,8 @@
+.modalBodySpinner{
+    position: relative;;
+}
+
+.customModalwidth {
+    max-width: 90rem;
+    width: 90%;
+}

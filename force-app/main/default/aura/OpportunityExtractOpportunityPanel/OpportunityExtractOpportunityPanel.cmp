@@ -1,0 +1,8 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="LC_OpportunityExtract_Controller">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="simpleOpp" type="Opportunity" default="null" />
+       
+    <lightning:button label="CSV" onclick="{!c.extractCSV}" disabled="{!v.disabled == true}" />
+    
+</aura:component>

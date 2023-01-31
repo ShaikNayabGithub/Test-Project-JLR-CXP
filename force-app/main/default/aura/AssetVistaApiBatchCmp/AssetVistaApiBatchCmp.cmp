@@ -1,0 +1,49 @@
+<aura:component controller="AssetVistaBatchController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="progress" type="Integer" default="0"/>
+    <aura:attribute name="apexJob" type="AsyncApexJob"/>
+    <aura:attribute name="batchJobId" type="String"/>
+    <aura:attribute name="showButton" type="String" default="true"/>
+    <aura:attribute name="showPanel" type="String" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:if isTrue="{!v.showPanel}">
+        <lightning:card title="Vista API Asset Align Batch">
+            <lightning:layout horizontalAlign="space" class="slds-grid_vertical">
+                <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                    <div class="slds-align_absolute-center">
+                        <aura:if isTrue="{!v.showButton}">
+                            <lightning:button variant="brand" label="Execute Batch" title="Execute Batch" onclick="{!c.executeBatch}" />
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!and(v.apexJob != null,v.apexJob.Status != 'Completed')}">
+                                    <lightning:button variant="destructive" label="Abort" title="Abort" onclick="{!c.abortBatch}" />
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </lightning:layoutItem>
+                <aura:if isTrue="{!v.apexJob != null}">
+                    <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                        <lightning:card title="Batch Status">
+                            <aura:if isTrue="{!v.apexJob.Status == 'Completed'}">
+                                <lightning:layout horizontalAlign="space" class="slds-grid_vertical">
+                                    <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                        Batch Processed: <b>{!v.apexJob.JobItemsProcessed}</b>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                        Errors : <b>{!v.apexJob.NumberOfErrors}</b>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                        Status : <b>{!v.apexJob.Status}</b>
+                                    </lightning:layoutItem>
+                                </lightning:layout> <br/>
+                            </aura:if>
+                            <span class="slds-align_absolute-center">
+                                <b> {!v.apexJob.JobItemsProcessed} of {!v.apexJob.TotalJobItems} </b> 
+                            </span>
+                            <lightning:progressBar value="{!v.progress}" size="large" variant="circular"/>
+                        </lightning:card>
+                    </lightning:layoutItem>
+                </aura:if>
+            </lightning:layout>
+        </lightning:card>
+    </aura:if>
+</aura:component>

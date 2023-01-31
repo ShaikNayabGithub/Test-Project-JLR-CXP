@@ -1,0 +1,92 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction">
+    <aura:attribute name="activity" type="CooP_Campaign_Activity__c" />     
+    <aura:attribute name="communityUserId" type="String" />     
+    <aura:attribute name="campaignId" type="String"/> 
+    <aura:attribute name="campaignName" type="String" /> 
+    <aura:attribute name="campaignCurrency" type="String" /> 
+    <aura:attribute name="namePortion" type="String" />    
+    <aura:attribute name="campaignActivityName" type="String"/> 
+    <aura:attribute name="activityType" type="String" /> 
+    <aura:registerEvent name="selectValue" type="c:PassSelectedValue"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <div aura:id="Id_spinner" class="slds-spinner_container slds-hide">
+    	<lightning:spinner variant="brand" size="large" />
+    </div>
+    
+    <lightning:recordEditForm onerror="{!c.hideSpinner}" recordId="{!v.recordId}" objectApiName="CooP_Campaign_Activity__c" onsubmit="{!c.showSpinner}" onsuccess="{!c.handleSaveSuccess}">
+        <lightning:messages />
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-small" size="12">
+                <label class="slds-form-element__label slds-no-flex __web-inspector-hide-shortcut__">Campaign Activity Name</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-grid slds-gutters">    
+                        <span style="color:#006dcc;padding-top: 1.5rem;" class="slds-col">{!v.campaignName+'-'+v.activityType+'-'}</span>
+                        <span class="slds-col">
+                            <lightning:input  type="text" maxlength="80" name="Name"  value="{!v.namePortion}" onchange="{!c.setActivityName}" required="true"/>
+                        </span>
+                    </div>
+                </div>
+                <lightning:inputField fieldName="Name" disabled="true" aura:id="activityName" class="slds-hide"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Campaign__c" value="{!v.campaignId}" disabled="true"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Media_Type__c" value="{!v.activityType}" onchange="{!c.setActivityName}" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Business_Type__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Model__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Start_Date__c" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="End_Date__c" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="PlannedspendforActivity__c" required="true"/>               
+            </lightning:layoutItem>
+              <lightning:layoutItem padding="around-small" size="6">
+                <!-- <lightning:inputField fieldName="ActualspendforActivity__c" /> -->
+                <lightning:inputField fieldName="Status__c" disabled="true"/>
+            </lightning:layoutItem>
+            
+              
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Penalty__c" />
+            </lightning:layoutItem>
+             <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Funnel_Category__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Leads_Target__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Experiences_Target__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Is_Mandatory_Activity__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Is_Dual_Brand_Activity__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="Claimable_Proportion__c" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:inputField fieldName="CurrencyIsoCode" value="{!v.campaignCurrency}" disabled="true" />
+            </lightning:layoutItem>
+              <lightning:layoutItem padding="around-small" size="12" class="slds-align_absolute-center">
+                <lightning:button class="slds-m-top_small" variant="brand" type="submit" name="Save" label="Save" />   
+            </lightning:layoutItem>
+            
+        </lightning:layout>
+        <!--    <c:SubmitRecordForApproval recordId="{!v.activity.Id}" communityUserId="{!v.communityUserId}" enableApproval="{!and(v.activity.Status__c=='Activity Created', v.activity.Has_Attachment__c==true)}" /> -->
+        
+    </lightning:recordEditForm> 
+    
+</aura:component>

@@ -1,0 +1,20 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+      
+    <aura:attribute name="totalList" type="List" default="['abc', 'def', 'ghi']"/>     
+    <aura:attribute name="resultList" type="List"/>    
+    <aura:attribute name="selectedValue" type="String" default=""/> 
+    <aura:attribute name="showOptions" type="Boolean" default="false"/> 
+    <aura:attribute name="disabled" type="Boolean" default="false"/> 
+     <aura:registerEvent name="selectValue" type="c:PassSelectedValue"/>
+    <lightning:input aura:id="picklist" name="picklist" label="Retailer Name" value="{!v.selectedValue}" onchange="{!c.showResult}" disabled="{!v.disabled}"/>
+              
+    <aura:if isTrue="{!v.showOptions}" >
+    <div class="slds-form-element" style="position: absolute;z-index: 40;background: lightgrey;">
+        <div class="slds-form-element__control">
+            <aura:iteration items="{!v.resultList}" var="item">
+                <option value="{!item}" onclick="{!c.SelectValue}">{!item}</option>
+            </aura:iteration>
+        </div>
+    </div>
+        </aura:if>
+</aura:component>

@@ -1,0 +1,71 @@
+<aura:component controller="AddServicePlanController" implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,forceCommunity:searchInterface" access="global" >
+    <aura:attribute name="assetInputId" type="string" /> 
+    <aura:attribute name="asset" type="Object" /> 
+    <aura:attribute name="currentUser" type="Object" /> 
+    <aura:attribute name="isCorporateSP" type="Boolean" default="false"/>  
+    <aura:attribute name="isRetailSP" type="Boolean" default="false"/>
+    <aura:attribute name="isCompSP" type="Boolean" default="false"/>
+    <aura:attribute name="isJpSP" type="Boolean" default="false"/>
+    <aura:attribute name="StartDate" type="Date" /> 
+    <aura:attribute name="assetFound" type="Object" />
+    <aura:attribute name="product" type="Object" />
+    <aura:attribute name="showRetail" type="boolean" default="{!if(OR(AND(v.currentUser.Market__c=='APIO',v.assetFound.Derivative__r.Service_Plan__r.Service_Plan_Type__c=='Paid For'),v.currentUser.Market__c=='JP'))}" /> 
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:handler name="updateExpense" event="c:servicePlanUpdate"
+                  action="{!c.handleUpdateExpense}"/>
+    <aura:registerEvent name="Actionname" type="c:Actionevent"></aura:registerEvent>
+    
+    <!-- SHOW LOADING SPINNER--> 
+    <div aura:id="Id_spinner" class="slds-hide">
+        <lightning:spinner variant="brand" size="large" style="background: none;" />
+    </div>
+    <aura:if isTrue="{!v.isCompSP}">
+        <aura:if isTrue="{!!v.isJpSP}">
+            <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.Add_Service_Plan}: {!v.assetFound.Derivative__r.Service_Plan__r.Name}</span></lightning:layoutItem>
+            <aura:set attribute="else">
+                <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.Add_Service_Plan}: {!v.product.Name}</span></lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+    <lightning:layout multipleRows="true" class="slds-box slds-form slds-size_12-of-12">
+        <aura:if isTrue="{!v.showRetail}">
+            <lightning:layoutItem padding="around-small" size="6">
+                <lightning:input type="checkbox" label="{!$Label.c.Add_New_Retail_Service_Plan}" checked="{!OR(v.currentUser.Market__c=='APIO',v.currentUser.Market__c=='JP')}" disabled="{!OR(v.currentUser.Market__c=='APIO',v.currentUser.Market__c=='JP')}" aura:id="retailSP" name="retailSP" onchange="{!c.setAssignmentType}"/>
+            </lightning:layoutItem>
+            <aura:if isTrue="{!OR(v.currentUser.Market__c=='APIO',v.currentUser.Market__c=='JP')}">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <lightning:input type="date" required="true" name="StartDate" aura:id="dateField" label="{!$Label.c.Start_Date}" value="{!v.StartDate}" />
+                </lightning:layoutItem>
+            </aura:if>
+            <aura:set attribute="else">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <lightning:input type="checkbox" label="{!$Label.c.Add_Complimentary_Service_Plan}" aura:id="compSP" name="compSP" checked="{!OR(v.currentUser.Market__c=='APIO',v.currentUser.Market__c=='JP')}" disabled="{!OR(v.currentUser.Market__c=='APIO',v.currentUser.Market__c=='JP')}"/>
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+        <!-- Removed based on CXPD-1220
+        <lightning:layoutItem padding="around-small" class="{!if(v.currentUser.Market__c=='APIO','slds-hide','')}" size="6">
+            <lightning:input type="checkbox" label="Add Corporate Service Plan" aura:id="CorporateSP" name="CorporateSP" onchange="{!c.setAssignmentType}"/>
+        </lightning:layoutItem>
+  -->
+        <lightning:layoutItem padding="around-small" size="6">
+            <lightning:formattedText class="slds-hidden" aura:id="Assignment_Type__c" />                                      
+        </lightning:layoutItem>
+        <!-- Removed based on CXPD-1220
+        <aura:if isTrue="{!v.isCorporateSP}" >
+            <lightning:layoutItem padding="around-small" size="12">                     
+                
+                <c:AutoComplete Derivative_Product2Id="{!v.asset.Product2Id}" isPerson="true" aura:id="plan-record" label="Corporate Account Service Plan"   objectApiName="Offers__c" idFieldApiName="Corporate_Partner__c"  valueFieldApiName="AccountName__c"  maxRecords="10" /> </lightning:layoutItem>
+            <lightning:formattedText class="slds-hidden" aura:id="offer__c" />
+        </aura:if>                                    
+        -->
+        <aura:if isTrue="{!OR(v.assetFound.Derivative__r.Service_Plan__c !=null,v.currentUser.Market__c=='JP')}">
+            <lightning:layoutItem padding="around-small" size="12">
+                <div style="text-align:center">
+                    <lightning:button name="Add Service Plan" label="{!$Label.c.Add_Service_Plan}" onclick="{!c.addSPC}" />                                   
+                </div>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>    
+</aura:component>

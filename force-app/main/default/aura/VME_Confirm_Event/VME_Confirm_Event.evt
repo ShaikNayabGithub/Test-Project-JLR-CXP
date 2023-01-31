@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event template" >
+	<aura:attribute name="CurrentVME" type="VME_Campaign__c" />
+	<aura:attribute name="CurrentScheme" type="VME_Schemes__c" />
+</aura:event>

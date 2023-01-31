@@ -1,0 +1,213 @@
+<!--
+||      Name : VME_BrandWiseQuarterPlanner.cmp
+||      Author: Sumit Kumar
+||      Purpose: This component on VME Planner will show Brand Wise Budget segregation.
+||      Created Date : 11/06/2018
+||      Modified By: <Your name>
+||      Modified Date : Date
+||      Reason : <your reason>
+-->
+<aura:component>
+        <aura:attribute name="brandWiseMap" type="object" />
+        <aura:attribute name="userDetails" type="VME_Schemes__c[]" />
+        <aura:attribute name="isOpenComp" type="boolean" default="false" />
+        <aura:handler name="init" value="{!this}" action="{!c.getFiltersData}"></aura:handler>
+        <aura:if isTrue="{!v.isOpenComp}">
+                <div class="demo-only" style="height: 100%;">
+                        <section class="slds-modal slds-fade-in-open slds-modal_large">
+                                <div class="slds-modal__container ModalCss">
+                                        <header class="slds-modal__header">
+                                                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                                                <h2 id="modal-heading-01" class="slds-text-heading_medium boldtext slds-hyphenate"> Brand Wise Quarter Planner ({!v.brandWiseMap.Market+' - '+v.brandWiseMap.Quarter})</h2>
+                                        </header>
+                                        <div class="slds-modal__content slds-p-around_medium" style="height: 43% !Important;">
+                                                <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+                                                        <div aura:id="ModalBrandWiseQuarterPlanner" />
+                                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover slds-table_col-bordered" style="text-align:center;">
+                                                                <thead>
+                                                                        <tr class="slds-hint-parent tableHeaderChild slds-text-title_caps">
+                                                                            	<td width="20%" scope="col" style="padding-left: 0rem !important;">Brand</td>
+                                                                                <td width="20%" scope="col"></td>
+                                                                                <td width="20%" scope="col">Approved</td>
+                                                                                <td width="20%" scope="col">Planned</td>
+                                                                                <td width="20%" scope="col">Adjusted</td>
+                                                                                <td width="20%" scope="col">Actual VME Spent</td>
+                                                                                <!-- <td width="20%" scope="col">Under/Over Spent (A-B)</td> -->
+                                                                        </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                        <tr class="slds-hint-parent slds-text-title_caps">
+                                                                            	<td rowspan="5" style="padding-left: 0rem !important;">
+                                                                                        <div class="slds-truncate" title="">
+                                                                                                <aura:if isTrue="{!v.brandWiseMap.Brand == 'Jaguar'}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/X_152.png'}" />
+                                                                                                </aura:if>
+                                                                                                <aura:if isTrue="{!v.brandWiseMap.Brand == 'Land Rover'}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/LR_152.png'}" />
+                                                                                                </aura:if>
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="P/U Amount">P/U Amount</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="Approved Amount / Approved Volume">
+                                                                                        	<lightning:formattedNumber value="{!v.brandWiseMap.VME_Approved_Volume_c ==0 ? 0 :  v.brandWiseMap.VME_Approved_Budget/v.brandWiseMap.VME_Approved_Volume_c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="Planned Amount / Planned Volume">
+                                                                                        	<lightning:formattedNumber value="{!v.brandWiseMap.VME_Planned_Volume_c ==0 ? 0 :  v.brandWiseMap.VME_Planned_Budget/v.brandWiseMap.VME_Planned_Volume_c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="Adjusted Amount / Adjusted Volume">
+                                                                                        	<lightning:formattedNumber value="{!v.brandWiseMap.VME_Adjust_volume_c ==0 ? 0 :  v.brandWiseMap.VME_Adjust_Budget/v.brandWiseMap.VME_Adjust_volume_c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="-">--
+                                                                                              <lightning:formattedNumber value="--" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        		<!-- {!v.brandWiseMap.VME_Actual_Volume_c ==0 ? 0 :  v.brandWiseMap.VME_Actual_Spent/v.brandWiseMap.VME_Actual_Volume_c}-->
+                                                                                    	</div>
+                                                                                </td>
+                                                                                <!-- <td rowspan="2">
+                                                                                        <div class="" title="Calculated Planned (A) - Calculated Actual Spent (B)">
+                                                                                                <aura:if isTrue="{!greaterthanorequal(v.brandWiseMap.VME_Planned_Budget - v.brandWiseMap.VME_Actual_Spent,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_64.png'}" />
+                                                                                                </aura:if>
+                                                                                                <aura:if isTrue="{!lessthan(v.brandWiseMap.VME_Planned_Budget - v.brandWiseMap.VME_Actual_Spent,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_64.png'}" />
+                                                                                                </aura:if>
+                                                                                        </div>
+                                                                                </td> -->
+                                                                        </tr>
+                                                                        <tr class="slds-hint-parent slds-text-title_caps">
+                                                                                <td style="border-left: 1px solid rgb(221, 219, 218);">
+                                                                                        <div class="slds-truncate" title="Volume">Volume</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Approved_Volume_c}">{!v.brandWiseMap.VME_Approved_Volume_c}</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Planned_Volume_c}">{!v.brandWiseMap.VME_Planned_Volume_c}</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Adjust_volume_c}">{!v.brandWiseMap.VME_Adjust_volume_c}</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Actual_Volume_c}">{!v.brandWiseMap.VME_Actual_Volume_c}</div>
+                                                                                </td>
+                                                                        </tr>
+                                                                        <tr class="slds-hint-parent slds-text-title_caps">
+                                                                                <td style="border-left: 1px solid rgb(221, 219, 218);">
+                                                                                        <div class="slds-truncate" title="Amount">Amount</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Approved_Budget}">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Approved_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Planned_Budget}">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Planned_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Adjust_Budget}">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Adjust_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="{!v.brandWiseMap.VME_Actual_Spent}">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Actual_Spent}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <!-- <td>
+                                                                                        <div class="slds-truncate" title="Calculated Planned (A) - Calculated Actual Spent (B)">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Planned_Budget - v.brandWiseMap.VME_Actual_Spent}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td> -->
+                                                                        </tr>
+                                                                        <tr class="slds-hint-parent slds-text-title_caps">
+                                                                                <td style="border-left:1px solid #dddbda">
+                                                                                        <div class="slds-truncate" title="Volume">Variance</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="--">--</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="[Approved Budget - Planned Budget]">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Planned_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="[Approved Budget - Adjusted Budget]">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Adjust_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="[Approved Budget - Actual Spent]">
+                                                                                                <lightning:formattedNumber value="{!v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Actual_Spent}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                        </div>
+                                                                                </td>
+                                                                                <!-- <td>
+                                                                                        <div class="slds-truncate" title="">
+                                                                                        </div>
+                                                                                </td> -->
+                                                                        </tr>
+                                                                        <tr class="slds-hint-parent slds-text-title_caps">
+                                                                                <td style="border-left: 1px solid rgb(221, 219, 218);">
+                                                                                        <div class="slds-truncate" title="--">--</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="">--</div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="">
+                                                                                                <aura:if isTrue="{!greaterthanorequal(v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Planned_Budget,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_48.png'}" />
+                                                                                                </aura:if>
+                                                                                                <aura:if isTrue="{!lessthan(v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Planned_Budget,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_48.png'}" />
+                                                                                                </aura:if>
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="">
+                                                                                                <aura:if isTrue="{!greaterthanorequal(v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Adjust_Budget,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_48.png'}" />
+                                                                                                </aura:if>
+                                                                                                <aura:if isTrue="{!lessthan(v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Adjust_Budget,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_48.png'}" />
+                                                                                                </aura:if>
+                                                                                        </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                        <div class="slds-truncate" title="">
+                                                                                                <aura:if isTrue="{!greaterthanorequal(v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Actual_Spent,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_48.png'}" />
+                                                                                                </aura:if>
+                                                                                                <aura:if isTrue="{!lessthan(v.brandWiseMap.VME_Approved_Budget-v.brandWiseMap.VME_Actual_Spent,0)}">
+                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_48.png'}" />
+                                                                                                </aura:if>
+                                                                                        </div>
+                                                                                </td>
+                                                                                <!-- <td>
+                                                                                        <div class="slds-truncate" title="">
+                                                                                        </div>
+                                                                                </td> -->
+                                                                        </tr>
+                                                                </tbody>
+                                                        </table>
+                                                </div>
+                                        </div>
+                                        <footer class="slds-modal__footer">
+                                                <lightning:button variant="neutral" label="Close" title="Close" onclick="{! c.closeMe}" />
+                                        </footer>
+                                </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+        </aura:if>
+</aura:component>

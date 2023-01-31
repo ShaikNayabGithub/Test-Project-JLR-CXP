@@ -1,0 +1,38 @@
+<aura:component implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="CoopCampaignActivityEvidenceController">
+	<aura:attribute name="campaignActivityId" type="Id" />
+    <aura:attribute name="campaignActivityName" type="String" default="Campaign Activity Evidence" />
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg', '.txt', '.zip', '.pdf', '.png']"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+    <aura:attribute name="multiple" type="Boolean" />
+    <aura:attribute name="show" type="Boolean"/>
+    <aura:attribute name="activityFiles" type="Id[]" />
+    <aura:registerEvent name="evidenceDragAndDrop" type="c:FileDragAndDropEvent" />
+    <aura:handler name="init" value="{!this}" action="{!c.initialisation}" />
+    
+    <div class="slds-box slds-theme_default">
+        <aura:if isTrue="{!and(v.activityFiles != null,not(empty(v.activityFiles)))}">
+    	<h2>{!$Label.c.LC_COOP_Existing_Evidence_Submissions}</h2>
+            </aura:if>
+    	<div class="slds-grid slds-wrap">
+			<aura:iteration var="f" items="{!v.activityFiles}">
+    	    	<div class="slds-size_1-of-2 slds-p-bottom_x-small">
+        	        <lightning:fileCard fileId="{!f}" />
+        		</div>
+    		</aura:iteration>
+    
+	        <div class="slds-size_2-of-2"><h2>{!$Label.c.LC_COOP_New_Evidence_Submission}</h2></div>
+    	    <div class="slds-size_2-of-2">
+    			<lightning:fileUpload  name="{!'fileUploader' + v.campaignActivityName}"
+        			    	                  label= "{!$Label.c.LC_COOP_Upload_Media_For_Evidence + v.campaignActivityName}"
+       	    			    	              multiple="{!v.multiple}"
+           	    			    	          accept="{!v.accept}"
+               	    			    	      disabled="{!not(v.show)}"
+                   	    			   	  	  recordId="{!v.campaignActivityId}"
+                       	   				      onuploadfinished="{!c.handleUploadFinished}" />
+        	</div>
+    	</div>
+    </div>
+    <aura:if isTrue="{!and(and(v.activityFiles != null,not(empty(v.activityFiles))),v.show)}">
+    <c:SubmitRecordForApproval recordId="{!v.campaignActivityId}" enableApproval="true"  />
+    </aura:if>
+</aura:component>

@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event template" >
+<aura:attribute name="serviceplanid" type="String"/>
+<aura:attribute name="offerId" type="String"/>
+</aura:event>

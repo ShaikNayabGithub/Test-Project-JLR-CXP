@@ -1,0 +1,110 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 15/11/2019.
+ -->
+
+<!-- Create Task -->
+<template>
+    <div class="slds-grid slds-wrap">
+
+        <div class="slds-col slds-size--12-of-12">
+            <h2>{milestoneDisplayName}</h2>
+        </div>
+
+        <div class="slds-col slds-size--12-of-12">
+            <h4>Create Task</h4>
+        </div>
+
+        <!-- Subject -->
+        <div class="slds-col slds-size--4-of-12 jlr-form">Subject</div>
+        <div class="slds-col slds-size--1-of-12"></div>
+        <div class="slds-col slds-size--6-of-12">
+            <lightning-input
+                    class="jlr-form"
+                    type="text"
+                    variant="label-hidden"
+                    id="subject"
+                    value={milestoneSubject}
+                    onchange={handleSubjectChange}>
+
+            </lightning-input>
+        </div>
+        <div class="slds-col slds-size--1-of-12"></div>
+
+        <!-- Type -->
+        <div class="slds-col slds-size--4-of-12 jlr-form">Type</div>
+        <div class="slds-col slds-size--1-of-12"></div>
+        <div class="slds-col slds-size--6-of-12 jlr-form">
+            <select onchange={handleTaskTypeChange} class="jlr-form">
+                <option selected=""> - select -</option>
+                <template for:each={taskTypes} for:item="type">
+                    <option key={type}>{type}</option>
+                </template>
+            </select>
+        </div>
+        <div class="slds-col slds-size--1-of-12"></div>
+
+
+        <!-- Due Date -->
+        <div class="slds-col slds-size--4-of-12 jlr-form">Due Date</div>
+        <div class="slds-col slds-size--1-of-12"></div>
+        <div class="slds-col slds-size--6-of-12 jlr-is-clickable">
+            <lightning-input
+                    variant="label-hidden"
+                    type="datetime"
+                    id="dueDate"
+                    onchange={handleDueDateChange}
+                    class="jlr-due-date jlr-form">
+
+            </lightning-input>
+        </div>
+        <div class="slds-col slds-size--1-of-12">
+        </div>
+
+        <!-- Reminder Checkbox -->
+        <div class="slds-col slds-size--4-of-12 jlr-form">Reminder</div>
+        <div class="slds-col slds-size--1-of-12"></div>
+        <div class="slds-col slds-size--6-of-12">
+            <lightning-input class="jlr-form" type="checkbox" variant="label-hidden" onchange={handleReminderCheckboxChange}
+                             checked={isReminderChecked}></lightning-input>
+        </div>
+        <div class="slds-col slds-size--1-of-12"></div>
+
+        <!-- Reminder Date/Time -->
+        <template if:true={isReminderChecked}>
+            <div class="slds-col slds-size--4-of-12 jlr-form">Reminder Date</div>
+            <div class="slds-col slds-size--1-of-12"></div>
+            <div class="slds-col slds-size--6-of-12 jlr-is-clickable">
+                <lightning-input
+                        variant="label-hidden"
+                        type="datetime"
+                        id="reminderDate"
+                        class="jlr-due-date jlr-form"
+                        value={reminderDateTime}
+                        onchange={handleReminderDateChange}
+                >
+
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size--1-of-12">
+            </div>
+        </template>
+
+        <!-- Comments -->
+        <div class="slds-col slds-size--4-of-12 jlr-form">Comments</div>
+        <div class="slds-col slds-size--1-of-12"></div>
+        <div class="slds-col slds-size--6-of-12">
+            <lightning-textarea variant="label-hidden" class="jlr-form" onchange={handleCommentsChange}>{comments}</lightning-textarea>
+        </div>
+        <div class="slds-col slds-size--1-of-12"></div>
+
+
+        <!-- Save -->
+        <div class="slds-col slds-size--5-of-12 jlr-button-cell" onclick={handleSaveClick}>Save</div>
+
+
+        <div class="slds-col slds-size--2-of-12"></div>
+
+        <!-- Cancel -->
+        <div class="slds-col slds-size--5-of-12 jlr-button-cell" onclick={handleCancelClick}>Cancel</div>
+    </div>
+</template>

@@ -1,0 +1,11 @@
+<!--
+ - Created by caleb on 17/03/2020.
+ -->
+
+<aura:component description="ConvertAccountWrapper" implements="lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes" >
+
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <lightning:flow aura:id="flowData" onstatuschange="{!c.handleStatusChange}" />
+    <lightning:button onclick="{!c.handleCancel}" label="Cancel" title="Cancel" name="Cancel">Cancel</lightning:button>
+</aura:component>

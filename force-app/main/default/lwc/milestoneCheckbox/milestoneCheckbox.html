@@ -1,0 +1,15 @@
+<!--
+ - Created by caleb on 30/01/2020.
+ -->
+
+<!-- Milestone Checkbox -->
+<template>
+    <div class="slds-grid slds-wrap">
+        <!-- Opportunity Qualification -->
+        <div class="slds-col slds-size--4-of-12">{checkboxName}</div>
+        <div class="slds-col slds-size--8-of-12">
+            <lightning-input class="input-check-box" type="checkbox" onchange={handleClick}>{isChecked}
+            </lightning-input>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,281 @@
+.THIS .uploadDivScroll {
+    width:95%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: flex;
+}
+.THIS .resetVIn{
+     padding-right: 22px;
+}
+.THIS#parentDIV{
+    margin: 5px;
+    padding: 2px;
+}
+
+.THIS .slds-modal__container {
+    max-width: 96rem !important;
+    width: 95% !important;
+}
+.THIS .slds-spinner_container {
+    position: fixed;
+}
+.THIS .centered{
+    /*position: absolute;
+    top: 28%;
+    left: 8%;
+    z-index: 1;*/
+    position: sticky;
+    bottom: 74%;
+    left: 30%;
+    z-index: 999;
+}
+
+.THIS .uiDisabled{
+    background-color: #e3e9f1!important;
+    cursor: not-allowed;
+    user-select: none;
+    border-color: rgb(196, 198, 202);
+}
+.THIS table { 
+    /*display: flex;*/
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.THIS .Popup{
+    padding-top: 1% !important;
+    padding-right: 15% !important;
+    padding-left: 15% !important;
+}
+
+.THIS .button_align {
+    margin-top: 16px;
+}
+.THIS .button_align_Edit{
+    /*margin-top: -72px;*/
+    left: 16px;
+    padding-right: 50px;
+    padding-left: 50px;
+    margin-top: 35px;
+}
+.THIS .search_button_align {
+    margin-top: 24px;
+}
+.THIS .search_Border{
+    border-color: #0e63ac;
+}
+.THIS .button_Highlight{
+    text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;    
+}
+.THIS .search_button_align_Delete {
+    /*right: 116px;*/
+    right: -15px;
+    padding-right: 39px;
+    padding-left: 44px;
+    margin-top: 15px;
+}
+
+.THIS .search_button_align_Recall{
+    right: 116px;
+    padding-right: 39px;
+    padding-left: 44px;
+}
+
+.THIS .slds-button__icon--left {
+    margin-right: -2.5rem !important;
+    padding: 0rem !important;
+    border: 0px !important;
+    border-radius: 0rem !important;
+}
+
+.THIS .slds-file-selector__text {
+    margin-left: .0rem;
+    margin-right: .0rem;
+    display: none !important;
+}
+
+.THIS .slds-file-selector__button {
+    max-height: 3.23rem !important;
+}
+
+.THIS .slds-button_neutral {
+    border-color: white !important;
+}
+
+.THIS .popover div{
+    width: 1px;
+    padding-top: 2px;
+}
+.THIS .slds-textarea {
+    height:60px !important;
+}
+.THIS .topText textarea[disabled]{
+    background-color: #e3e9f1!important;
+}
+.THIS .lightningInHeight{
+    margin-top: -60px;
+    
+}
+.THIS .lig{
+    padding-bottom: 30px;
+}
+.THIS .slds-file-selector__dropzone .slds-file-selector__text {
+    /*the right label*/
+    display: block;
+}
+.THIS .slds-file-selector__dropzone .slds-file-selector__button:before{
+    content: 'or drop files here';
+    color: #0070d2; /*Default token for brand color #0070d2*/
+    position: absolute;
+    padding-top: 70%;
+    line-height: normal;
+    /*padding-top: 50%;*/
+}
+/*Upload css begin*/
+.THIS .slds-file-selector__dropzone {
+    /*the border around
+    padding: 0.125rem;*/
+    padding: 0.125rem;
+    padding-left: 0.125rem !important;
+    padding-top: 0.125rem !important;
+    padding-bottom: 4.025rem !important;
+    border: 1px dashed #3F51B5;
+    border-radius: .25rem;
+}
+.THIS .slds-form-element__label .alignCss{
+    border-bottom: 0;
+    padding-left: 0;
+    display: block;
+    word-wrap: break-word;
+    width: 50%;
+    white-space: normal;
+}
+
+.THIS .slds-form-element__label{
+    border-bottom: 0;
+    padding-left: 0;
+    display: block;
+    word-wrap: break-word;
+    width: 100%;
+    white-space: normal;
+    color: black;
+    /*    font-size: 0.85rem;
+    */}
+
+/*Upload css end*/
+.THIS .divBorder{
+    border: 1px solid #d6d6d6;
+    margin-right: 0.5rem;
+}
+.THIS .divBorderFileCard{
+    border: 0px dashed #d4d4d4;
+    margin-right: 0.5rem;
+}
+.THIS .slds-accordion__section {
+    padding: 0px;
+}
+
+.THIS .slds-is-open>.slds-accordion__content {
+    overflow: visible;
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+    display: flex;
+}
+
+.THIS .slds-truncate {
+    margin-right: -24px;
+}
+
+.THIS .ModalCss{
+    max-width: 70rem !important;
+    width:33% !important;
+   /* overflow-y: scroll !important;*/
+}
+
+.THIS .helptext {
+    padding-left: 70px;
+    margin-top: 50px;
+}
+
+.THIS .selectionBoxAlign{
+    padding-left: 40px;
+    margin-top: -4px;
+}
+
+.THIS .accordianShift{
+    margin-left: 40px;
+}
+.THIS .dateCss{
+    padding-top: 17px;
+    padding-left: 50px;
+}
+
+.THIS .customIcon div {
+    vertical-align: top !important;
+    padding-top: 1px;
+}
+.THIS .RetailEndAllign {
+    margin-left: 24%;
+}
+.THIS .slds-input[disabled] {
+    background-color: #e3e9f1 !important;    
+}
+
+.THIS .centerAlign {
+    padding-left: 70px;
+}
+
+.THIS .forceContentFileCard {
+    width: 8rem !important;
+    padding-right: 1%;
+}
+
+.THIS .checkbox_align {
+    margin-top: 27px;
+}
+.THIS .createClaim {
+    left: 36% !important;
+}
+.THIS .RetailAlign{
+    padding-top: 28px;
+}
+.THIS .RetailAligncss{
+    padding-top: 3px;
+}
+.THIS .fixedWidthCss{
+    height: 25rem !important;
+}
+.THIS .recallAlign{
+    margin-top: 7px;
+    margin-left: 138px;
+}
+.THIS .css{
+    padding-right: 2%;
+}
+.THIS .paginationSpan {
+    background-color: #0e63ac;
+    border-radius: 50%;
+}
+.THIS .focusPage {
+    color : white;
+}
+.THIS .isSchemeCSS{
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 45px;
+    margin-top: 3px;
+    background-blend-mode: exclusion;
+    background-color: rgb(255, 255, 255) !important;
+}
+.THIS isSchemeLabelCss{
+    margin-top: 5px;
+    padding-left: 1.25rem;
+    font-size: .75rem;
+}
+.THIS .myUniqueClass svg {
+    width: 25px;
+    height: 25px;
+}
+.THIS .slds-accordion__content {
+    width: 90%;
+}

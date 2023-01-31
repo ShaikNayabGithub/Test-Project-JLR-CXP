@@ -1,0 +1,141 @@
+<aura:component controller="aopcom_CarrouselCmp" implements="forceCommunity:availableForAllPageTypes" access="global" >
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="EventTitle" type="String"/>
+    <aura:attribute name="Image1" type="String"/>
+    <aura:attribute name="Title1" type="String"/>
+    <aura:attribute name="pane1" type="String"/>
+    <aura:attribute name="Description1" type="String"/> 
+    <aura:attribute name="Image2" type="String" />
+    <aura:attribute name="Title2" type="String"/>
+    <aura:attribute name="pane2" type="String"/>
+    <aura:attribute name="Description2" type="String"/>   
+    <aura:attribute name="Image3" type="String"/>
+    <aura:attribute name="Title3" type="String"/>
+    <aura:attribute name="pane3" type="String"/>
+    <aura:attribute name="Description3" type="String"/>  
+    <aura:attribute name="Image4" type="String"/>
+    <aura:attribute name="Title4" type="String"/>
+    <aura:attribute name="pane4" type="String"/>
+    <aura:attribute name="Description4" type="String"/>   
+    <aura:attribute name="Image5" type="String"/>
+    <aura:attribute name="Title5" type="String"/>
+    <aura:attribute name="pane5" type="String"/>
+    <aura:attribute name="Description5" type="String"/>    
+    <aura:attribute name="Image6" type="String"/>
+    <aura:attribute name="Title6" type="String"/>
+    <aura:attribute name="pane6" type="String"/>
+    <aura:attribute name="Description6" type="String"/>
+    <aura:attribute name="Image7" type="String"/>
+    <aura:attribute name="Title7" type="String"/>
+    <aura:attribute name="pane7" type="String"/>
+    <aura:attribute name="Description7" type="String"/>
+
+    <aura:attribute name="AWSUrl" type="String"/>
+
+    <div class="section section--secondary">
+            <div class="grid">
+                <h2 class="section__heading">{!v.EventTitle}</h2>
+                <div class="grid__row">
+                    <div class="grid__col span-12 large--span-10 large--offset-1">
+                        <div class="js-carousel carousel">
+                            <aura:if isTrue="{!v.pane1}"><!-- Smart Cones -->
+                                <div class="js-carousel-pane">
+                                    <div class="media-column-block media-column-block--reverse">
+                                        <div class="media-column-block__media">
+                                            <img src="{!v.AWSUrl+v.Image1}" class="pic"/>
+                                        </div>
+                                        <div class="media-column-block__content">
+                                            <h2 class="media-column-block__heading">{!v.Title1}</h2>
+                                            <p>{!v.Description1}</p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.pane2}"> <!-- Demonstration Laps -->
+                                <div class="js-carousel-pane">
+                                    <div class="media-column-block media-column-block--reverse">
+                                        <div class="media-column-block__media">
+                                            <img src="{!v.AWSUrl+v.Image2}" class="pic"/>
+                                        </div>
+                                        <div class="media-column-block__content">
+                                            <h2 class="media-column-block__heading">{!v.Title2}</h2>
+                                            <p>{!v.Description2}</p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.pane3}"> <!-- Guided Laps -->
+                                <div class="js-carousel-pane">
+                                    <div class="media-column-block media-column-block--reverse">
+                                        <div class="media-column-block__media">
+                                            <img src="{!v.AWSUrl+v.Image3}" class="pic"/>
+                                        </div>
+                                        <div class="media-column-block__content">
+                                            <h2 class="media-column-block__heading">{!v.Title3}</h2>
+                                            <p>{!v.Description3}</p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.pane4}"> <!-- Dinamic Driving -->
+                                <div class="js-carousel-pane">
+                                    <div class="media-column-block media-column-block--reverse">
+                                        <div class="media-column-block__media">
+                                            <img src="{!v.AWSUrl+v.Image4}" class="pic"/>
+                                        </div>
+                                        <div class="media-column-block__content">
+                                            <h2 class="media-column-block__heading">{!v.Title4}</h2>
+                                            <p>{!v.Description4}</p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.pane5}"> <!-- Spa -->
+                                <div class="js-carousel-pane">
+                                    <div class="media-column-block media-column-block--reverse">
+                                        <div class="media-column-block__media">
+                                            <img src="{!v.AWSUrl+v.Image5}" class="pic"/>
+                                        </div>
+                                        <div class="media-column-block__content">
+                                            <h2 class="media-column-block__heading">{!v.Title5}</h2>
+                                            <p>{!v.Description5}</p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.pane6}"> <!-- Golf -->
+                                <div class="js-carousel-pane">
+                                    <div class="media-column-block media-column-block--reverse">
+                                        <div class="media-column-block__media">
+                                            <img src="{!v.AWSUrl+v.Image6}" class="pic"/>
+                                        </div>
+                                        <div class="media-column-block__content">
+                                            <h2 class="media-column-block__heading">{!v.Title6}</h2>
+                                            <p>{!v.Description6}</p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.pane7}"> <!-- Road Drive -->
+                                <div class="js-carousel-pane">
+                                    <div class="media-column-block media-column-block--reverse">
+                                        <div class="media-column-block__media">
+                                            <img src="{!v.AWSUrl+v.Image7}" class="pic"/>
+                                        </div>
+                                        <div class="media-column-block__content">
+                                            <h2 class="media-column-block__heading">{!v.Title7}</h2>
+                                            <p>{!v.Description7}</p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </aura:if>
+                            
+                            <div class="carousel-controls">
+                                <div class="carousel-controls__inner js-carousel-controls"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</aura:component>

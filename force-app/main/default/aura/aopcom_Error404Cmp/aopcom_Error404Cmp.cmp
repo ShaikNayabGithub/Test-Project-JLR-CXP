@@ -1,0 +1,25 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>    
+    <aura:attribute name="Error404Title" type="String" />
+    <aura:attribute name="Error404Description" type="String"/>
+    <aura:attribute name="Error404Link" type="String"/>    
+	<aura:attribute name="CommunityUrl" type="String"/>
+	
+    <div class="content-wrapper">
+		<div class="grid">
+        	<div class="grid__row">
+            	<div class="grid__col span-10 offset-1 large--span-8 large--offset-2">
+                	<div class="section">
+                    	<div class="section__header">
+                        	<h1 class="section__heading">{!v.Error404Title}</h1>
+                    	</div>
+                    	<p>{!v.Error404Description}</p>
+                    	<div class="section__footer">
+                        	<a href="{!'/'+v.CommunityUrl+'/apex/aopcom_LoginRedirectionPage'}" class="button"> {!v.Error404Link} <i class="button-icon button-icon--right icon icon--chevron-right"></i></a>
+                    	</div>
+                	</div><!-- .section -->
+            	</div><!-- .grid__col -->
+        	</div><!-- .grid__row -->
+    	</div><!-- .grid -->
+	</div>
+</aura:component>

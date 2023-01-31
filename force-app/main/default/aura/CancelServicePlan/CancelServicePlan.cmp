@@ -1,0 +1,39 @@
+<aura:component controller="CancelServicePlanController" implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,forceCommunity:searchInterface" access="global">
+    <aura:attribute name="assetInputId" type="string" /> 
+    <aura:attribute name="StartDate" type="Date" />
+    <aura:attribute name="minDate" type="Date" />
+    <aura:attribute name="maxDate" type="Date" />
+    <aura:attribute name="servicePlans" type="object[]" />
+    <aura:attribute name="selectedValue" type="String" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/> 
+    <aura:registerEvent name="Actionname" type="c:Actionevent"></aura:registerEvent>
+    
+    <!-- SHOW LOADING SPINNER--> 
+    <div aura:id="Id_spinner">
+        <lightning:spinner variant="brand" size="large" style="background: none;" />
+    </div>
+    
+    <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.Cancel_Service_Plan}</span></lightning:layoutItem>
+    <lightning:layout multipleRows="true" class="slds-box slds-form slds-size_12-of-12">
+        <lightning:layoutItem padding="around-small" size="6">
+            <lightning:select required="true" name="mySelect" label="{!$Label.c.Select_Service_Plan+':'}" aura:id="formField" value="{!v.selectedValue}">
+                <option value="">{!$Label.c.choose_one}...</option> 
+                <aura:iteration items="{!v.servicePlans}" var="item">
+                    <option text="{!item.Name+': '+item.Service_Plan_Product__r.Name+': '+item.CurrencyIsoCode+''+item.Retail_Purchase_Price__c}" value="{!item.Id}" />
+                </aura:iteration>
+            </lightning:select>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="around-small" size="6"> 
+            <lightning:input type="date" required="true" name="StartDate" aura:id="formField" label="{!$Label.c.Cancellation_Effective_Date}" value="{!v.StartDate}" min="{!v.minDate}" max="{!v.maxDate}" />
+        </lightning:layoutItem>
+        
+        <aura:if isTrue="{!if(empty(v.servicePlans),false,true)}">
+            <lightning:layoutItem padding="around-small" size="12">
+                <div style="text-align:center">
+                    <lightning:button name="Cancel Service Plan" label="{!$Label.c.Cancel_Service_Plan}" onclick="{!c.cancelSpc}" />                                   
+                </div>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+</aura:component>

@@ -1,0 +1,16 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <lightning:card>
+        <div class="slds-align_absolute-center">        
+            <lightning:button
+                              variant="brand"
+                              label="QMSP Adjustment"
+                              onclick="{!c.modelAdjust}">
+            </lightning:button>
+            <lightning:button
+                              variant="brand"
+                              label=" VME Campaign Adjustment"
+                              onclick="{!c.categoryAdjust}">
+            </lightning:button>
+        </div>
+    </lightning:card>
+</aura:component>

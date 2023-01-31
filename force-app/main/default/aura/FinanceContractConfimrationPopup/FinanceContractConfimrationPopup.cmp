@@ -1,0 +1,27 @@
+<aura:component >
+    <aura:registerEvent name="FinanceContractEvent" type="c:FinanceContractEvent"/>
+    <aura:attribute name="contractNumber" type="String" access="public" />
+    <div class="slds-m-around_xx-large">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Contract#&nbsp;<b>{!v.contractNumber}</b> has been created Successfully</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <center>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Please select below option to Navigate</h2><br/>
+                            <lightning:button variant="destructive" 
+                                              label="Open Opportunity"
+                                              title="Open Opportunity"
+                                              onclick="{! c.openOpportunity }"/>
+                            &nbsp;&nbsp;<lightning:button variant="success" 
+                                              label="Open Contract"
+                                              title="Open Contract"
+                                              onclick="{! c.openContract }"/>
+                    </center> 
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+</aura:component>

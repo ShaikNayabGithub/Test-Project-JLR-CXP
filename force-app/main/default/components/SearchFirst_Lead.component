@@ -1,0 +1,57 @@
+<apex:component controller="SearchFirst_LeadController">
+    <apex:attribute name="host" type="SearchFirst_HostController" assignTo="{!pageController}"  required="true" description="The controller for the page." />
+    <apex:outputPanel id="resultPanel">
+        <apex:form id="resultForm">
+            <apex:actionFunction action="{!CreateRecord}" name="apexCreateLead"/>
+            <apex:pageBlock id="knownleadresultPanel" title="{!$Label.sfKnownLeads + ' [' + text(knownLeads.size) + ']'}" tabStyle="Lead">
+                <apex:pageMessage strength="2" severity="error" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+                <apex:pageMessage strength="2" severity="info" summary="{!$Label.sfNoLeadResultWarning}" rendered="{!AND(knownLeads.size == 0, NOT(moreRecords))}" />
+                <apex:pageBlockSection title="{!$Label.sfMatchingLeads}" collapsible="true" columns="1" rendered="{!(knownLeads.size != 0)}">
+                    <apex:pageBlockTable value="{!knownLeads}" var="leadItem">
+                        <apex:column >
+                            <apex:facet name="header">{!$Label.sfLeadName}</apex:facet>
+                            <apex:outputLink value="{!URLFOR($Action.Lead.View, leadItem.Id)}">{!leadItem.Firstname}&nbsp;{!leadItem.Lastname}</apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{!leadItem.Company}"/>
+                        <apex:column value="{!leadItem.Phone}"/>
+                        <apex:column value="{!leadItem.MobilePhone}"/>
+                        <apex:column value="{!leadItem.Email}"/>
+                        <apex:column value="{!leadItem.City}"/>
+                        <apex:column value="{!leadItem.Site__c}"/>
+                        <apex:column value="{!leadItem.Primary_Model_Interest__c}"/>
+                        <apex:column value="{!leadItem.Status}"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:commandButton id="createNewLead" value="{!$Label.btnNew}" onclick="SearchFirst.createLead();return false;"/>
+            </apex:pageBlock>
+            <apex:pageBlock id="unknownleadresultPanel" title="{!$Label.sfUnknownLeads + ' [' + text(unknownLeads.size) + ']'}" tabStyle="Lead">
+                <apex:pageMessage strength="2" severity="error" summary="{!$Label.sfMoreRecords}" rendered="{!moreRecords}" />
+                <apex:pageMessage strength="2" severity="info" summary="{!$Label.sfNoLeadResultWarning}" rendered="{!AND(unknownLeads.size == 0, NOT(moreRecords))}" />
+                <apex:pageBlockSection title="{!$Label.sfMatchingLeads}" collapsible="true" columns="1" rendered="{!(unknownLeads.size != 0)}">
+                    <apex:pageBlockTable value="{!unknownLeads}" var="leadItem">
+                        <apex:column >
+                            <apex:facet name="header">{!$Label.sfUnknownLeadName}</apex:facet>
+                            <apex:commandLink value="{!leadItem.Name}" action="{!popupController.ShowPopup}" rerender="leadpopup">
+                                <apex:param name="leadId" value="{!leadItem.Id}"/>
+                                <apex:param name="leadName" value="{!leadItem.Name}"/>
+                                <apex:param name="leadPhone" value="{!leadItem.Phone}"/>
+                                <apex:param name="leadMobile" value="{!leadItem.MobilePhone}"/>
+                                <apex:param name="leadEmail" value="{!leadItem.Email}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                        <apex:column value="{!leadItem.Company}"/>
+                        <apex:column headerValue="Phone"/>
+                        <apex:column headerValue="Mobile"/>
+                        <apex:column headerValue="Email"/>
+                        <apex:column value="{!leadItem.City}"/>
+                        <apex:column value="{!leadItem.Site__c}"/>
+                        <apex:column value="{!leadItem.Primary_Model_Interest__c}"/>
+                        <apex:column value="{!leadItem.Status}"/>
+                        <apex:column value="{!leadItem.Owner.Name}" headerValue="Owner"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+    </apex:outputPanel>
+    <c:SearchFirst_LeadPopup id="leadpopup" host="{!This}"/>
+</apex:component>

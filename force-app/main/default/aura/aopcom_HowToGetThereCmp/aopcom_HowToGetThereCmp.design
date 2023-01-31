@@ -1,0 +1,7 @@
+<design:component>
+	<design:attribute name="Title" label="Title" />
+    <design:attribute name="Description" label="Description" />
+    <design:attribute name="Link_label" label="Link label" />
+    <design:attribute name="Coordinate1" label="Coordinate 1" />
+    <design:attribute name="Coordinate2" label="Coordinate 2" />
+</design:component>

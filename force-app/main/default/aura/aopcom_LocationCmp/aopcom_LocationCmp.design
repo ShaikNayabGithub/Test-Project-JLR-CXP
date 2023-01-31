@@ -1,0 +1,13 @@
+<design:component>
+	<design:attribute name="TitleED" label="Event Details Title" />
+    <design:attribute name="location_label" label="Location Label" />
+    <design:attribute name="time_label" label="Time Label" />
+    <design:attribute name="date_label" label="Date label" />
+    <design:attribute name="LinkED" label="Event Details Link" />
+    <design:attribute name="title" label="Further Details Title" />
+    <design:attribute name="description" label="Further Details Description" />
+    <design:attribute name="link_label" label="Further Details link label" />
+    <design:attribute name="TitleHTGT" label="Google Maps title" />
+    <design:attribute name="DescriptionHTGT" label="Google Maps Description" />
+    <design:attribute name="Link_labelHTGT" label="Google Maps link label" />  
+</design:component>

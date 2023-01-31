@@ -1,0 +1,313 @@
+/**
+ * Created by GrantMillgate-EasyTe on 16/10/2019.
+ */
+
+/** Get rid of default header **/
+header.flexipageHeader.slds-page-header.uiBlock.oneAnchorHeader {
+    display: none;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Light.ttf');
+    font-style: normal;
+    font-weight: 300;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Medium.ttf');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-SemiBold.ttf');
+    font-style: normal;
+    font-weight: 600;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Regular.ttf');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Bold.ttf');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Medium.ttf');
+    font-style: normal;
+    font-weight: 500;
+}
+body{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+strong{
+    font-weight: 500;
+}
+
+body em{
+    font-weight: 600;
+}
+
+h1 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    text-align: left;
+    font-weight: 700;
+    font-size: 22px;
+    padding: 10px;
+    color: #444444;
+}
+
+h2 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+h4 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    text-align: center;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+
+.jlr-headings{
+    text-align: center;
+
+}
+
+.jlr-h4-left{
+    text-align: left;
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+
+}
+
+.jlr-h3-left{
+    text-align: left;
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+
+}
+
+.jlr-h2-left{
+    text-align: left;
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+
+}
+
+.jlr-errors{
+    color: red;
+    font-size: x-large;
+}
+
+.jlr-is-clickable{
+    cursor: pointer;
+}
+
+.jlr-menu-item{
+    min-height: 5px;
+    width: 100%;
+    background-color: white;
+}
+
+.jlr-menu-item-selected{
+    min-height: 5px;
+    width: 100%;
+    background-color: black;
+}
+
+.jlr-spa-wrapper{
+    /* background-color: #f6f6f6; */
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+.jlr-banner{
+    width:100%;
+    text-align: center;
+}
+
+.jlr-spacer-vertical{
+    padding-top: 10px;
+    padding-bottom: 30px;
+}
+
+.jlr-separator{
+    /* border-top-style: solid;
+    border-top-color: darkgrey;
+    border-top-width: medium;
+    width:100%;
+    background-color: inherit;
+    padding: 5px 10px 5px 10px; */
+}
+
+.jlr-border-light{
+    border-style: solid;
+    border-color: darkgrey;
+    border-width: thin;
+}
+
+.jlr-hidden{
+    display: none;
+}
+
+.jlr-pointer{
+    cursor: pointer;
+    padding: 10px;
+    color: black;
+}
+
+.jlr-plans{
+
+}
+
+.jlr-header-headings{
+    text-transform: uppercase;   
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 12px;         
+    letter-spacing: 0.06em;    
+    color: #444444;
+}
+
+.jlr-header-value{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    font-weight: 300;
+    color: #444444;
+}
+
+.jlr-button-cell{
+    text-transform: uppercase;
+    border-style: solid;
+    border-color: black;
+    border-width: thin;
+    padding: 10px;
+    text-align: center;
+    width: available;
+    cursor: pointer;
+    background-color: white;
+}
+
+.jlr-button-cell-inverse-colours{
+    background-color: black;
+    color: white;
+}
+
+.jlr-layout-left-margin-spacer{
+    /* margin-left: 10px;
+    margin-top: -90px; */
+}
+
+.jlr-sale-type-slider{
+    margin-top:0;
+    margin-bottom: auto;
+}
+.jlr-opportunity-header{
+    background-color: #f8f8f8;
+    border-top: 2px solid #d8d8d8;
+    padding: 30px 25px;
+    margin-bottom: 20px;
+    align-self: center;
+}
+.jlr-opportunity-header .big-item{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    text-align: left;
+    color: #444444;
+}
+.jlr-opportunity-header .big-item .big-item-label{   
+    text-transform: uppercase;    
+    font-weight: 600;
+    font-size: 12px;         
+    letter-spacing: 0.06em;
+}
+.jlr-opportunity-header .big-item .big-item-value{
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    font-weight: 300;
+}
+
+.jlr-opportunity-info{
+
+}
+
+.jlr-fill-width{
+    width: 100%;
+}
+
+.jlr-opportunity-header-row
+{
+    min-height: 75px;
+    padding: 15px;
+}
+
+.jlr-opportunity-header-row-lr
+{
+    height: 55px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.jlr-opportunity-header-row-r
+{
+    height: 55px;
+    padding-right: 15px;
+}
+
+.jlr-create-activity {
+    margin: 0 10px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    width: 310px;
+    float: right;
+}
+.rda-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* space/start-between = Text Left, Icon Right. flex-start = Text Left, Icon immediately after*/
+}
+
+.header-line {
+    border-bottom: 3px solid #444444;
+}

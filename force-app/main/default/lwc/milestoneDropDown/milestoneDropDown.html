@@ -1,0 +1,23 @@
+<!--
+ - Created by caleb on 30/01/2020.
+ -->
+
+<!-- Milestone Drop Down -->
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size--4-of-12">{dropdownName}</div>
+        <div class="slds-col slds-size--8-of-12">
+            <select required="required"
+                    class="slds-input jlr-is-clickable jlr-select input-milestone"
+                    onchange={handelSelectionChange}>
+                <option selected="" class="jlr-placeholder">{placeholder}</option>
+                <template for:each={options} for:item="val">
+                    <option key={val.Id} value={val.Id} selected={val.IsDefaultSelection}>{val.Name}</option>
+                </template>
+            </select>
+            <template for:each={errors} for:item="item">
+                <span key={item.id} class="jlr-errors">{item.message}</span>
+            </template>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,7 @@
+<aura:component description="Vehicle Option Search Button" implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="OpportunityControllerDMSExtension">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="communityRecordId" type="String" />
+
+    <c:vehicleOptionSearchButtonLwc recordId="{!v.recordId}" communityRecordId="{!v.communityRecordId}"></c:vehicleOptionSearchButtonLwc>  
+
+</aura:component>

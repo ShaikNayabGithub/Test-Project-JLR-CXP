@@ -1,0 +1,7 @@
+.THIS .slds-table td {
+    padding: 0px 0px !important;
+    vertical-align: middle;
+}
+.THIS .slds-modal__content {  
+    overflow-y: hidden !important;  
+}

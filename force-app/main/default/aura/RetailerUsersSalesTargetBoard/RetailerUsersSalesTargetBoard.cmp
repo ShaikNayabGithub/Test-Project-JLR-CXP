@@ -1,0 +1,117 @@
+<aura:component controller="RetailerUsersSalesTargetBoardController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+	<aura:attribute name="targetRecords" type="RetailerUsersSalesTargetBoardController.SalesTargetWrapper[]" />
+    <aura:attribute name="totalApr" type="Integer" default="0" />
+    <aura:attribute name="totalMay" type="Integer" default="0" />
+    <aura:attribute name="totalJun" type="Integer" default="0" />
+    <aura:attribute name="totalJul" type="Integer" default="0" />
+    <aura:attribute name="totalAug" type="Integer" default="0" />
+    <aura:attribute name="totalSep" type="Integer" default="0" />
+    <aura:attribute name="totalOct" type="Integer" default="0" />
+    <aura:attribute name="totalNov" type="Integer" default="0" />
+    <aura:attribute name="totalDec" type="Integer" default="0" />
+    <aura:attribute name="totalJan" type="Integer" default="0" />
+    <aura:attribute name="totalFeb" type="Integer" default="0" />
+    <aura:attribute name="totalMar" type="Integer" default="0" />
+    <aura:attribute name="totalTotal" type="Integer" default="0" />
+    <aura:attribute name="targetType" type="String"/>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-account" title="{!$Label.c.Sales_Target_Board_Heading}">
+	                    <span class="slds-assistive-text">{!$Label.c.Sales_Target_Board_Heading}</span>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <div >
+                            <header>
+                                <div class="slds-form-element">
+                                    <label class="mainHeading" >{!$Label.c.Sales_Target_Board_Heading}</label>
+                                </div>
+                                <div class="slds-form-element">
+                                    <aura:if isTrue="{!v.targetType == 'Opportunity_Sales_Target'}">
+                                        <label class="subHeading">{!$Label.c.Opportunity_Target_Sub_Heading}</label>
+                                        <aura:set attribute="else">
+                                            <label class="subHeading">{!$Label.c.Test_Drive}</label>
+                                        </aura:set>
+                                    </aura:if>
+                                </div>
+                            </header>
+                        </div>
+                    </h2>
+                </div>
+                <div class="slds-no-flex"></div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">    
+            <div class="slds-p-around_x-large">
+                <table>
+                    <tr class="boldText">
+                        <th class="customrow">{!$Label.c.Sales_Team_Manager}</th>
+                        <th class="customrow">{!$Label.c.User}</th>
+                        <th class="customrow">{!$Label.c.Sales_Role}</th>
+                        <th class="customrow">{!$Label.c.Calendar_April_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_May_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_June_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_July_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_August_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_September_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_October_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_November_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_December_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_January_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_February_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Calendar_March_Short_Label}</th>
+                        <th class="customrow">{!$Label.c.Total}</th>
+                    </tr>  	
+               
+          		<aura:iteration items="{!v.targetRecords}" var="item" indexVar="index">
+              		<tr>
+                        <!-- <td rowspan="{!item.teamIterator}" class="customrow" style="{!if(item.managerName == '0', 'display: none;', 'width:10%')}"><ui:outputText value="{!item.managerName}"/></td> -->
+                        <td rowspan="{!item.teamIterator}" class="customrow" style="{!if(item.displayManagerName == false, 'display: none;', 'width:10%')}"><ui:outputText value="{!item.managerName}"/></td>
+                        <td class="customrow" style="width:17%"><ui:outputText value="{!item.salesPersonName}"/></td>
+                        <td class="customrow" style="width:17%"><ui:outputText value="{!item.salesRole}"/></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.April_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.May_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.June_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.July_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.August_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.September_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.October_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.November_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.December_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.January_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.February_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow"><lightning:input value="{!item.salesTarget.March_Target__c}" onchange="{!c.calcTotals}" variant="label-hidden" pattern="([0-9]{1}|[0-9]{2})" /></td>
+                        <td class="customrow boldText"><lightning:input value="{!item.salesTotal}" variant="label-hidden" disabled="true" /></td>
+                    </tr>  	
+                    <!--<aura:set attribute="totalApr" value="{!v.totalApr + item.salesTarget.April_Target__c}" />-->
+            		</aura:iteration>
+                    <tr class="boldText">
+                    	<td colspan="3" class="customrow">{!$Label.c.Total}</td>
+                        <td class="customrow"><lightning:input value="{!v.totalApr}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalMay}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalJun}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalJul}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalAug}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalSep}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalOct}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalNov}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalDec}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalJan}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalFeb}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow"><lightning:input value="{!v.totalMar}" variant="label-hidden" disabled="true" /></td>
+                        <td class="customrow" style="font-size:1.2em"><lightning:input value="{!v.totalTotal}" variant="label-hidden" disabled="true" /></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <footer class="slds-card__footer slds-align_absolute-center">
+            <lightning:button variant="brand" label="{!$Label.c.Reset}" title="{!$Label.c.Reset}" onclick="{!c.doInit}"/>
+            <lightning:button variant="brand" label="{!$Label.c.Save}" title="{!$Label.c.Save}" onclick="{!c.saveRecords}"/>
+        </footer>
+    </article> 
+    
+</aura:component>

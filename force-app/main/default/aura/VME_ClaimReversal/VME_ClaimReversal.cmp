@@ -1,0 +1,86 @@
+<!--
+||      Name : VME_ClaimReversal.cmp
+||      Author: Tamanna Shukla
+||      Purpose:VME Claims Reversal component is to regrenate and delete the old claims for the perticular Asset.
+||      Created Date : 21/08/2019  
+-->
+<aura:component implements="force:hasRecordId,force:lightningQuickActionWithoutHeader,forceCommunity:availableForAllPageTypes" controller="VME_ClaimReversalCtrl">
+        <!-- <aura:attribute name="recordId" type="Id" /> -->
+        <aura:attribute name="icon" type="String" />
+        <aura:attribute name="variantType" type="String" />
+        <aura:attribute name="msgDetails" type="String" />
+        <aura:attribute name="confirmation" type="boolean" default="false" />
+        <aura:attribute name="condition" type="boolean" />
+        <aura:attribute name="assetDetails" type="Asset" />
+        <aura:attribute name="spinner" type="boolean" default="FALSE" />
+        <aura:attribute name="spinningTextClass" type="String" />
+        <aura:attribute name="formatDate" type="String" />
+        <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+        <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" />
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+        <aura:handler event="force:refreshView" action="{! c.doInit}" />
+        <div class="modal-header slds-modal__header">
+                <h2 class="title slds-text-heading--medium" id="title_4775:0" data-aura-rendered-by="1:3061;a">Regenerate Claims</h2>
+        </div>
+        <aura:if isTrue="{!v.spinner}">
+                <lightning:spinner class="{!v.spinningTextClass}" size="large" variant="brand" alternativeText="Loading"> </lightning:spinner>
+        </aura:if>
+        <div class="slds-grid slds-page-header  slds-border_bottom slds-align_absolute-center slds-p-top_large" style="width: 100%; display: block; height: 12rem;">
+                <aura:if isTrue="{!(!v.confirmation)}">
+                        <lightning:icon iconName="{!v.icon}" alternativeText="{!v.msgDetails}" variant="{!v.variantType}" size="large" class="slds-align_absolute-center  slds-size_1-of-12" style="width: 12%!important;" />
+                        <div style="justify-content: space-evenly;padding-left:2%;font-size: medium;display: inline-grid;" class="slds-align_absolute-center slds-size_11-of-12">{!v.msgDetails} </div>
+                </aura:if>
+                <aura:if isTrue="{!v.confirmation}">
+                        <div class="slds-grid slds-wrap">
+                                <div class="slds-align_absolute-center slds-col slds-size_12-of-12" style="padding-bottom: 2%;"><B>Please confirm below details to regenerate the claims :-</B></div>
+                                <div class="slds-align_absolute-center slds-col slds-size_12-of-12">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--col-bordered">
+                                                <thead>
+                                                        <tr class="slds-line-height_reset" style="font-size: 84%;color: rgb(62, 62, 60);">
+                                                                <th class="tableHeader" scope="col">
+                                                                        <div class="slds-truncate" title="(VME) Retail Date">(VME) Retail Date</div>
+                                                                </th>
+                                                                <th class="tableHeader" scope="col">
+                                                                        <div class="slds-truncate" title="Sale Type Code">Sale Type Code</div>
+                                                                </th>
+                                                                <th class="tableHeader" scope="col">
+                                                                        <div class="slds-truncate" title="(VME) Channel Type">(VME) Channel Type</div>
+                                                                </th>
+                                                                <th class="tableHeader" scope="col">
+                                                                        <div class="slds-truncate" title="(VME)Type of Sale Code - L2">(VME)Type of Sale Code - L2</div>
+                                                                </th>
+                                                        </tr>
+                                                </thead>
+                                                <tbody>
+                                                        <tr>
+                                                                <td data-label="{!v.assetDetails.VME_Retail_Date__c}" class="slds-col" style="white-space: inherit;">
+                                                                        <div title="{!v.assetDetails.VME_Retail_Date__c}" class="slds-text-align_center">
+                                                                                <ui:outputDate value="{!v.assetDetails.VME_Retail_Date__c}" format="{!v.formatDate}" />
+                                                                        </div>
+                                                                </td>
+                                                              
+                                                                <td data-label="{!v.assetDetails.Sale_Type_Code__c}" class="slds-col" style="white-space: inherit;">
+                                                                        <div title="{!v.assetDetails.Sale_Type_Code__c}" class="slds-text-align_center">{!v.assetDetails.Sale_Type_Code__c}</div>
+                                                                </td>
+                                                                <td data-label="{!v.assetDetails.VME_Channel_Type__c}" class="slds-col" style="white-space: inherit;">
+                                                                        <div title="{!v.assetDetails.VME_Channel_Type__c}" class="slds-text-align_center  slds-text-color_error">{!v.assetDetails.VME_Channel_Type__c}</div>
+                                                                </td>
+                                                                <td data-label="{!v.assetDetails.VME_TypeOfSale_Code_L2__c}" class="slds-col" style="white-space: inherit;">
+                                                                        <div title="{!v.assetDetails.VME_TypeOfSale_Code_L2__c}" class="slds-text-align_center  slds-text-color_error">{!v.assetDetails.VME_TypeOfSale_Code_L2} </div>
+                                                                </td>
+                                                        </tr>
+                                                </tbody>
+                                        </table>
+                                </div>
+                                <lightning:input class="slds-align_absolute-center slds-size_1-of-12 requiredCss" type="checkbox" label="Confirm the above selected values." name="confirmation" checked="{!v.condition}" variant="label-hidden" style="padding-top: 2%;" />
+                                <div style="justify-content: space-evenly;padding-top: 2%;padding-right: 13%;" class="slds-align_absolute-center slds-size_11-of-12 slds-text-color_error">I AGREE ABOVE VALUES ARE CORRECT TO REGENERATE CLAIMS . </div>
+                        </div>
+                </aura:if>
+        </div>
+        <footer class="slds-modal__footer" style='float: left;width: 100%;'>
+                <lightning:button variant="neutral" label="{! if(v.icon=='action:approval','OK','Cancel')}" title="Cancel" onclick="{! c.cancel }" />
+                <aura:if isTrue="{!v.confirmation}">
+                        <lightning:button variant="brand" label="{!v.variantType}" title="{!v.variantType}" iconName="{!v.icon}" iconPosition="right" onclick="{! c.regenerateClaims }" disabled="{!(!v.condition)}" />
+                </aura:if>
+        </footer>
+</aura:component>

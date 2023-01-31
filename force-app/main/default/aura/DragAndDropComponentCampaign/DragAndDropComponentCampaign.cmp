@@ -1,0 +1,33 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="CoopCampaignController">
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg', '.txt', '.zip', '.pdf', '.png']"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+    <aura:attribute name="activities" type="CooP_Campaign_Activity__c[]" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="campaignRecord" type="Campaign" />
+    <aura:attribute name="CommunityRecordId" type="String" />
+    <aura:attribute name="communityRecord" type="Campaign" />
+    <aura:attribute name="userId" type="String" />
+    <aura:attribute name="communityUserId" type="String" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.loadCampaignActivities}" />
+    <aura:handler name="activityDragAndDrop" event="c:FileDragAndDropEvent" action="{!c.loadCampaignActivities}"/>
+    
+    <force:recordData aura:id="internalcampaign" recordId="{!v.recordId}" mode="VIEW" fields="Id, Name, StartDate, EndDate" targetFields="{!v.campaignRecord}" />
+    <force:recordData aura:id="communitycampaign" recordId="{!v.CommunityRecordId}" mode="VIEW" fields="Id, Name, StartDate, EndDate" targetFields="{!v.communityRecord}" />
+    
+    <div style="height:40px; margin-bottom:15px; background-color:#c9c9c9 !important;">
+        <div style="height:40px; float:left; padding-top:3px"><h1>{!$Label.c.LC_COOP_Campaign_Activities}</h1></div>
+		<div style="height:40px; float:right"><lightning:button label="{!$Label.c.LC_COOP_Add_New}" onclick="{!c.forceNavigate}" /></div>
+    </div>
+     <aura:if isTrue="{!v.activities.length == 0}">
+           <h3>{!$Label.c.LC_COOP_No_Campaign_Activities_have_been_created}</h3>
+    </aura:if>
+    <aura:iteration var="activity" items="{!v.activities}">       
+		<div class="slds-box slds-m-bottom--small slds-theme_alert-texture">
+            <c:CampaignActivityEditForm activity="{!activity}"  communityUserId="{!v.communityUserId}" />                    
+        	<c:CampaignActivityFileList campaignActivity="{!activity}" campaignActivityId="{!activity.Id}" campaignActivityName="{!activity.Name}" accept="{!accept}" multiple="{!multiple}" disabled="{!disabled}" />	       	
+        </div>
+    </aura:iteration>
+
+</aura:component>

@@ -1,0 +1,14 @@
+.THIS .slds-modal__container{
+    max-width: 50rem !important;
+    width:100% !important;
+    
+}
+
+
+.THIS .outer-div {
+    position: relative;
+}
+
+.THIS .spinner {
+    position: absolute;
+}

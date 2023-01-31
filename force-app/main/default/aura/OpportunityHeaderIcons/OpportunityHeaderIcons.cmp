@@ -1,0 +1,65 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="simpleOpp" type="Object" />
+    <!--<aura:attribute name="accountIcon" type="String" default="standard:account" />
+    <aura:attribute name="closeIcon" type="String" default="custom:custom26" />
+    <aura:attribute name="priceIcon" type="String" default="custom:custom17" />
+    <aura:attribute name="pmoiIcon" type="String" default="custom:custom31" />
+    <aura:attribute name="phoneIcon" type="String" default="standard:call" />-->
+    <aura:attribute name="mobileIcon" type="String" default="custom:custom28" />
+    <aura:attribute name="homeIcon" type="String" default="standard:home" />
+    <aura:attribute name="accountImg" type="String" default="/Opportunity/Icon_Account.png" />
+    <aura:attribute name="closeImg" type="String" default="/Opportunity/Icon_CloseDate.png" />
+    <aura:attribute name="priceImg" type="String" default="/Opportunity/Icon_SalesPrice.png" />
+    <aura:attribute name="phoneImg" type="String" default="/Opportunity/Icon_Phone.png" />
+    <aura:attribute name="mobileImg" type="String" default="/Opportunity/Icon_MobilePhone.png" />
+    <aura:attribute name="pmoiImg" type="String" default="/Opportunity/Icon_LeadSource.png" />
+    <aura:attribute name="columnFields" type="String[]" default="['AccountId', 'Account.Name', 'CloseDate', 'Amount', 'Account.Phone', 'Account.PersonMobilePhone', 'Account.PersonHomePhone', 'Primary_Model_Interest__c', 'Primary_Model_Interest__r.Name', 'Brand__c', 'Brand__r.Name']" />
+    
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetFields="{!v.simpleOpp}" mode="VIEW" fields="{!v.columnFields}" />
+    
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.sfAccount}"><img src="{!$Resource.MENAHeaderIcons + v.accountImg}" style="width:40px; height:40px" /></span>
+            <aura:if isTrue="{!v.simpleOpp.AccountId!=null}">
+            	<a href="javascript:void(0)" onclick="{!c.navigateToRecord}">{!v.simpleOpp.Account.Name}</a>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Opportunity_Close_Date}"><img src="{!$Resource.MENAHeaderIcons + v.closeImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleOpp.CloseDate!=null, v.simpleOpp.CloseDate, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Opportunity_Sales_Price}"><img src="{!$Resource.MENAHeaderIcons + v.priceImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedNumber value="{!if(v.simpleOpp.Amount!=null, v.simpleOpp.Amount, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.sfPhone}"><img src="{!if(v.simpleOpp.Account.Phone!=null, $Resource.MENAHeaderIcons + v.phoneImg, if(v.simpleOpp.Account.PersonHomePhone!=null, $Resource.MENAHeaderIcons + v.phoneImg, if(v.simpleOpp.Account.PersonMobilePhone, $Resource.MENAHeaderIcons + v.mobileImg, $Resource.MENAHeaderIcons + v.phoneImg)))}" style="width:40px; height:40px" /></span>
+           <aura:if isTrue="{!and(and(v.simpleOpp.Account.Phone==null, v.simpleOpp.Account.PersonHomePhone==null), v.simpleOpp.Account.PersonMobilePhone==null)}">-</aura:if>
+            <aura:if isTrue="{!or(or(v.simpleOpp.Account.Phone!=null, v.simpleOpp.Account.PersonHomePhone!=null), v.simpleOpp.Account.PersonMobilePhone!=null)}">
+            <lightning:buttonMenu label="{!if(v.simpleOpp.Account.Phone!=null, v.simpleOpp.Account.Phone, if(v.simpleOpp.Account.PersonHomePhone!=null, v.simpleOpp.Account.PersonHomePhone, if(v.simpleOpp.Account.PersonMobilePhone!=null, v.simpleOpp.Account.PersonMobilePhone, '-')))}" variant="container">
+                <aura:if isTrue="{!and(v.simpleOpp.Account.Phone!=null, v.simpleOpp.Account.PersonHomePhone!=null)}">
+                    <lightning:menuItem label="{!v.simpleOpp.Account.PersonHomePhone}" value="home" iconName="{!v.homeIcon}" />
+                    <aura:if isTrue="{!v.simpleOpp.Account.PersonMobilePhone!=null}"><lightning:menuItem label="{!v.simpleOpp.Account.PersonMobilePhone}" value="mobile" iconName="{!v.mobileIcon}" /></aura:if>
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!v.simpleOpp.Account.PersonMobilePhone!=null}"><lightning:menuItem label="{!v.simpleOpp.Account.PersonMobilePhone}" value="mobile" iconName="{!v.mobileIcon}" /></aura:if>
+                    </aura:set>
+                </aura:if>
+            </lightning:buttonMenu>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Opportunity_Primary_Model_of_Interest}"><img src="{!$Resource.MENAHeaderIcons + v.pmoiImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleOpp.Primary_Model_Interest__r.Name!=null, v.simpleOpp.Primary_Model_Interest__r.Name, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small" class="slds-p-top_x-small">
+            <aura:if isTrue="{!v.simpleOpp.Brand__r.Name == 'Jaguar'}">
+	       		<img src="{!$Resource.LightningBrandJaguar}" />
+            </aura:if>
+            <aura:if isTrue="{!v.simpleOpp.Brand__r.Name == 'Land Rover'}">
+                <img src="{!$Resource.LightningBrandLandRover}" />
+            </aura:if>
+        </lightning:layoutItem>
+	</lightning:layout>
+    
+</aura:component>

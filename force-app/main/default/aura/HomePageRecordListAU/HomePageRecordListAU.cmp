@@ -1,0 +1,202 @@
+<aura:component controller="HomePageRecordListControllerAU" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="sObjectName" type="String" />
+    <aura:attribute name="ListViewName" type="String" />
+    <aura:attribute name="showNewOpp" type="Boolean" default="false" />
+    <aura:attribute name="showUKDateFormat" type="Boolean" default="false" />
+    <aura:attribute name="NavigatetoNewOppPage" type="Boolean" default="false" />
+    <aura:attribute name="opportunityList" type="Opportunity[]" />  
+ 
+    
+    <aura:attribute name="followUpTaskList" type="object[]" />  
+    <aura:attribute name="overdueTaskList" type="object[]" /> 
+    <aura:attribute name="tableName" type="String" default="{!$Label.c.New_Assigned_Opportunities}"/>
+    <aura:attribute name="iconName" type="String" default="/Home/Icon_Assigned_Opportunities.png" />
+    <aura:attribute name="showModal" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="isSalesManager" type="Boolean" default="false" />
+    <aura:attribute name="isAustralian" type="Boolean" default="true" />   
+    <aura:attribute name="showOppsXDaysOld" type="String"  />
+    <aura:handler event="c:HomeApplicationEvent" action="{!c.handleApplicationEvent}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <div class="slds-scrollable_y slds-scrollable_x" >
+        <div style="padding:18px; background-color:#fafafa; width:100%">
+            <table>
+                <tr>
+                    <td width="40px"><img src="{!$Resource.MENAHeaderIcons + v.iconName}" style="width:30px; height:30px" /></td>
+                    <td><span class="slds-text-heading_small">{!v.tableName}</span></td>
+                    <td style="text-align:right; line-height: normal;">
+                        <aura:if isTrue="{!and(v.tableName == $Label.c.New_Assigned_Opportunities, v.showNewOpp)}">                           
+                                    <lightning:button label="{!if($Browser.formFactor == 'DESKTOP', $Label.c.New_Opportunity, 'New')}" title="{!$Label.c.New_Opportunity}" onclick="{!c.showModal}" />                                                                                                                               
+                        </aura:if>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="slds-scrollable_y slds-scrollable_x" style="height: 20.5rem; overflow: auto" >
+            <table class="slds-table slds-table_bordered slds-scrollable_y slds-scrollable_x"  style="overflow:auto"  role="grid">
+                <thead>             
+                    
+                    <aura:if isTrue="{!v.tableName == $Label.c.New_Assigned_Opportunities}">
+                        <tr style="height:40px; overflow:auto;">
+                            <th aria-label="{!$Label.c.Date}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Date}">{!$Label.c.Date}</span>
+                            </th>  
+                            <th aria-label="{!$Label.c.sfContactName}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.sfContactName}">{!$Label.c.sfContactName}</span>
+                            </th>                               
+                            <th aria-label="{!$Label.c.Enquiry_Type}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Enquiry_Type}">{!$Label.c.Enquiry_Type}</span>
+                            </th>  
+                            <th aria-label="{!$Label.c.Next_Activity}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Next_Activity}">{!$Label.c.Next_Activity}</span>
+                            </th>
+                            <th aria-label="{!$Label.c.Source}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Source}">{!$Label.c.Source}</span>
+                            </th>
+                            <aura:if isTrue="{!v.isSalesManager}">
+                                <th aria-label="{!$Label.c.Vista_Owner}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                    <span class="slds-truncate" title="{!$Label.c.Vista_Owner}">{!$Label.c.Vista_Owner}</span>
+                                </th>
+                            </aura:if>
+                            <th aria-label="{!$Label.c.Primary_Email}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Primary_Email}">{!$Label.c.Primary_Email}</span>
+                            </th>
+                            <th aria-label="{!$Label.c.sfMobile}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.sfMobile}">{!$Label.c.sfMobile}</span>
+                            </th>
+                            <!--<th aria-label="Age" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="Age">Age</span>
+                            </th>-->
+                        </tr>
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.tableName == $Label.c.Follow_Ups_Today || v.tableName == $Label.c.Follow_Ups_Overdue}">
+                        <tr style="height:40px">
+                            <th aria-label="{!$Label.c.Opportunity_Name}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Opportunity_Name}">{!$Label.c.Opportunity_Name}</span>
+                            </th>     
+                            <th aria-label="{!$Label.c.chronoRpt_Subject}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.chronoRpt_Subject}">{!$Label.c.chronoRpt_Subject}</span>
+                            </th> 
+                            <th aria-label="{!$Label.c.Due_Date}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Due_Date}">{!$Label.c.Due_Date}</span>
+                            </th> 
+                            <aura:if isTrue="{!v.isSalesManager}">
+                                <th aria-label="{!$Label.c.Vista_Owner}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                    <span class="slds-truncate" title="{!$Label.c.Vista_Owner}">{!$Label.c.Vista_Owner}</span>
+                                </th>
+                            </aura:if>
+                            <th aria-label="{!$Label.c.Primary_Email}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.Primary_Email}">{!$Label.c.Primary_Email}</span>
+                            </th>
+                            <th aria-label="{!$Label.c.sfMobile}" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <span class="slds-truncate" title="{!$Label.c.sfMobile}">{!$Label.c.sfMobile}</span>
+                            </th>
+                        </tr>
+                    </aura:if>
+                </thead>
+                <tbody  style="overflow:auto" >                   
+                    
+                    
+                    <aura:if isTrue="{!v.tableName == $Label.c.New_Assigned_Opportunities}">
+                        <aura:iteration items="{!v.opportunityList}" var="opp">
+                            <tr aria-selected="false" class="slds-hint-parent" >   
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!opp.DB_Created_Date_without_Time__c}"><lightning:formattedDateTime value="{!opp.CreatedDate}" year="numeric" month="numeric" day="numeric"                     /></div>
+                                </td>                   
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!opp.Name}"><a  id="{!opp.Id}" onclick="{!c.navigateToRecord}">{!opp.Name}</a></div>
+                                </td> 
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!opp.Enquiry_Type__c}">{!opp.Enquiry_Type__c}</div>
+                                </td> 
+                                <td  role="gridcell">
+                                    <aura:if isTrue="{!and(opp.Tasks != undefined , opp.Tasks.length >0)}">
+                                        <div class="slds-truncate" title="{!opp.Tasks[0].Subject}"><a  id="{!opp.Tasks[0].Id}" onclick="{!c.navigateToRecord}">{!opp.Tasks[0].Subject}</a></div>
+                                        <aura:set attribute="else">                                         
+                                            <aura:if isTrue="{!and(opp.Events != undefined , opp.Events.length >0)}">                                             
+                                                <div class="slds-truncate" title="{!opp.Events[0].Subject}"><a  id="{!opp.Events[0].Id}" onclick="{!c.navigateToRecord}">{!opp.Events[0].Subject}</a></div>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if>
+                                </td>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!opp.LeadSource}">{!opp.LeadSource}</div>
+                                </td>
+                                <aura:if isTrue="{!v.isSalesManager}">
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!opp.Owner.Name}">{!opp.Owner.Name}</div>
+                                    </td>
+                                </aura:if>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!opp.Primary_Contact__r.Email}">{!opp.Primary_Contact__r.Email}</div>
+                                </td>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!opp.Primary_Contact__r.MobilePhone}">{!opp.Primary_Contact__r.MobilePhone}</div>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </aura:if> 
+                    
+                    <aura:if isTrue="{!v.tableName == $Label.c.Follow_Ups_Today}">
+                        <aura:iteration items="{!v.followUpTaskList}" var="fTask">
+                            <tr aria-selected="false" class="slds-hint-parent" style="overflow:auto;" >  
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!fTask.objTask.WhatName}"><a  id="{!fTask.objTask.WhatId}" onclick="{!c.navigateToRecord}">{!fTask.objTask.WhatName}</a></div>
+                                </td>                   
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!fTask.Subject}"><a  id="{!fTask.objTask.Id}" onclick="{!c.navigateToRecord}">{!fTask.objTask.Subject}</a></div>
+                                </td>   
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!fTask.objTask.ActivityDate}">{!fTask.objTask.ActivityDate}</div>
+                                </td> 
+                                <aura:if isTrue="{!v.isSalesManager}">
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!fTask.objTask.OwnerName}">{!fTask.objTask.OwnerName}</div>
+                                    </td>
+                                </aura:if>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!fTask.primaryEmail}">{!fTask.primaryEmail}</div>
+                                </td>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!fTask.PrimaryMobile}">{!fTask.PrimaryMobile}</div>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.tableName == $Label.c.Follow_Ups_Overdue}">
+                        <aura:iteration items="{!v.overdueTaskList}" var="dueTask">
+                            <tr aria-selected="false" class="slds-hint-parent" style="overflow:auto" >  
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!dueTask.objTask.WhatName}"><a  id="{!dueTask.objTask.WhatId}" onclick="{!c.navigateToRecord}">{!dueTask.objTask.WhatName}</a></div>
+                                </td>                   
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!dueTask.objTask.Subject}"><a  id="{!dueTask.objTask.Id}" onclick="{!c.navigateToRecord}">{!dueTask.objTask.Subject}</a></div>
+                                </td>   
+                                <td  role="gridcell">
+                                    <div class="slds-truncate" title="{!dueTask.objTask.ActivityDate}"><lightning:formattedDateTime value="{!dueTask.objTask.ActivityDate}" year="numeric" month="numeric" day="numeric"      /></div>
+                                </td> 
+                                <aura:if isTrue="{!v.isSalesManager}">
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!dueTask.objTask.OwnerName}">{!dueTask.objTask.OwnerName}</div>
+                                    </td>
+                                </aura:if>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!dueTask.primaryEmail}">{!dueTask.primaryEmail}</div>
+                                </td>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!dueTask.PrimaryMobile}">{!dueTask.PrimaryMobile}</div>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </aura:if>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+   
+    
+</aura:component>

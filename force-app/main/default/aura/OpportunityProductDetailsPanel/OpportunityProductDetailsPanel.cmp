@@ -1,0 +1,26 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+	
+	<lightning:recordEditForm aura:id="editOpp" recordId="{!v.recordId}" objectApiName="Opportunity" onsuccess="{!c.handleSuccess}">
+    	<lightning:card title="{!$Label.c.Lead_Product_Details}" iconName="standard:lead" class="slds-p-around_xx-small">
+        	<aura:set attribute="actions">
+            	<lightning:button label="{!$Label.c.sfSave}" type="submit" name="save" variant="brand" />
+        	</aura:set>
+    		<p class="slds-p-horizontal_small">
+            	<div class="slds-grid slds-wrap">
+                    <div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Type" /></div>
+    				<div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Current_Vehicle_Brand__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Sub_Type__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Current_Vehicle__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Purchase_Type__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Current_Car_Purchase_Date__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Brand__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Current_Car_Bought_Using__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Primary_Model_Interest__c" /></div>
+                    <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Finance_Interest__c" /></div>
+                    <div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><lightning:inputField fieldName="Test_Drive_Preferred_Date_Time__c" /></div>
+                </div>
+	        </p>
+    	</lightning:card>
+    </lightning:recordEditForm>
+    
+</aura:component>

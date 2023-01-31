@@ -1,0 +1,443 @@
+<aura:component controller="AssetProductSearchController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="currentOpportunity" type="Opportunity" default="{ 'sobjectType': 'Opportunity' }"/>  
+    <aura:attribute name="assetFieldLabelMap" type="Map"/> 
+    <aura:attribute name="productFieldLabelMap" type="Map"/>  
+    <aura:attribute name="productList" type="List" />
+    <aura:attribute name="oppProductLineItem" type="OpportunityLineItem" default="{ 'sobjectType': 'OpportunityLineItem', 'Quantity': '1' }" />
+    <aura:attribute name="modalList" type="List" />
+    <aura:attribute name="assestList" type="List" />
+    <aura:attribute name="selectedModels" type="string" />
+    <aura:attribute name="selectedYear" type="string" />
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="selectedProducts" type="List" />
+    <aura:attribute name="stage" type="Boolean" default="true"/>
+    <aura:attribute name="assetId" type="string" />
+    <aura:attribute name="assetName" type="string" />
+    <aura:attribute name="assetPurchaseType" type="string" />
+    <aura:attribute name="selectedModal" type="string" default="none"/>
+    <aura:attribute name="oppSaleType" type="string" default="none"/>
+    <aura:attribute name="selectedProduct" type="string" default=""/>
+    <aura:attribute name="lineItemProduct" type="string"/>
+    <aura:attribute name="showModal" type="Boolean" default="false"/>
+    <aura:attribute name="productFilter" type="String" default=""/>
+    <aura:attribute name="filteredProductList" type="List" />
+    <aura:attribute name="noVehicleMessage" type="string"/>
+    <!-- Below attribtutes added for CXPD-1360 -->
+    <aura:attribute name="vinNumber" type="String"/>
+    <aura:attribute name="showVehicleInformation" type="Boolean" default="false"/>
+    <aura:attribute name="relatedAccount" type="Object"/>
+    <aura:attribute name="accountColumns" type="List"/>
+    <aura:attribute name="potentialDuplicateAccount" type="Object"/>
+    <aura:attribute name="potentialDuplicateAccountColumns" type="List"/>
+    <aura:attribute name="relatedOpportunities" type="Object"/>
+    <aura:attribute name="opportunityColumns" type="List"/>
+	<aura:attribute name="isButtonActive" type="Boolean" default = "false"/>
+    <aura:attribute name="selectedAccount" type="Account"/>
+    <aura:attribute name="selectedOppty" type="Opportunity"/>
+    <aura:attribute name="showAddVehicleInfo" type="Boolean" default="false"/>
+    <aura:attribute name="opptyName" type="String"/>
+    <aura:attribute name="opptyNameSelected" type="String"/>
+    <aura:attribute name="assetModelAlternative" type="String"/>
+    <!--CXPD-2223-->
+	<aura:attribute name="RegionMarketVal" type="string" />
+    <!-- CXPD-1455 -->
+    <aura:attribute name="showReviewAccountModal" type="Boolean" default="false"/>
+    <aura:attribute name="selectedAccountRows" type="Account[]" default="[]"/>
+    <aura:attribute name="primaryAccount" type="String"/>
+    
+    
+    <aura:html tag="style">
+        .slds-modal__container{ 
+        	width: 80%; max-width: 70vw !important;
+        } 
+    </aura:html>
+    
+    <article class="slds-card">
+        
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <!-- <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-account" title="{!$Label.c.Vehicle_Selection}">
+                        <span class="slds-assistive-text">{!v.noVehicleMessage}</span>
+                    </span>
+                </div> -->
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title"><span title="{!$Label.c.Vehicle_Selection}">{!$Label.c.Vehicle_Selection}</span></h2>
+                    <h2 class="slds-card__header-title"><span title="Opportunity Type">{!v.oppSaleType}</span></h2>
+                </div>
+            </header>
+        </div>
+        
+        <div aura:id="firstScreen" class="slds-card__body slds-card__body_inner"> 
+            <aura:if isTrue="{!v.stage}">
+                <!-- Model Selection -->
+                <lightning:select aura:id="model" label="{!$Label.c.Current_Model_Selected}" name="flavor" value="{!v.selectedModal}" onchange="{!c.refreshAssetAndProductOnModalChange}">
+                    <option text="" value="" />
+                    <aura:iteration items="{!v.modalList}" var="model">
+                        <option text="{!model.label}" value="{!model.value}" selected ="{!v.selectedModal == model.value}" />
+                    </aura:iteration>
+                </lightning:select>
+                
+                <!-- Product Selection -->
+                <lightning:input label="{!$Label.c.Search_Products}" value="{!v.productFilter}" onchange="{!c.updateProductFilter}" />
+                
+                <!-- Select Product from Drop-down -->
+                <lightning:select aura:id="product" label="{!'Current Product Selected [' + v.filteredProductList.length + ']'}" name="taste" value="{!v.selectedProduct}" onchange="{!c.refreshAssetOnModalChange}">
+                    <option text="" value="" />
+                    <aura:iteration items="{!v.filteredProductList}" var="prod">
+                        <option text="{!prod.label + ' ' + prod.size}" value="{!prod.value}" selected ="{!v.selectedProduct == prod.value}" />
+                    </aura:iteration>
+                </lightning:select>
+                
+                <br />
+                
+            	<!-- Add line separator -->
+                <div class="separator">OR</div>
+                
+                <!-- Search by VIN / Order No - CXPD-1360 Next conditional input field added -->
+                <lightning:input aura:id="vinOrderNumber" label="VIN/ Order Number " value="{!v.vinNumber}" onchange="{!c.searchAssetByVIN}" class=""/>
+                
+                <br />
+                <!-- Asset Selection -->
+                <aura:if isTrue="{!v.assestList.length > 0}">
+                    <div style="overflow:auto">
+                        <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_resizable-cols slds-scrollable_x" role="grid" >
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="slds-text-align_left" scope="col" style="width: 3.25rem;">
+                                        <span id="column-group-header" class="slds-assistive-text"></span>
+                                        <div class="slds-th__action slds-th__action_form">
+                                            <div class="slds-checkbox">                               
+                                                
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <!-- <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.make__c}">{!v.productFieldLabelMap.make__c}</span>                              
+                                        </div>                                    
+                                    </th> 
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.model_alternative__c}">{!v.productFieldLabelMap.model_alternative__c}</span>                              
+                                        </div>                                    
+                                    </th> -->
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.assetFieldLabelMap.vin__c}">{!v.assetFieldLabelMap.vin__c}</span>                              
+                                        </div>                                    
+                                    </th>
+                                    <!-- CXPD-1360 Added Order Number column attribute -->
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.assetFieldLabelMap.order_number__c}">{!v.assetFieldLabelMap.order_number__c}</span>                              
+                                        </div>                                    
+                                    </th>
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.assetFieldLabelMap.exterior_colour__c}">{!v.assetFieldLabelMap.exterior_colour__c}</span>                              
+                                        </div>                                    
+                                    </th> 
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.model_alternative__c}">{!v.productFieldLabelMap.model_alternative__c}</span>                              
+                                        </div>                                    
+                                    </th> 
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.model_year__c}">{!v.productFieldLabelMap.model_year__c}</span>                              
+                                        </div>                                    
+                                    </th>                                     
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.body_style__c}">{!v.productFieldLabelMap.body_style__c}</span>                              
+                                        </div>                                    
+                                    </th>
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.specification_pack_alternative__c}">{!v.productFieldLabelMap.specification_pack_alternative__c}</span>                              
+                                        </div>                                    
+                                    </th>
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.engine_type__c}">{!v.productFieldLabelMap.engine_type__c}</span>                              
+                                        </div>                                    
+                                    </th>
+									<!--CXPD-2223-->
+                                    <aura:if isTrue="{!v.RegionMarketVal =='Korea'}">														
+									<th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.alternative_name__c}">{!v.productFieldLabelMap.alternative_name__c}</span>                              
+                                        </div>                                    
+                                    </th>
+									<th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.description}">{!v.productFieldLabelMap.description}</span>                              
+                                        </div>                                    
+                                    </th>
+									<th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.engine_variant__c}">{!v.productFieldLabelMap.engine_variant__c}</span>                              
+                                        </div>                                    
+                                    </th>
+									</aura:if>
+									<aura:if isTrue="{!v.RegionMarketVal !='Korea'}">
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.product_description__c}">{!v.productFieldLabelMap.product_description__c}</span>                              
+                                        </div>                                    
+                                    </th>
+									</aura:if>
+                                    <!--<th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.transmission__c}">{!v.productFieldLabelMap.transmission__c}</span>                              
+                                        </div>                                    
+                                    </th>
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.productFieldLabelMap.productcode}">{!v.productFieldLabelMap.productcode}</span>                              
+                                        </div>                                    
+                                    </th> -->
+                                    <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate slds-p-right_small">
+                                            <span class="slds-truncate" title="{!v.assetFieldLabelMap.registration_number__c}">{!v.assetFieldLabelMap.registration_number__c}</span>                              
+                                        </div>                                    
+                                    </th> 
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.assestList}" var="assest">
+                                    <tr aria-selected="false" class="slds-hint-parent"> 
+                                        <td class="slds-text-align_right" data-label="" scope="row">
+                                            <!-- CXPD-1360 Added Model Alternative in text attribute --> <!-- CXPD-1360 - Updated splitter string from - to -; -->
+                                            <ui:inputCheckbox class="slds-checkbox__label" aura:id="rowSelectionCheckboxId" value="false" text="{!assest.Id+'-;'+assest.Name+'-;'+assest.Product2Id+'-;'+assest.Model_Alternative__c+'-;'+assest.New_or_Used__c}" change="{!c.selectingAsset}"/>                  
+                                        </td>
+                                        <!-- <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Make__r.Name}">{!assest.Product2.Make__r.Name}</div>
+                                        </td>-->
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.VIN__c}">{!assest.VIN__c}</div>
+                                        </td> 
+                                        <td scope="row" tabindex="0"><!-- CXPD-1360 Added Order Number column attribute -->
+                                            <div class="slds-truncate" title="{!assest.Order_Number__c}">{!assest.Order_Number__c}</div>
+                                        </td>
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Exterior_Colour__c}">{!assest.Exterior_Colour__c}</div>
+                                        </td>                                        
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Model_Alternative__c}">{!assest.Product2.Model_Alternative__c}</div>
+                                        </td> 
+                                        <!--<td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Interior_Color__c}">{!assest.Interior_Color__c}</div>
+                                        </td> -->
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Model_Year__c}">{!assest.Product2.Model_Year__c}</div>
+                                        </td>
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Body_Style__c}">{!assest.Product2.Body_Style__c}</div>
+                                        </td>
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Specification_Pack_Alternative__c}">{!assest.Product2.Specification_Pack_Alternative__c}</div>
+                                        </td>
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Engine_Type__c}">{!assest.Product2.Engine_Type__c}</div>
+                                        </td>
+                                        <aura:if isTrue="{!v.RegionMarketVal =='Korea'}">
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Alternative_Name__c}">{!assest.Product2.Alternative_Name__c}</div>
+                                        </td>
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Description}">{!assest.Product2.Description}</div>
+                                        </td>
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Engine_Variant__c}">{!assest.Product2.Engine_Variant__c}</div>
+                                        </td>  
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.RegionMarketVal !='Korea'}">
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Product_Description__c}">{!assest.Product2.Product_Description__c}</div>
+                                        </td>
+                                        </aura:if>
+                                        <!-- <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.Transmission__c}">{!assest.Product2.Transmission__c}</div>
+                                        </td>
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Product2.ProductCode}">{!assest.Product2.Model__r.ProductCode}</div>
+                                        </td> -->
+                                        <td scope="row" tabindex="0">
+                                            <div class="slds-truncate" title="{!assest.Registration_Number__c}">{!assest.Registration_Number__c}</div>
+                                        </td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>   
+                    </div>
+                    <br/>
+                    <lightning:button aura:id="createButton" class="button slds-hide" variant="brand" label="{!$Label.c.Add_Vehicle}" title="{!$Label.c.Add_Vehicle}" onclick="{!c.nextStage}"/> 
+                    
+                    <aura:set attribute="else">
+                        <p class="slds-text-heading_medium font-weight-bold"> {!$Label.c.No_Vehicles_Message} </p><br/><br/>
+                    </aura:set>
+                </aura:if>  
+                
+                <!-- CXPD-1360 Next conditional input field added -->
+                <!-- <aura:if isTrue="{!not( and( and( empty(v.selectedModal), empty(v.productFilter) ), empty(v.selectedProduct) ) )}">
+                    <aura:if isTrue = "{!v.assestList.length == 0}">
+                        <lightning:input aura:id="vinOrderNumber" label="VIN/ Order Number " value="{!v.vinNumber}" onchange="{!c.searchAssetByVIN}" class=""/><br/>
+                    </aura:if>
+                </aura:if> -->
+                <!--	<lightning:button aura:id="updateButton" class="button slds-hide" variant="brand" label="{!$Label.c.Defer_Decision}" title="{!$Label.c.Defer_Decision}" onclick="{!c.showModal}"/>  onclick="{!c.updateProductDetails}"/> -->
+                
+                <aura:if isTrue="{!v.lineItemProduct != v.selectedProduct}">
+                    <lightning:button aura:id="updateButton" class="button" variant="brand" label="Add Product" title="Add Product" onclick="{!c.showModal}" />
+                </aura:if>
+                <!-- vehicleInfo button Added for CXPD-1360 -->
+                <lightning:button aura:id="vehicleInfo" class="slds-hide" variant="brand" label="Vehicle Information" title="Vehicle Information" onclick="{!c.onVehicleInformation}"/>
+                <aura:set attribute="else">
+                    <lightning:layout multipleRows="true">  
+                        <lightning:layoutItem size="12">                  
+                            <lightning:input label="{!v.assetFieldLabelMap.name}" name="Asset" value="{!v.assetName}" disabled="true"/> 
+                        </lightning:layoutItem>    
+                        <lightning:layoutItem size="12">                  
+                            <lightning:input type="number" label="{!v.assetFieldLabelMap.quantity}" name="QUANTITY" value="{!v.oppProductLineItem.Quantity}" disabled="false"/>                
+                        </lightning:layoutItem>              
+                        <lightning:layoutItem size="12">                  
+                            <lightning:input label="{!$Label.c.Sales_Price}" name="UnitPrice" value="{!v.oppProductLineItem.UnitPrice}" required="true"/>              
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <br/>
+                    <ui:button aura:id="button" class="button" label="{!$Label.c.Previous}" press="{!c.previousStage}"/>
+                    <ui:button aura:id="lineitembutton" class="button" label="{!$Label.c.Save}" press="{!c.productLineSave}"/>
+                </aura:set>
+            </aura:if>
+            <lightning:button class="button"  variant="brand" name="cancel" label="{!$Label.c.Cancel}" onclick="{!c.navgiateToOpportunity}" />  
+        </div>
+        
+        <!-- Screen 2 Added for CXPD-1360 -->
+        <aura:if isTrue="{!v.showVehicleInformation}"> <!-- {!v.showVehicleInformation} -->
+            <div aura:id="secondscreen" class="slds-card__body slds-card__body_inner">
+                <p>Some Existing Records have been detected based on the Information you have provided.</p>
+                <br/>
+                <p><b>Potential Duplicate Accounts:</b></p>
+                <aura:if isTrue="{!v.potentialDuplicateAccount.length > 0}">
+                    <div>
+                        <lightning:datatable aura:id="accountTable"
+                                             keyField="id"
+                                             data="{! v.potentialDuplicateAccount }"
+                                             columns="{! v.potentialDuplicateAccountColumns }" 
+                                             onrowselection="{! c.handleSelect }" 
+                                             columnWidthsMode="auto" />
+                    </div>
+                    <aura:set attribute="else">
+                        <p class="TAB_INDENT">No potential duplicate accounts found.</p>
+                    </aura:set>
+                </aura:if>
+                <br/>
+                <p><b>Asset is linked with the following Account:</b></p>
+                <aura:if isTrue="{!v.relatedAccount.length > 0}">
+                    <div>
+                        <lightning:datatable keyField="id"
+                                             data="{! v.relatedAccount }"
+                                             columns="{! v.accountColumns }"
+                                             onrowselection="{! c.onAccountSelection }" 
+                                             columnWidthsMode="auto" 
+                                             hideCheckboxColumn="true" />
+                    </div>
+                    <aura:set attribute="else">
+                        <p class="TAB_INDENT">Asset is not linked to any Account.</p>
+                    </aura:set>
+                </aura:if>
+                <br/>
+                <p><b>Opportunities Associated to the Account:</b></p>
+                <aura:if isTrue="{!v.relatedOpportunities.length > 0}">
+                    <p>Please select an opportunity if you wish to link asset with any existing opportunity or else click Add Vehicle button to link it with the opportunity on which the search is running.</p>
+                    <div>
+                        <lightning:datatable keyField="id"
+                                             data="{! v.relatedOpportunities }"
+                                             columns="{! v.opportunityColumns }"
+                                             onrowselection="{! c.onOpptySelection }"/>
+                    </div>
+                    <aura:set attribute="else">
+                        <p class="TAB_INDENT">No related Opportunities found for the Account linked to Asset.</p>
+                    </aura:set>
+                </aura:if>
+                <br/><br/>
+                <lightning:button class="button" variant="brand" name="Previous" label="Previous" onclick="{!c.onPreviousClick}" />
+                <aura:if isTrue="{!not(empty(v.relatedAccount))}">
+                    <!-- <lightning:button class="button" variant="brand" name="Potential Duplicate Accounts" label="Potential Duplicate Accounts" onclick="{!c.accountMerge}" /> -->
+                    <aura:if isTrue="{!v.selectedAccountRows.length > 1}">
+                        <lightning:button class="button" variant="brand" name="Review Duplicate Accounts" label="Review Duplicate Accounts" onclick="{!c.showMergeAccountModal}" />
+                    </aura:if>
+                    <lightning:button disabled="{!v.isButtonActive}" class="button" variant="brand" name="{!$Label.c.Add_Vehicle}" label="{!$Label.c.Add_Vehicle}" onclick="{!c.onAddVehicleSecondScreen}" />
+                </aura:if>
+                <lightning:button class="button" variant="brand" name="{!$Label.c.Cancel}" label="{!$Label.c.Cancel}" onclick="{!c.navgiateToOpportunity}" />
+            </div>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showAddVehicleInfo}">
+            <lightning:layout multipleRows="true">
+                <lightning:layoutItem padding="around-small" size="12">                  
+                    The Vehicle will be linked to this Opportunity - {!v.opptyNameSelected}
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12">                  
+                    <lightning:input label="{!v.assetFieldLabelMap.name}" name="Asset" value="{!v.assetName}" disabled="true"/> 
+                </lightning:layoutItem>  
+                <lightning:layoutItem size="12">                  
+                    <lightning:input type="number" label="{!v.assetFieldLabelMap.quantity}" name="QUANTITY" value="{!v.oppProductLineItem.Quantity}" disabled="false"/>                
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12">                  
+                    <lightning:input label="{!$Label.c.Sales_Price}" name="UnitPrice" value="{!v.oppProductLineItem.UnitPrice}" required="true"/>              
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br/>
+            <lightning:button aura:id="button" class="button" label="{!$Label.c.Previous}" onclick="{!c.backToScreenTwo}"/>
+            <lightning:button aura:id="lineitembutton" class="button" label="{!$Label.c.Save}" onclick="{!c.productLineSave}"/>
+        </aura:if>
+    </article>
+    
+    <aura:if isTrue="{!v.showModal}">
+        <div style="height: 800px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 25rem !important;">
+                    <header class="slds-modal__header">{!$Label.c.Add_Product_Message}</header>
+                    <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-1" style="height: 5rem !important;">
+                        <div class="button slds-align_absolute-center">
+                            <lightning:button aura:id="createButton" class="button" variant="brand" label="{!$Label.c.YES}" title="{!$Label.c.YES}" onclick="{!c.createOppProductFromProduct}"/>
+                            <lightning:button aura:id="updateButton" class="button" variant="brand" label="{!$Label.c.NO}" title="{!$Label.c.NO}" onclick="{!c.hideModal}"/>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+    <!-- CXPD-1455 -->
+    <aura:if isTrue="{!v.showReviewAccountModal}">
+        <div style="height: 800px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 40rem !important;">
+                    <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-1">
+                        <!-- Select Priamry Account from Drop-down -->
+                        <lightning:select name="duplicateAccounts" label="Select Primary Account (Name - Email - Mobile - Phone):" aura:id="primaryAccountId" value="{!v.primaryAccount}" required="true">
+                            <aura:iteration items="{!v.selectedAccountRows}" var="option">
+                                <option value="{!option.Id}" text="{!option.Name + ' - ' + (empty(option.PersonEmail) ? 'NA' : option.PersonEmail) + ' - ' + (empty(option.PersonMobilePhone) ? 'NA' : option.PersonMobilePhone) + ' - ' +  (empty(option.Phone) ? 'NA' : option.Phone)}" />
+                            </aura:iteration>
+                        </lightning:select>
+                        <br />
+                        <div class="button slds-align_absolute-center">
+                            <lightning:button aura:id="createButton" class="button" variant="brand" label="{!$Label.c.Confirm}" title="{!$Label.c.Confirm}" onclick="{!c.sendDuplicationAccountsForReview}"/>
+                            <lightning:button aura:id="updateButton" class="button" variant="brand" label="{!$Label.c.Cancel}" title="{!$Label.c.Cancel}" onclick="{!c.hideMergeAccountModal}"/>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+</aura:component>

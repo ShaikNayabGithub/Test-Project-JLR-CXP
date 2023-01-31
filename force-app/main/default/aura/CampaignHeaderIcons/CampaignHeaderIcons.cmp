@@ -1,0 +1,35 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="simpleCampaign" type="Object" />
+    <aura:attribute name="startImg" type="String" default="/Additional/Icon_StartDate.png" />
+    <aura:attribute name="endImg" type="String" default="/Additional/Icon_EndDate.png" />
+    <aura:attribute name="brandImg" type="String" default="/Additional/Icon_CampaignBrand.png" />
+    <aura:attribute name="makeImg" type="String" default="/Additional/Icon_CampaignMake.png" />
+    <aura:attribute name="channelImg" type="String" default="/Additional/Icon_Channels.png" />
+    <aura:attribute name="columnFields" type="String[]" default="['StartDate', 'EndDate', 'Campaign_Brand__c', 'Campaign_Make__r.Name', 'Channel__c']" />
+    
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetFields="{!v.simpleCampaign}" mode="VIEW" fields="{!v.columnFields}" />
+    
+    <lightning:layout>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="Start Date"><img src="{!$Resource.MENAHeaderIcons + v.startImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!v.simpleCampaign.StartDate}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="End Date"><img src="{!$Resource.MENAHeaderIcons + v.endImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!v.simpleCampaign.EndDate}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="Brand"><img src="{!$Resource.MENAHeaderIcons + v.brandImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!v.simpleCampaign.Campaign_Brand__c}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="Make"><img src="{!$Resource.MENAHeaderIcons + v.makeImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!v.simpleCampaign.Campaign_Make__r.Name}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-small">
+            <span style="padding-right:4px" title="Channel"><img src="{!$Resource.MENAHeaderIcons + v.channelImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!v.simpleCampaign.Channel__c}" />
+        </lightning:layoutItem>
+	</lightning:layout>
+    
+</aura:component>

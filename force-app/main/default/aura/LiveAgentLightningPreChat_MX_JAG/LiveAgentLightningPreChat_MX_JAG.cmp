@@ -1,0 +1,298 @@
+<aura:component implements="lightningsnapin:prechatUI" description="Pre-Chat Jaguar Mexico">
+
+    <ltng:require scripts="{!$Resource.LiveAgentStatic1 + '/dist/js/main.js'}"  />
+    <!--ltng:require scripts="{!$Resource.LiveAgentLightningStatic + '/dist/js/main.js'}"  /-->
+
+    <aura:attribute name="prechatFieldComponents" type="List" description="An array of objects representing the pre-chat fields specified in pre-chat setup."/>
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:locator target="startButton" description="Pre-chat form submit button."/>
+
+    <lightningsnapin:prechatAPI aura:id="prechatAPI"/>
+
+    <div class="TabContainerUI TabContainerUI--chat">
+        <div class="ChatUI ChatUI--with-tab ChatUI--active" data-tab="chat">
+            <div class="ChatUI__content">
+                <h4>BIENVENIDO</h4>
+
+                <p id="findME" class="small">
+                   Nuestros asistentes en línea están para apoyarte a resolver tus dudas. 
+                  Antes de iniciar, por favor ayúdanos con la siguiente información y poder dirigirte de la forma correcta durante el chat.
+                </p>
+
+                <ul class="fieldsList" >
+                    {!v.prechatFieldComponents}
+                </ul>
+                <ul class="fieldsList" style="display: none;" >
+                    {!v.prechatFieldHiddenComponents}
+                </ul>
+
+                <div class="form-errors" id="chat-form-errors" role="alert" aria-atomic="true" data-defaultMsg="
+Desafortunadamente, hay un error con la información ingresada. Vuelva a ingresar su información e intente enviar nuevamente."></div>
+                
+                <div class="startButtonWrapper">
+                    <ui:button aura:id="startButton" class="startButton" label="Enviar" press="{!c.startButtonClick}"/>
+                </div>
+            </div>
+        </div>
+
+   <div class="ChatUI ChatUI--with-tab ChatUI--dark" data-tab="legal">
+            <div class="ChatUI__content">
+                <h4 class="expanded">AVISO LEGAL</h4>
+
+                <p class="small">En Jaguar Land Rover estamos comprometidos en proteger la privacidad de nuestros usuarios en la herramienta del Chat en Línea de servicio al cliente. 
+				La siguiente información te dará los detalles de lo que sucede cuando usted visita a nuestros clientes, qué información es obtenida de usted y como (si es el caso) usamos esa información.</p>
+
+                <div class="accordion">
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-1"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                          ¿Qué hace el Chat en Línea Jaguar?
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-1">
+                            <p>El Chat en Línea Jaguar es un chat en línea y tecnología de mensajería que facilita las ventas en tiempo real y los servicios al cliente en el sitio de Jaguar México.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-2"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                           Usuarios del Chat en Línea Jaguar
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-2">
+                            <p>¿Qué información recolectamos de los usuarios del Chat en línea Jaguar? Durante la conversación, Chat en Línea Jaguar inicia una sesión de preguntas y respuestas con un operador ya sea mediante texto en un chat. Nosotros mantenemos las transcripciones de esos chats. Después del chat, preguntamos a los clientes si desean contestar una encuestra de salida para obtener valiosa retroalimentación acerca de nuestros niveles de servicio. El llenado de la encuesta de salida es totalmente voluntario. Por otra parte, toda la información personal es sólo recolectada si voluntariamente lo deseas, por ejemplo, cuando llenas un formulario de Contacto con nosotros. Si durante la participación en vivo, eliges ingresar datos personales o de negocios (direcciones de correo electrónico, nombres, direcciones), la divulgación de dichos datos se realiza de forma voluntaria de tu parte. Dicha información no se transmite a terceros ni se utiliza para ningún otro propósito que no sea el que solicitas. Registramos la información del navegador (por ejemplo, las direcciones del Protocolo de Internet y los tipos de navegador) para ayudar a diagnosticar problemas con nuestro servidor, recopilar información demográfica amplia y administrar nuestro sitio. Al elegir participar en una conversación o videollamada y utilizar los servicios, aceptas dicho registro y procesamiento de la dirección IP.
+¿Cómo utiliza Jaguar Land Rover la información que recopila de los usuarios del Chat en Línea de Jaguar y si Jaguar Land Rover divulgará dicha información a terceros?
+Accedemos a la información que recopilamos para ciertos fines (por ejemplo, para agregar la información, para monitorear el uso del servicio durante ciertos compromisos y para otros fines legales). La información de todos los usuarios del Chat en Línea de Jaguar, incluida la información de identificación personal, no se compartirá con nadie. No vendemos, intercambiamos, ni alquilamos la infrmación personal que proporcionan los usuarios del Chat en Línea de Jaguar. </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-3"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            ¿Cómo utiliza Jaguar Land Rover la información que recopila de los usuarios del Chat en Línea de Jaguar y si Jaguar Land Rover divulgará dicha información a terceros?
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-3">
+                            <p>¿Cómo utiliza Jaguar Land Rover la información que recopila de los usuarios del Chat en Línea de Jaguar y si Jaguar Land Rover divulgará dicha información a terceros?Accedemos a la información que recopilamos para ciertos fines (por ejemplo, para agregar la información, para monitorear el uso del servicio durante ciertos compromisos y para otros fines legales). La información de todos los usuarios del Chat en Línea de Jaguar, incluida la información de identificación personal, no se compartirá con nadie. No vendemos, intercambiamos ni alquilamos la información personal que proporcionan los usuarios del Chat en Línea de Jaguar.  </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-4"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                           ¿Qué sucede con las cookies?
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-4">
+                            <p>
+							Las cookies son piezas de información que algunos sitios web transfieren a la computadora que navega por ese sitio web y se utilizan con fines de mantenimiento de registros en muchos sitios web. El uso de cookies hace que navegar por la web sea más fácil al realizar ciertas funciones, como guardar contraseñas, listas de posibles compras, preferencias personales con respecto al uso de un sitio web en particular y para asegurarse de que el usuario no vea la misma oferta de ayuda repetidamente. Muchos consideran que el uso de cookies es un estándar de la industria. Nuestro sitio utiliza cookies para mejorar la experiencia del usuario al permitirnos reconocer la visita de retorno de un usuario a nuestro sitio web.
+Los navegadores suelen estar configurados para aceptar cookies. Sin embargo, si prefieres no recibir cookies, puedes alterar la configuración de su navegador para rechazar las cookies. Si eliges que tu navegador rechace las cookies, es posible que algunas áreas de nuestro sitio no funcionen con la misma eficacia cuando las veas."
+
+							</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-5"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title" >
+                         Política de Salida
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-5">
+                            <p>Jaguar Land Rover da a los usuarios las opciones cuando sea necesario y práctico. Dichas opciones incluye la opción de no interactuar en sesiones de chat.
+							</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-6"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            En resumen
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-6">
+                            <p>Estamos comprometidos en proteger la privacidad de los visitantes a nuestros sitios y los usuarios a nuestros servicios de interacción en línea. Usamos la información que recolectamos para proveer una mejor experiencia para el uso posterior de nuestros servicios y para proveer a nuestros usuarios con valiosa retroalimentación de los visitantes de nuestros sitios en línea.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-7"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            E y EO
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-7">
+                            <p>Errores y Excepciones de Omisiones</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ChatUI ChatUI--with-tab ChatUI--dark" data-tab="help">
+            <div class="ChatUI__content">
+                <h4 class="expanded">CHAT EN LÍNEA</h4>
+
+                <div class="accordion">
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-1"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                           ¿Qué es el Chat en Línea de Jaguar?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-1">
+                            <p> El Chat en Línea de Jaguar es un nuevo servicio en línea para nuestros clientes que visitan nuestros sitio en línea. En el caso del sitio de internet, te permite escribir en un chat con uno de nuestros agentes en línea. Es una forma rápida y eficiente de pedir ayuda en cualquier momento que la necesites. </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-2"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title" for="accordion-help-2">
+                            ¿Cómo sé si el Chat en Línea de Jaguar está disponible?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-2">
+                            <p> El Chat en Línea de Jaguar está disponible de Lunes a Viernes entre las 9:00 y 18:00 horas. Cuando el Chat en Línea está disponible, una pestaña roja del "Chat en línea" aparecerá en la parte inferior derecha de la ventana. Si todos los agentes están ocupados con otros clientes en el chat, la pestaña del "Chat en línea" aún aparecerá, pero no podrás inciar un chat. En su lugar tendrás la opción de solicitar una llamada una vez que un agente se desocupe, o en un horario que mejor te convenga.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-3"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            ¿Qué pasa si todos los agentes están ocupados?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-3">
+                            <p>Nuestros agentes en línea podrían estar ocupados ayudando a otros clientes, así que tienes la opción de esperar a nuestros siguiente asistente disponible. Si no deseas esperar puedes solicitar que un agente te marque tan pronto le sea posible o, en un momento más conveniente para ti.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-4"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                           ¿Cómo RECIBO LA ATENCIÓN?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-4">
+                            <p> En cualquier momento que necesites ayuda o asistencia, sólo da clic en la pestaña roja de "Chat en línea", responde la sencilla encuesta previa al chat, y la sesión iniciará con nuestros agentes en línea. Si todos los agentes están ocupados en chats con otros clientes, la pestañana del "Chat en línea" aún aparecerá, pero no podrás iniciar un chat. 
+							En su lugar tendrás la opción de solicitar una llamada una vez que un agente se desocupe, o en un horario que mejor te convenga.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-5"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <label class="accordion__title">
+                            ¿Qué sucede con mi privacidad?
+                        </label>
+                        <div class="accordion__text" id="accordion-help-5">
+                            <p> Nosotros respetamos mucho la privacidad de nuestros clientes y nos adherimos a un Código de Conducta muy estricto. Para más información, por favor haz clic aquí para ver nuestra Política de Privacidad. <a href="https://www.jaguarmexico.com.mx/privacy-policy" target="_blank">aquí</a> ver nuestra Política de Privacidad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ChatUI ChatUI--dialog ChatUI--disclaimer" data-tab="disclaimer">
+            <div class="ChatUI__content">
+                <div class="text-left">
+                    <div class="text-center">
+    	                <h4>Aviso de Consentimiento:</h4>
+
+	                    <p class="small">Información importante para el consumidor</p>
+                    </div>
+
+                    <div class="x-small">
+                        <p>Al proporcionar esta información, usted acepta que Jaguar Land Rover México y / o sus agencias, socios, afiliados, minoristas autorizados, etc., se comuniquen por teléfono, SMS y / o correo electrónico en los números de teléfono móvil y / o correo electrónico. identificación proporcionada por usted a Jaguar Land Rover y / o sus agencias designadas, socios, afiliados, minoristas autorizados, etc. para ayudarlo con información sobre los productos y servicios de Jaguar y / o Land Rover, sus promociones, correos electrónicos, noticias, cartas, actividades de marketing, incluidos eventos, etc. de vez en cuando. Sus datos son procesados en conformidad a la Ley de Protección de Datos Personales en Posesión de los Particulares publicada el 5 de julio de 2010.
+</p>
+						<p>Le pedimos lea el Aviso de Privacidad en https://www.jaguarmexico.com.mx/privacy-policy. Si usted está de acuerdo con los términos y condiciones por favor haga clic en la casilla para aceptarlos y continuar con el servicio. En caso contrario por favor sólo cierre la ventana para finalizar con el servicio.
+</p>
+
+
+
+						</div>
+
+
+                    <p><button class="button button--primary button--block" onclick="{!c.agreedClick}">Acepto</button></p>
+                    <p><button class="button button--secondary button--block" onclick="{!c.disAgreedClick}">No Acepto</button></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="TabUI">
+        <button class="TabUI__button TabUI__button--active" onkeypress="{!c.tabButtonPressed}" onclick="{!c.tabButtonClick}" data-tab="chat" data-index="1">
+            <span class="TabUI__text">REGRESAR AL CHAT</span>
+        </button>
+        <button class="TabUI__button" onkeypress="{!c.tabButtonPressed}" onclick="{!c.tabButtonClick}" data-tab="legal" data-index="2">
+            <span class="TabUI__text">AVISO Legal</span>
+        </button>
+        <button class="TabUI__button" onkeypress="{!c.tabButtonPressed}" onclick="{!c.tabButtonClick}" data-tab="help" data-index="3">
+            <span class="TabUI__text">Ayuda</span>
+        </button>
+    </footer>
+</aura:component>

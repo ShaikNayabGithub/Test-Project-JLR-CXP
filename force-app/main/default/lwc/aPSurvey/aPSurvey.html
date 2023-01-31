@@ -1,0 +1,256 @@
+<html>
+    
+<template>
+  
+    <div style={formContainerClass}>
+        <div class={bodyClass} data-id="formbody1">
+            <template if:false={isLoaded}>
+                <div class="slds-spinner_container" style="position: fixed;">
+                    <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </template>
+            <div >
+                <template if:true={showcountryoption}>
+                    <div slot="actions" class={dropdownClass}>
+                        <lightning-combobox name="country" label="" value={defaultLang} placeholder=""
+                            options={countryOptions} onchange={handleCountryChange}></lightning-combobox>
+                    </div>
+                </template>
+                <div class={formTitle}> {header} <template if:true={isTradingAvailable}>- </template> {tradingName}</div>
+                   
+                <div class={formmainClass}>
+                    <template if:false = {surveyTypePurchase}>
+                        <template if:true={showSecHeader1}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader1}</b></div>
+                                <div class="heading4">{secHeader2}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader2}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader3}</b></div>
+                                <div class="heading4">{secHeader2}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader3}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader4}</b></div>
+                                <div class="heading4">{secHeader5}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader4}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader6}</b></div>
+                                <div class="heading4">{secHeader7}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader5}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader8}</b></div>
+                                <div class="heading4">{secHeader9}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader6}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader12}</b></div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader7}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader10}</b></div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader8}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader11}</b></div>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:true = {surveyTypePurchase}>
+                        <template if:true={showSecHeader1}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader1}</b></div>
+                                <div class="heading4">{secHeader2}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader2}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader3}</b></div>
+                                <div class="heading4">{secHeader2}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader3}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader4}</b></div>
+                                <div class="heading4">{secHeader2}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader4}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader5}</b></div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader5}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader6}</b></div>
+                                <div class="heading4">{secHeader7}</div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader6}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader8}</b></div>
+                            </div>
+                        </template>
+                        <template if:true={showSecHeader7}>
+                            <div class={heading}>
+                                <div class="heading3"><b>{secHeader9}</b></div>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:false={isSuccess}>
+                        <template if:false={backVisiblity}>
+                            <div class={heading}>
+                               <div class="heading3"><b>{heading1}</b></div>
+                                <div class="heading4">{heading2}</div>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:true={isSuccess}>
+                        <div class="confirmation">
+                            <lightning-formatted-rich-text value={confirmationMessage}></lightning-formatted-rich-text><br/><br/>
+                           <!-- <lightning-formatted-rich-text value={confirmationMessage1}></lightning-formatted-rich-text>-->
+                        </div>
+                    </template>
+                    <template if:true={isError}>
+                        <div class="error">
+                            <lightning-formatted-rich-text value={error}></lightning-formatted-rich-text>
+                        </div>
+                    </template>
+                    <template if:true={isForm}>
+                        <template for:each={arrQnA.value} for:item="value">
+                            <template if:true={value.showDependent}>
+                                <div class="questionsection" key={value.Id}>
+                                    <div class="questionsectioncontent">
+                                        <div class="questiontitle">
+                                            <span class="ordernumber">{value.serialNo}.</span>
+                                            <span>
+                                                <lightning-formatted-rich-text value={value.question} ></lightning-formatted-rich-text></span>
+                                            <template if:true={value.isRequired}><span
+                                                    class="requiredstar"></span></template>
+                                        </div>
+                                        <div class="questionelement">
+                                            <div class="anselement">
+                                                <template if:true={value.isRadio}>
+                                                    <lightning-radio-group data-id={value.recordId} variant=label-hidden
+                                                        class="radioset" name={value.sortorder} label=""
+                                                        options={value.answers} value={value.selectedRadioAnswer}
+                                                        type="radio" onchange={handleRadioChange}
+                                                        required={value.isRequired}
+                                                        message-when-value-missing={requiredText}>
+                                                    </lightning-radio-group>
+                                                </template>
+                                                <template if:true={value.isText}>
+                                                    <lightning-textarea data-id={value.textAnswerId}
+                                                        name={value.sortorder} label="" placeholder={textPlaceholder}
+                                                        variant=label-hidden value={value.selectedTextAnswer}
+                                                        required={value.isRequired} onblur={handleTextAnsChange}>
+                                                    </lightning-textarea>
+                                                </template>
+                                                <template if:true={value.isStar}>
+
+                                                    <lightning-radio-group data-id={value.recordId} class={starrate}
+                                                        variant=label-hidden name={value.sortorder} label=""
+                                                        options={value.answers} value={value.selectedRadioAnswer}
+                                                        type="button" onchange={handleRadioChange}
+                                                        required={value.isRequired}>
+                                                    </lightning-radio-group>
+                                                </template>
+                                                <template if:true={value.isCheckbox}>
+                                                    <lightning-checkbox-group name={value.sortorder}
+                                                        data-id={value.recordId} variant=label-hidden 
+                                                        options={value.answers} value={value.selectedCheckBoxAnswer}
+                                                        onchange={handleCheckBoxChange} required={value.isRequired}>
+                                                    </lightning-checkbox-group>
+                                                    <template if:true={value.isOtherType}>
+                                                        <div class="ansothers">
+                                                            <lightning-input type="text" data-id={value.recordId}
+                                                                value={value.otherTypeValue}
+                                                                onblur={handleTextBoxOtherChange} variant=label-hidden>
+                                                            </lightning-input>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    <template if:false={isSuccess}>
+                        <template if:false={backVisiblity}>
+                            <div class={heading}>
+                               <!-- <div class="questiontitle">
+                                    {pSYourdetails}
+                                </div>
+                                <span  class="slds-pill_container slds-box">
+                                    <span>
+                                        <lightning-input type="checkbox" name="LastName"></lightning-input>
+                                    </span>
+                                    <span class="pillSpan">
+                                        {pSPermissionBox}
+                                    </span>
+                                </span>
+                                -->
+                                <div class="questiontitle">
+                                    <lightning-formatted-rich-text value={pSToAgree}></lightning-formatted-rich-text><br/><br/>
+                                  
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                        <div class={navigationbarcontainer}>
+                            <div class={buttoncontainer}>
+                                <template if:true={backVisiblity}>
+                                    <button type="button" onclick={handleBack}
+                                        class="slds-m-left_x-small backbtn">{backText}</button>
+                                </template>
+                                <template if:true={nextVisiblity}>
+                                    <button type="button" onclick={handleNext}
+                                        class="slds-m-left_x-small nextbtn">{nextText}</button>
+                                </template>
+                                <template if:true={submitVisiblity}>
+                                    <button type="button" onclick={handleSubmit}
+                                        class="slds-m-left_x-small nextbtn">{submitText}</button>
+                                </template>
+                            </div>
+                            <div class={progressbarcontainer}>
+                                <div class="progressbardiv">
+                                    <div class="progressbarbackground">
+                                        <div class="bartext">
+                                            {pagetext} {defaultordernumber} {ofText} {totalpages}
+                                        </div>
+                                        <div class="progressbar">
+                                            <div class="progressbarcontrol" data-id="pbControl"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div slot="footer" class={formfooterClass}>
+                <div class="footersection1">
+                </div>
+                <div class="footersection2">
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+</html>

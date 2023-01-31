@@ -1,0 +1,728 @@
+<!--
+||      Name : VME_Planner.cmp
+||      Author: Sumit Kumar
+||      Purpose: VME Planner component will show all the Quarter L1 QMSP, L2 VME Category and L3 VME Campaign based on filter
+||      Created Date : 15/04/2018
+||      Modified By: <Your name>
+||      Modified Date : Date
+||      Reason : <your reason>
+-->
+<aura:component controller="VME_Planner_Controller" implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
+        <!-- Slider Variable -->
+        <aura:attribute name="BrandWisePlannerMap" type="Map" default="{}" description="This will hold all the brand wise planner data." />
+        <aura:attribute name="value" type="Integer" default="16" />
+        <aura:attribute name="min" type="Integer" default="0" />
+        <aura:attribute name="max" type="Integer" default="100" />
+        <aura:attribute name="step" type="String" default="0.01" />
+        <aura:attribute name="resolution" type="String" default="16rem" />
+        <aura:attribute name="showSlider" type="Boolean" default="false" />
+        <aura:attribute name="highResolution" type="String" default="16rem" />
+        <!-- Below is declaration of attributes -->
+        <aura:attribute name="map_Of_Filters" type="Map" default="{}" description="This will hold all the filters." />
+        <aura:attribute name="showResults" type="Boolean" default="FALSE" description="This attribute will toggle based on Data result filter."></aura:attribute>
+        <aura:attribute name="userInfo" type="user" />
+        <aura:attribute name="spinner" type="boolean" default="FALSE" />
+        <aura:attribute name="countryRegionMap" type="Map" description="This map handles the Region Country dependency." />
+        <aura:attribute name="map_Of_Filters_Selected" type="Map" default="{ Region: 'Select_Region', 
+                                                                              Country: 'Select_Country',
+                                                                                Model: 'Select_Model',
+                                                                                  Fiscal_Year: 'Select_Fiscal_Year',
+                                                                                    Brand:'Select_Brand',
+                                                                                      Quarter:'Select_Quarter',
+                                                                                        Category:'Select_Category',
+                                                                                          VME_Type: 'Select_VME-Type'
+                                                                              }" />
+        <aura:attribute name="defaultRpp" type="Integer" default="5" description="User current page number. Dynamic value" />
+        <aura:attribute name="pageCapacityOption" type="List" default="[
+                                                                        {'label': '1', 'value': '1'},
+                                                                                {'label': '2', 'value': '2'},
+                                                                                        {'label': '5', 'value': '5'},
+                                                                                                {'label': '10', 'value': '10'},
+                                                                                                        {'label': '20', 'value': '20'}
+                                                                                                                ]" />
+        <aura:attribute name="VME_Type" type="List" default="[
+                                                                        {'label': 'Select VME Type', 'value': 'Select_VME-Type'},
+                                                                                {'label': 'Regular', 'value': 'Regular'},
+                                                                                        {'label': 'Tactical', 'value': 'Tactical'},
+                                                                                                {'label': 'Discretionary', 'value': 'Discretionary'}
+                                                                                                        ]" />
+        <aura:attribute name="MasterDataList" type="List"></aura:attribute>
+        <aura:attribute name="MasterPageDataList" type="List"></aura:attribute>
+        <!-- Dependent Pick List  -->
+        <aura:attribute name="dependentCountryFieldMap" type="map" description="map to store dependent values with controlling value" />
+        <aura:attribute name="CountryDependingValues" type="list" default="[]" description="to store dependent field values" />
+        <aura:attribute name="disableRegionField" type="boolean" default="true" />
+        <aura:attribute name="bDisabledDependentFld" type="boolean" default="true" />
+        <!-- Dependent Pick List  -->
+        <aura:attribute name="dependentModelFieldMap" type="map" description="map to store dependent values with controlling value" />
+        <aura:attribute name="BrandDependingValues" type="list" default="[]" description="to store Model field values" />
+        <aura:attribute name="brandDisabledDependentFld" type="boolean" default="true" />
+        <aura:attribute name="makeCountryDisabled" type="boolean" default="false" description="This will be disabled the Country if User CountryISO is filled." />
+        <!-- Pagination Block Attribute Starts here -->
+        <aura:attribute name="currentPageNumber" type="Integer" default="1" description="User current page number. Dynamic value" />
+        <aura:attribute name="pageSize" type="Integer" default="5" description="Number of records to show on single page. Dynamic Selection" />
+        <aura:attribute name="totalPages" type="Integer" default="1" description="Total number of pages formed from data." />
+        <aura:attribute name="pageList" type="List" description="SHowing page number details." />
+        <aura:attribute name="TotalRecords" type="integer" default="0" description="This will tell you how many records came from Search." />
+        <aura:attribute name="RecordStart" type="integer" default="0" description="this will tell you records data start." />
+        <aura:attribute name="RecordEnd" type="integer" default="0" description="this will tell you records data end." />
+        <!--aura handler with waiting and donewaiting events-->
+        <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+        <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" />
+        <aura:handler name="init" value="{!this}" action="{!c.getFiltersData}"></aura:handler>
+        <!--loading spinner start-->
+        <aura:if isTrue="{!v.spinner}">
+                <div aura:id="spinnerId" class="slds-spinner_container">
+                        <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                                <span class="slds-assistive-text">Loading...</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                        </div>
+                </div>
+        </aura:if>
+        <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide" style="position: absolute !important;" />
+        <!-- Loading spinner end-->
+        <!-- Below is declaration of component body -->
+        <article class="slds-card">
+                <div aura:id="ModalBrandWiseQuarterPlanner" />
+                <div class="slds-card__header slds-grid" aura:id="card_Filter_Planner" id="card_Filter_Planner_Id">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__figure">
+                                        <span class="slds-icon_container" title="contact">
+                                                <!-- <lightning:avatar alternativeText="VME Planner" fallbackIconName="standard:dashboard" size="slds-avatar_large" src="" variant="circle"></lightning:avatar> -->
+                                                <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/planner_72.png'}" />
+                                        </span>
+                                </div>
+                                <div class="vmePlanner">
+                                        <h2 class="slds-card__header-title">
+                                                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="VME Planner" style="font-size: medium;">
+                                                        <span>VME</span><br></br><span>Planner</span>
+                                                </a>
+                                        </h2>
+                                </div>
+                                <div class="slds-grid slds-wrap" style="max-width: 90%;">
+                                        <div class="slds-col slds-large-size_10-of-12">
+                                                <div class="slds-grid slds-grid_vertical-align-start">
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="Fiscal Year" name="Select_FY" label="Fiscal Year" required="true" value="{!v.map_Of_Filters_Selected.Fiscal_Year}" placeholder="Select Fiscal Year" options="{! v.map_Of_Filters.Fiscal_Year }" />
+                                                                <!-- onchange="{! c.filterChangeRequest }" /> -->
+                                                        </div>
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="Quarter" name="Select_Q" label="Quarter" required="true" value="{!v.map_Of_Filters_Selected.Quarter}" placeholder="Select Quarter" options="{! v.map_Of_Filters.Quarter }" />
+                                                                <!-- onchange="{! c.filterChangeRequest }" /> -->
+                                                        </div>
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="Region" name="Select_Region" label="Region / Market" required="true" field-level-help="Region based on logged in User!" value="{!v.map_Of_Filters_Selected.Region}" placeholder="Select Region" options="{! v.map_Of_Filters.Region }" onchange="{! c.RegionChangeRequest }" fieldLevelHelp="Logged in user default Region / Market." disabled="{!v.disableRegionField}" />
+                                                                <!-- onchange="{! c.filterChangeRequest }" /> -->
+                                                                <!--  onchange="{! c.categoryChangeRequest }" -->
+                                                        </div>
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="Country" name="Select_Country" label="Country" required="true" value="{!v.map_Of_Filters_Selected.Country}" placeholder="Select Country" options="{! v.map_Of_Filters.Country}" fieldLevelHelp="Logged in user default Country ISO Code." disabled="{!v.makeCountryDisabled}" />
+                                                                <!-- onchange="{! c.filterChangeRequest }" /> -->
+                                                        </div>
+                                                </div>
+                                                <div class="slds-grid slds-grid_vertical-align-start">
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="Brand" name="Select_Brand" label="Brand" value="{!v.map_Of_Filters_Selected.Brand}" placeholder="Select Brand" options="{! v.map_Of_Filters.Brand}" onchange="{! c.BrandChangeRequest }" />
+                                                        </div>
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="Model" name="Select_Model" label="Model" value="{!v.map_Of_Filters_Selected.Model}" placeholder="Select Model" options="{! v.map_Of_Filters.Model}" disabled="{!v.brandDisabledDependentFld}" />
+                                                                <!-- onchange="{! c.filterChangeRequest }" /> -->
+                                                        </div>
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="Category" name="Select_Category" label="Category" value="{!v.map_Of_Filters_Selected.Category}" placeholder="Select Category" options="{! v.map_Of_Filters.Category}" />
+                                                                <!--  onchange="{! c.categoryChangeRequest }" -->
+                                                        </div>
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:combobox aura:id="VME-Type" name="Select_VME-Type" label="VME Type" value="{!v.map_Of_Filters_Selected.VME_Type}" placeholder="Select VME Type" options="{! v.VME_Type}" fieldLevelHelp="WBS type" />
+                                                                <!-- onchange="{! c.filterChangeRequest }" /> -->
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div class="slds-col slds-large-size_2-of-12 dropDown-paddingButton">
+                                                <div class="slds-grid slds-grid_vertical-align-start">
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:button variant="brand" iconName="utility:search" iconPosition="left" label="Run Planner" title="Run Planner" onclick="{! c.filterChangeRequest }" />
+                                                        </div>
+                                                </div>
+                                                <div class="slds-grid slds-grid_vertical-align-start" style="padding-top: 1.8em;">
+                                                        <div class="slds-col dropDown-padding_x-small">
+                                                                <lightning:button variant="Neutral" iconName="utility:refresh" iconPosition="left" label="Reset Filter" title="Reset Filter" onclick="{! c.resetFilter}" class="slds-button slds-button_neutral slds-p-right_large" />
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="slds-media__figure slds-p-left_large">
+                                        <aura:if isTrue="{!v.showResults}">
+                                                <!-- style="box-shadow: 0px 0px 5px 3px #9E9E9E;" -->
+                                                <span class="slds-icon_container" title="Get Brand wise report!!">
+                                                        <!-- <lightning:avatar alternativeText="VME Planner" fallbackIconName="standard:dashboard" size="slds-avatar_large" src="" variant="circle"></lightning:avatar> -->
+                                                        <a href="javascript:void(0);" onclick="{!c.getBrandWiseReport}"><img src="{!$Resource.VME_UnderOverRunIcon + '/icons/Quarter_Plan_72.png'}" /></a>
+                                                </span>
+                                        </aura:if>
+                                </div>
+                        </header>
+                </div>
+                <div aura:id="card_Header_Planner" id="card_Header_Planner_Id" class="slds-card__body slds-border_top container-outer" style="{!'overflow: scroll;width: 100%;min-height:'+v.highResolution+'!important;height:'+v.resolution+';'}">
+                        <!-- onresize="{!c.check_and_set_ResolutionController}"> -->
+                        <aura:if isTrue="{!v.showResults}">
+                                <div aura:id="ModalDialogPlaceholderPlanner" />
+                                <div aura:id="ModalDialogPlaceholderBundlePlanner" />
+                                <div class="container-inner">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--col-bordered" style="text-align:center;" role="grid">
+                                                <thead>
+                                                        <tr class="slds-line-height_reset slds-text-title_caps">
+                                                                <th class="slds-cell-buffer_left tableHeader" scope="col" style="width: 15%;">
+                                                                        <div class="slds-truncate" title="Name">L1 QMSP </div>
+                                                                </th>
+                                                                <th class="tableHeader" scope="col" style="width: 5%;">
+                                                                        <div class="slds-truncate" title="Title">MARKET </div>
+                                                                </th>
+                                                                <th class="tableHeader" scope="col" style="width: 5%;">
+                                                                        <div class="slds-truncate" title="Email">MODEL </div>
+                                                                </th>
+                                                                <th class="slds-cell-buffer_left tableHeader" scope="col">
+                                                                        <div class="slds-truncate" title="Company">L2 VME Categories</div>
+                                                                </th>
+                                                        </tr>
+                                                </thead>
+                                                <tbody>
+                                                        <aura:iteration var="QMSP_Master" items="{!v.MasterPageDataList}" indexVar="runningIndex">
+                                                                <tr class="slds-hint-parent">
+                                                                        <th scope="row" style="vertical-align: top !important;">
+                                                                                <div class="alwaystop">
+                                                                                        <div class="slds-truncate" title="{!QMSP_Master.QMSP_Object.Name}" style="font-size: 20px;font-weight: bolder;font-family: inherit;">
+                                                                                                <a href="{!'/lightning/r/Campaign/'+QMSP_Master.QMSP_Object.Id+'/view'}" tabindex="{!runningIndex}" target="_blank" data-index="{!QMSP_Master.QMSP_Object.Id}">{!QMSP_Master.QMSP_Object.Name}</a>
+                                                                                        </div><br />
+                                                                                        <!-- L1 QMSP Amount Table Matrix -->
+                                                                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--col-bordered" style="text-align:center;" role="grid">
+                                                                                                <thead>
+                                                                                                        <tr class="slds-line-height_reset slds-text-title_caps">
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="">
+                                                                                                                        </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="Approved Amount"> Approved </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="Adjusted Amount"> Adjusted </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="Planned Amount"> Planned </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="Planned Amount"> Retail </div>
+                                                                                                                </th>
+                                                                                                        </tr>
+                                                                                                </thead>
+                                                                                                <tbody>
+                                                                                                        <tr class="slds-hint-parent">
+                                                                                                                <th data-label="Volume" scope="row">
+                                                                                                                        <div class="" title=""> Volume </div>
+                                                                                                                </th>
+                                                                                                                <td data-label="{!QMSP_Master.QMSP_Object.VME_Approved_Volume__c}">
+                                                                                                                        <div class="" title="{!QMSP_Master.QMSP_Object.VME_Approved_Volume__c}"> {!QMSP_Master.QMSP_Object.VME_Approved_Volume__c} </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!QMSP_Master.QMSP_Object.VME_Adjust_volume__c}">
+                                                                                                                        <div class="" title="{!QMSP_Master.QMSP_Object.VME_Adjust_volume__c}"> {!QMSP_Master.QMSP_Object.VME_Adjust_volume__c} </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!QMSP_Master.QMSP_Object.VME_Planned_Volume__c}">
+                                                                                                                        <div class="" title="{!QMSP_Master.QMSP_Object.VME_Planned_Volume__c}"> {!QMSP_Master.QMSP_Object.VME_Planned_Volume__c} </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!QMSP_Master.QMSP_Object.VME_Retail_Volume__c}">
+                                                                                                                        <div class="" title="{!QMSP_Master.QMSP_Object.VME_Retail_Volume__c}"> {!QMSP_Master.QMSP_Object.VME_Retail_Volume__c} </div>
+                                                                                                                </td>
+                                                                                                        </tr>
+                                                                                                        <tr class="slds-hint-parent">
+                                                                                                                <th data-label="P/U Amount" scope="row">
+                                                                                                                        <div class="" title=""> P/U Amount </div>
+                                                                                                                </th>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Approved_P_U_Amount}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Approved_P_U_Amount}">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Approved_P_U_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Adjust_P_U_Amount}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Adjust_P_U_Amount}">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Adjust_P_U_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Planned_P_U_Amount}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Planned_P_U_Amount}">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Planned_P_U_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Retail_P_U}">
+                                                                                                                        <div class="" title="Approved Amount / Retail Volume">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Retail_P_U}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                        </tr>
+                                                                                                        <tr class="slds-hint-parent">
+                                                                                                                <th data-label="Amount" scope="row">
+                                                                                                                        <div class="" title=""> Amount </div>
+                                                                                                                </th>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Approved_Budget}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Approved_Budget}">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Approved_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Adjust_Budget}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Adjust_Budget}">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Adjust_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Planned_Budget}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Planned_Budget}"> (A)
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Planned_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Approved_Budget}">
+                                                                                                                        <div class="" title="Equals to Approved Amount , when Retail Volume > 0">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Retail_Volume__c == 0 ? 0 : QMSP_Master.QMSP_Object.VME_Approved_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                        </tr>
+                                                                                                </tbody>
+                                                                                        </table><br></br>
+                                                                                        <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_col-bordered" style="text-align:center;">
+                                                                                                <thead>
+                                                                                                        <tr class="">
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="">
+                                                                                                                        </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="Actual"> Actual </div>
+                                                                                                                </th>
+                                                                                                                <aura:if isTrue="{!QMSP_Master.QMSP_Object.VME_Under_Over_Run != 0}">
+                                                                                                                        <th class="tableHeader">
+                                                                                                                                <div class="" title="Under/Over Run"> Under/Over Spent </div>
+                                                                                                                        </th>
+                                                                                                                </aura:if>
+                                                                                                                <th class="tableHeader">
+                                                                                                                        <div class="" title="Quarter"> Quarter </div>
+                                                                                                                </th>
+                                                                                                        </tr>
+                                                                                                </thead>
+                                                                                                <tbody>
+                                                                                                        <tr class="slds-hint-parent">
+                                                                                                                <th data-label="Volume" scope="row">
+                                                                                                                        <div class="" title=""> Volume </div>
+                                                                                                                </th>
+                                                                                                                <td data-label="{!QMSP_Master.QMSP_Object.VME_Actual_Volume__c}">
+                                                                                                                        <div class="" title="{!QMSP_Master.QMSP_Object.VME_Actual_Volume__c}"> {!QMSP_Master.QMSP_Object.VME_Actual_Volume__c} </div>
+                                                                                                                </td>
+                                                                                                                <aura:if isTrue="{!QMSP_Master.QMSP_Object.VME_Under_Over_Run != 0}">
+                                                                                                                        <td data-label="" rowspan="3">
+                                                                                                                                <div class="" title="">
+                                                                                                                                        <aura:if isTrue="{!QMSP_Master.underOverRunNotification == 'Grey'}">
+                                                                                                                                                <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_64.png'}" />
+                                                                                                                                        </aura:if>
+                                                                                                                                        <aura:if isTrue="{!QMSP_Master.underOverRunNotification == 'Green'}">
+                                                                                                                                                <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/UR_64.png'}" />
+                                                                                                                                        </aura:if>
+                                                                                                                                        <aura:if isTrue="{!QMSP_Master.underOverRunNotification == 'Red'}">
+                                                                                                                                                <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/OR_64.png'}" />
+                                                                                                                                        </aura:if>
+                                                                                                                                </div>
+                                                                                                                        </td>
+                                                                                                                </aura:if>
+                                                                                                                <td data-label="" rowspan="3">
+                                                                                                                        <div class="" title="" style="width: 80px;!important">
+                                                                                                                                <aura:if isTrue="{!QMSP_Master.QMSP_Object.QMSP_Quarter__c == 'Q1'}">
+                                                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/Q1_80.png'}" />
+                                                                                                                                </aura:if>
+                                                                                                                                <aura:if isTrue="{!QMSP_Master.QMSP_Object.QMSP_Quarter__c == 'Q2'}">
+                                                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/Q2_80.png'}" />
+                                                                                                                                </aura:if>
+                                                                                                                                <aura:if isTrue="{!QMSP_Master.QMSP_Object.QMSP_Quarter__c == 'Q3'}">
+                                                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/Q3_80.png'}" />
+                                                                                                                                </aura:if>
+                                                                                                                                <aura:if isTrue="{!QMSP_Master.QMSP_Object.QMSP_Quarter__c == 'Q4'}">
+                                                                                                                                        <img src="{!$Resource.VME_UnderOverRunIcon + '/icons/Q4_80.png'}" />
+                                                                                                                                </aura:if>
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                        </tr>
+                                                                                                        <tr class="slds-hint-parent">
+                                                                                                                <th data-label="P/U Amount" scope="row">
+                                                                                                                        <div class="" title=""> Amount </div>
+                                                                                                                </th>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Actual_Spent}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Actual_Spent}"> (B)
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Actual_Spent}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                        </tr>
+                                                                                                        <tr class="slds-hint-parent">
+                                                                                                                <th data-label="Amount" scope="row">
+                                                                                                                        <div class="" title=""> Under/Over Spent (A - B) </div>
+                                                                                                                </th>
+                                                                                                                <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Under_Over_Run}">
+                                                                                                                        <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+QMSP_Master.QMSP_Object.VME_Under_Over_Run}">
+                                                                                                                                <lightning:formattedNumber value="{!QMSP_Master.QMSP_Object.VME_Under_Over_Run}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                        </tr>
+                                                                                                </tbody>
+                                                                                        </table>
+                                                                                        <!-- *************************************************************************************** -->
+                                                                                </div>
+                                                                        </th>
+                                                                        <td role="gridcell">
+                                                                                <div class="slds-truncate" title="Market" style="padding-top: 3rem;"> {!QMSP_Master.QMSP_Object.Market__c} </div>
+                                                                        </td>
+                                                                        <td role="gridcell" title="{!QMSP_Master.QMSP_Object.QMSP_Model__r.Name}" style="white-space:normal;">
+                                                                                <!-- style="white-space: normal;word-break: break-all;" -->
+                                                                                <a href="{!'/lightning/r/Product2/'+QMSP_Master.QMSP_Object.QMSP_Model__r.Id+'/view'}" style="padding-top: 3rem;" target="_blank" data-index="{!QMSP_Master.QMSP_Object.QMSP_Model__r.Id}">{!QMSP_Master.QMSP_Object.QMSP_Model__r.Name}</a>
+                                                                        </td>
+                                                                        <td role="gridcell">
+                                                                                <!-- VME MODULE STARTS HERE -->
+                                                                                <aura:if isTrue="{!QMSP_Master.VME_Wrapper_List.length > 0}">
+                                                                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--col-bordered" role="grid">
+                                                                                                <thead>
+                                                                                                        <tr class="slds-line-height_reset slds-text-title_caps">
+                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Title"> WBS Name </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Title"> Category </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Title"> Sub-category </div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Company"> L2 VME Duration </div>
+                                                                                                                </th>
+                                                                                                                <!--th class="tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Email">Planned P/U Amount</div>
+                                                                                                                </th>
+                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Company">Planned Volume</div>
+                                                                                                                </th-->
+                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Company"> L2 Category Amount Matrix </div>
+                                                                                                                </th>
+                                                                                                                <th class="slds-cell-buffer_left tableHeader" scope="col">
+                                                                                                                        <div class="slds-truncate" title="Company"> L3 VME Campaigns </div>
+                                                                                                                </th>
+                                                                                                        </tr>
+                                                                                                </thead>
+                                                                                                <tbody>
+                                                                                                        <aura:iteration var="VME_Master" items="{!QMSP_Master.VME_Wrapper_List}">
+                                                                                                                <tr class="slds-hint-parent">
+                                                                                                                        <td role="gridcell">
+                                                                                                                                <div class="slds-text-body_regular slds-text-align_left slds-text-color_success">
+                                                                                                                                        <a href="{!'/lightning/r/VME_Campaign__c/'+VME_Master.VME_Object.Id+'/view'}" target="_blank" tabindex="-1">{!VME_Master.VME_Object.VME_External_ID__c}</a>
+                                                                                                                                </div>
+                                                                                                                        </td>
+                                                                                                                        <td role="gridcell">
+                                                                                                                                <div class="slds-text-body_regular slds-text-align_left slds-text-color_success"> {!VME_Master.VME_Object.VME_Category__c} </div>
+                                                                                                                        </td>
+                                                                                                                        <td role="gridcell">
+                                                                                                                                <div class="slds-text-body_regular slds-text-align_left slds-text-color_success"> {!VME_Master.VME_Object.VME_Sub_Category__c} </div>
+                                                                                                                        </td>
+                                                                                                                        <td role="gridcell">
+                                                                                                                                <div class="slds-text-body_regular slds-text-align_left slds-text-color_success">
+                                                                                                                                        <ui:outputDate value="{!VME_Master.VME_Object.VME_Start_Date__c}" format="{!v.userInfo.CPF__c}" /> &nbsp;<br />to&nbsp;
+                                                                                                                                        <ui:outputDate value="{!VME_Master.VME_Object.VME_End_Date__c}" format="{!v.userInfo.CPF__c}" />
+                                                                                                                                        <!-- <lightning:formattedDateTime value="{!VME_Master.VME_Object.VME_Start_Date__c}"/>&nbsp;to&nbsp; 
+                                                                                                                                        <lightning:formattedDateTime value="{!VME_Master.VME_Object.VME_End_Date__c}" year="numeric" month="numeric" day="numeric" format=""/> -->
+                                                                                                                                </div>
+                                                                                                                        </td>
+                                                                                                                        <!--td role="gridcell">
+                                                                                                                                <lightning:formattedNumber value="{!VME_Master.VME_Object.VME_Planned_PU_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                
+                                                                                                                        </td>
+                                                                                                                        <td role="gridcell">
+                                                                                                                                <div class="slds-truncate">{!VME_Master.VME_Object.VME_Planned_Volume__c}</div>
+                                                                                                                        </td-->
+                                                                                                                        <td>
+                                                                                                                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover slds-table_col-bordered" style="text-align:center;">
+                                                                                                                                        <thead>
+                                                                                                                                                <tr class="">
+                                                                                                                                                        <th class="tableHeader">
+                                                                                                                                                                <div class="" title="">
+                                                                                                                                                                </div>
+                                                                                                                                                        </th>
+                                                                                                                                                        <th class="tableHeader">
+                                                                                                                                                                <div class="" title="Approved Amount"> Approved </div>
+                                                                                                                                                        </th>
+                                                                                                                                                        <th class="tableHeader">
+                                                                                                                                                                <div class="" title="Planned Amount"> Planned </div>
+                                                                                                                                                        </th>
+                                                                                                                                                        <th class="tableHeader">
+                                                                                                                                                                <div class="" title="Adjusted Amount"> Adjusted </div>
+                                                                                                                                                        </th>
+                                                                                                                                                </tr>
+                                                                                                                                        </thead>
+                                                                                                                                        <tbody>
+                                                                                                                                                <tr class="slds-hint-parent">
+                                                                                                                                                        <th data-label="Volume" scope="row">
+                                                                                                                                                                <div class="" title=""> Volume </div>
+                                                                                                                                                        </th>
+                                                                                                                                                        <td data-label="{!VME_Master.VME_Object.VME_Approved_Volume__c}">
+                                                                                                                                                                <div class="" title="{!VME_Master.VME_Object.VME_Approved_Volume__c}"> {!VME_Master.VME_Object.VME_Approved_Volume__c} </div>
+                                                                                                                                                        </td>
+                                                                                                                                                        <td data-label="{!VME_Master.VME_Object.VME_Planned_Volume__c}">
+                                                                                                                                                                <div class="" title="{!VME_Master.VME_Object.VME_Planned_Volume__c}"> {!VME_Master.VME_Object.VME_Planned_Volume__c} </div>
+                                                                                                                                                        </td>
+                                                                                                                                                        <td data-label="{!VME_Master.VME_Object.VME_Adjusted_Volume__c}">
+                                                                                                                                                                <div class="" title="{!VME_Master.VME_Object.VME_Adjusted_Volume__c}"> {!VME_Master.VME_Object.VME_Adjusted_Volume__c} </div>
+                                                                                                                                                        </td>
+                                                                                                                                                </tr>
+                                                                                                                                                <tr class="slds-hint-parent">
+                                                                                                                                                        <th data-label="P/U Amount" scope="row">
+                                                                                                                                                                <div class="" title=""> P/U Amount </div>
+                                                                                                                                                        </th>
+                                                                                                                                                        <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Approved_PU_Amount}">
+                                                                                                                                                                <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Approved_PU_Amount}">
+                                                                                                                                                                        <lightning:formattedNumber value="{!VME_Master.VME_Object.VME_Approved_PU_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                </div>
+                                                                                                                                                        </td>
+                                                                                                                                                        <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Planned_PU_Amount}">
+                                                                                                                                                                <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Planned_PU_Amount}">
+                                                                                                                                                                        <lightning:formattedNumber value="{!VME_Master.VME_Object.VME_Planned_PU_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                </div>
+                                                                                                                                                        </td>
+                                                                                                                                                        <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Adjust_PU_Amount}">
+                                                                                                                                                                <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Adjust_PU_Amount}">
+                                                                                                                                                                        <lightning:formattedNumber value="{!VME_Master.VME_Object.VME_Adjust_PU_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                </div>
+                                                                                                                                                        </td>
+                                                                                                                                                </tr>
+                                                                                                                                                <tr class="slds-hint-parent">
+                                                                                                                                                        <th data-label="Amount" scope="row">
+                                                                                                                                                                <div class="" title=""> Amount </div>
+                                                                                                                                                        </th>
+                                                                                                                                                        <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Approved_Budget}">
+                                                                                                                                                                <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Approved_Budget}">
+                                                                                                                                                                        <lightning:formattedNumber value="{!VME_Master.VME_Object.VME_Approved_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                </div>
+                                                                                                                                                        </td>
+                                                                                                                                                        <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Planned_Budget}">
+                                                                                                                                                                <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Planned_Budget}">
+                                                                                                                                                                        <lightning:formattedNumber value="{!VME_Master.VME_Object.VME_Planned_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                </div>
+                                                                                                                                                        </td>
+                                                                                                                                                        <td data-label="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Adjust_Budget}">
+                                                                                                                                                                <div class="" title="{!v.userInfo.DefaultCurrencyIsoCode+' '+VME_Master.VME_Object.VME_Adjust_Budget}">
+                                                                                                                                                                        <lightning:formattedNumber value="{!VME_Master.VME_Object.VME_Adjust_Budget}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                </div>
+                                                                                                                                                        </td>
+                                                                                                                                                </tr>
+                                                                                                                                        </tbody>
+                                                                                                                                </table>
+                                                                                                                        </td>
+                                                                                                                        <td role="gridcell">
+                                                                                                                                <!-- L3 VME Campaign MODULE STARTS HERE -->
+                                                                                                                                <aura:if isTrue="{!VME_Master.Scheme_List.length > 0}">
+                                                                                                                                        <table class="slds-table slds-table_cell-buffer slds-table--col-bordered" role="grid">
+                                                                                                                                                <thead>
+                                                                                                                                                        <tr class="slds-line-height_reset slds-text-title_caps">
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Name"> L3 VME Campaign Name </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Name"> Model </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Name"> Show Retailer </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Name"> Derivative/VIN </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Title"> P/U Amount </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Email"> JLR Share </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Company"> Retailer Contribution </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Company"> L3 VME Campaign Duration </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Company"> Level 3 Description </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Company"> # Claims Available </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Company"> Total Claim Amount </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Company"> # Claims Approved </div>
+                                                                                                                                                                </th>
+                                                                                                                                                                <th class="tableHeader" scope="col">
+                                                                                                                                                                        <div class="slds-truncate" title="Company"> Total Approved Amount </div>
+                                                                                                                                                                </th>
+                                                                                                                                                        </tr>
+                                                                                                                                                </thead>
+                                                                                                                                                <tbody>
+                                                                                                                                                        <aura:iteration var="SCHEME_Master" items="{!VME_Master.Scheme_List}">
+                                                                                                                                                                <tr class="slds-hint-parent">
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <div class="slds-text-body_regular slds-text-align_left slds-text-color_success">
+                                                                                                                                                                                        <a href="{!'/lightning/r/VME_Schemes__c/'+SCHEME_Master.Id+'/view'}" target="_blank" tabindex="-1">{!SCHEME_Master.Name}</a>
+                                                                                                                                                                                </div>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td scope="row">
+                                                                                                                                                                                <!-- Model -->
+                                                                                                                                                                                <aura:if isTrue="{!SCHEME_Master.VME_Campaign__r.VME_Model__c != null}">
+                                                                                                                                                                                        <div class="slds-truncate" title="{!SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Model__r.Name}">
+                                                                                                                                                                                                <a href="{!'/lightning/r/Product2/'+SCHEME_Master.VME_Campaign__r.VME_Model__c+'/view'}" target="_blank" tabindex="-1">{!SCHEME_Master.VME_Campaign__r.VME_Model__r.Name}</a>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                </aura:if>
+                                                                                                                                                                                <!-- <aura:if isTrue="{!SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Model__r.Name == null}">
+                                                                                                                                                                                        <div class="slds-truncate" title="{!SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Name}">
+                                                                                                                                                                                                <a href="{!'/lightning/r/Product2/'+SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Id+'/view'}" target="_blank" tabindex="-1">{!SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Name}</a>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                </aura:if> -->
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td scope="row">
+                                                                                                                                                                                <!-- Show Retailer -->
+                                                                                                                                                                                <aura:if isTrue="{!SCHEME_Master.VME_Child_Schemes__r.length>0}">
+                                                                                                                                                                                        <!-- <lightning:button class="showRetailerCss" variant="brand" value="{!SCHEME_Master.VME_Child_Schemes__r}" label="Show Retailers" onclick="{!c.showRetailer}" disabled="{!SCHEME_Master.VME_InActive__c}" iconName="utility:people"></lightning:button> -->
+                                                                                                                                                                                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="List the number of Retailer Based L3 VME Campaign related to this L3 VME Campaign!!" onclick="{!c.showRetailer}" disabled="{!SCHEME_Master.VME_InActive__c}" data-record="{!SCHEME_Master.Id}">Show Retailers</a>
+                                                                                                                                                                                        <!-- <lightning:icon class="showRetailerCss" value="{!SCHEME_Master.VME_Child_Schemes__r}" onclick="{!c.showRetailer}" disabled="{!SCHEME_Master.VME_InActive__c}" iconName="utility:people" alternativeText="Show Retailers" variant="base" size="small">Show Retailers</lightning:icon> -->
+                                                                                                                                                                                        <aura:set attribute="else"> All Retailers </aura:set>
+                                                                                                                                                                                </aura:if>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td scope="row">
+                                                                                                                                                                                <aura:if isTrue="{!SCHEME_Master.VME_Bundlings__r.length>0}">
+                                                                                                                                                                                        <!-- <lightning:button class="showRetailerCss" variant="brand" value="{!SCHEME_Master.VME_Bundlings__r}" label="Show Retailers" onclick="{!c.showBundle}" disabled="{!SCHEME_Master.VME_InActive__c}" iconName="utility:people"></lightning:button> -->
+                                                                                                                                                                                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="List the number of bundling related to this L3 VME Campaign!!" onclick="{!c.showBundle}" disabled="{!SCHEME_Master.VME_InActive__c}" data-record="{!SCHEME_Master.Id}">Show Details</a>
+                                                                                                                                                                                        <aura:set attribute="else"> No Derivative/VIN Added to L3 VME Campaign. </aura:set>
+                                                                                                                                                                                </aura:if>
+                                                                                                                                                                                <!-- <div class="slds-truncate" title="{!SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Name}" style="max-width:100%!important;white-space:normal;">
+                                                                                                                                                                                        <aura:if isTrue="{!SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Model__r.Name != null}">
+                                                                                                                                                                                                <a href="{!'/lightning/r/Product2/'+SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Id+'/view'}" target="_blank" tabindex="-1">{!SCHEME_Master.VME_Bundlings__r[0].VME_Model_Derivative__r.Name}</a>
+                                                                                                                                                                                        </aura:if>
+                                                                                                                                                                                </div> -->
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <lightning:formattedNumber value="{!SCHEME_Master.VME_PU_Amount}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <div class="slds-truncate"> {!SCHEME_Master.VME_JLR_Share__c}% </div>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <lightning:formattedNumber value="{!SCHEME_Master.VME_Retailer_Contribution}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <div class="{!SCHEME_Master.VME_InActive__c ? 'slds-text-body_regular slds-text-align_left slds-text-color_error' : 'slds-text-body_regular slds-text-align_left slds-text-color_success'}" title="Red : Active L3 VME Campaign !!  || Green : Active L3 VME Campaign">
+                                                                                                                                                                                        <ui:outputDate value="{!SCHEME_Master.VME_Start_Date__c}" format="{!v.userInfo.CPF__c}" /> &nbsp;<br />to&nbsp;
+                                                                                                                                                                                        <ui:outputDate value="{!SCHEME_Master.VME_End_Date__c}" format="{!v.userInfo.CPF__c}" />
+                                                                                                                                                                                        <!-- <lightning:formattedDateTime value="{!SCHEME_Master.VME_Start_Date__c}" year="numeric" month="numeric" day="numeric"/>&nbsp;to&nbsp; 
+                                                                                                                                                                                       <lightning:formattedDateTime value="{!SCHEME_Master.VME_End_Date__c}" year="numeric" month="numeric" day="numeric"/> -->
+                                                                                                                                                                                </div>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <div class="slds-truncate"> {!SCHEME_Master.VME_Level_3_Description__c} </div>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <div class="slds-truncate"> {!SCHEME_Master.VME_Claims_Available__c} </div>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <lightning:formattedNumber value="{!SCHEME_Master.VME_Total_Amount_Available}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <div class="slds-truncate"> {!SCHEME_Master.VME_Claims_Approved__c} </div>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td role="gridcell">
+                                                                                                                                                                                <lightning:formattedNumber value="{!SCHEME_Master.VME_Total_Amount_Approved}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code" />
+                                                                                                                                                                        </td>
+                                                                                                                                                                </tr>
+                                                                                                                                                        </aura:iteration>
+                                                                                                                                                </tbody>
+                                                                                                                                        </table>
+                                                                                                                                        <aura:set attribute="else">
+                                                                                                                                                <div class="slds-card__body slds-cell-buffer_left" style="text-align:left;margin:0.25% 0.25%;"> No active L3 VME Campaign are available for this L2 VME Category. </div>
+                                                                                                                                        </aura:set>
+                                                                                                                                </aura:if>
+                                                                                                                        </td>
+                                                                                                                </tr>
+                                                                                                        </aura:iteration>
+                                                                                                </tbody>
+                                                                                        </table>
+                                                                                        <aura:set attribute="else">
+                                                                                                <div class="slds-card__body slds-cell-buffer_left" style="text-align: left;margin: 0.25% 0.25%;"> No L2 VME Category available for this L1 QMSP. </div>
+                                                                                        </aura:set>
+                                                                                </aura:if>
+                                                                        </td>
+                                                                </tr>
+                                                        </aura:iteration>
+                                                </tbody>
+                                        </table>
+                                </div>
+                                <!-- <aura:set attribute="else">
+                                <div class="slds-card__body slds-box slds-border_top" style="text-align: center; margin-top:1.5%;"> Selected filters are not yielding results. Please refine criteria by selecting a Region, Market, Brand, Model and Fiscal Year. </div>
+                        </aura:set> -->
+                        </aura:if>
+                </div>
+                <footer class="slds-card__footer" aura:id="card_Footer_Planner" id="card_Footer_Planner_Id">
+                        <aura:if isTrue="{!v.showResults}">
+                                <lightning:layout>
+                                        <lightning:layoutItem size="1" flexibility="auto">
+                                                <label class="slds-form-element__label" style="margin-right: -0.2rem;padding-left: 0.25rem;">Records/page</label>
+                                                <lightning:helptext content="Number of QMSP Records display per page." class="customIcon" />
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="1" flexibility="auto">
+                                                <aura:if isTrue="{!v.showResults}">
+                                                        <div class="slds-no-flex">
+                                                                <!-- <lightning:combobox name="Select_RecNumber" aura:id="Select_RecNumber" label="Record/ page" value="5" placeholder="Record per Page" options="{! v.pageCapacityOption}" onchange="{! c.onCapacityChange }" class="Select-menu-outer label-hidden"/> -->
+                                                                <!-- <ui:inputSelect class="single" aura:id="inputPagePerRecordSelection" options="{! v.pageCapacityOption}" value="5" change="{! c.onCapacityChange }"> 
+                                                                </ui:inputSelect> -->
+                                                                <lightning:select name="Record_per_Page" aura:id="Record_per_Page" value="{!v.defaultRpp}" label="Record/Page" class="label-hidden" onchange="{!c.onCapacityChange}">
+                                                                        <aura:iteration items="{!v.pageCapacityOption}" var="po">
+                                                                                <option value="{!po.value}">{!po.label} </option>
+                                                                        </aura:iteration>
+                                                                </lightning:select>
+                                                        </div>
+                                                </aura:if>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="7" flexibility="auto">
+                                                <lightning:button label="First" iconName="utility:left" iconPosition="left" onclick="{!c.onFirst}" disabled="{! v.currentPageNumber == 1}" />
+                                                <lightning:button iconName="utility:chevronleft" iconPosition="left" onclick="{!c.onPrev}" disabled="{! v.currentPageNumber == 1}" />
+                                                <aura:if isTrue="{!v.totalPages != 1}">
+                                                        <span class="{! (v.currentPageNumber == 1) ? 'slds-p-horizontal_x-small paginationSpan' : 'slds-p-horizontal_x-small' }">
+                                                                <a onclick="{!c.processMe}" name="1" class="{! (v.currentPageNumber == 1) ? 'focusPage' : ''}">1</a>
+                                                        </span>
+                                                        <span class="slds-p-horizontal_xxx-small">
+                                                                <a>...</a>
+                                                        </span>
+                                                        <aura:iteration items="{!v.pageList}" var="item">
+                                                                <span class="{! (v.currentPageNumber == item) ? 'slds-p-horizontal_x-small paginationSpan' : 'slds-p-horizontal_x-small' }">
+                                                                        <a onclick="{!c.processMe}" name="{!item}" class="{! (v.currentPageNumber == item) ? 'focusPage' : ''}">{!item}</a>
+                                                                </span>
+                                                        </aura:iteration>
+                                                        <span class="slds-p-horizontal_xxx-small">
+                                                                <a>...</a>
+                                                        </span>
+                                                </aura:if>
+                                                <span class="{! (v.currentPageNumber == v.totalPages) ? 'slds-p-horizontal_x-small paginationSpan' : 'slds-p-horizontal_x-small' }">
+                                                        <a onclick="{!c.processMe}" name="{!v.totalPages}" class="{! (v.currentPageNumber == v.totalPages) ? 'focusPage' : ''}">{!v.totalPages}</a>
+                                                </span>
+                                                <!-- <span class="slds-p-horizontal_xxx-small">Records : {!v.RecordStart}-{!v.RecordEnd} of {!v.TotalRecords} || Page {!v.currentPageNumber} of {!v.totalPages}</span> -->
+                                                <lightning:button iconName="utility:chevronright" iconPosition="right" disabled="{! v.currentPageNumber == v.totalPages}" onclick="{!c.onNext}" />
+                                                <lightning:button label="Last" iconName="utility:right" iconPosition="right" disabled="{! v.currentPageNumber == v.totalPages}" onclick="{!c.onLast}" />
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="1" flexibility="auto" class="sliderIconCss">
+                                                <lightning:helptext content="Change slider to adjust your result view height!" class="customIcon" />
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="2" flexibility="auto">
+                                                <!-- <lightning:slider label="Screen Size" size="medium"/> -->
+                                                <aura:if isTrue="{!v.showSlider}">
+                                                        <lightning:slider aura:id="mySlider" min="{! v.min }" max="{! v.max }" step="{! v.step }" size="medium" type="horizontal" value="{! v.value }" variant="label-hidden" disabled="false" onchange="{! c.handleRangeChange }" />
+                                                </aura:if>
+                                        </lightning:layoutItem>
+                                </lightning:layout>
+                        </aura:if>
+                </footer>
+        </article>
+</aura:component>

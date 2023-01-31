@@ -1,0 +1,262 @@
+<aura:component controller="AllAssetSearch_Controller" implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,forceCommunity:searchInterface" access="global" >
+    <aura:attribute name="assetId" type="string" />   
+    
+    <aura:registerEvent name="Actionname" type="c:Actionevent"  />
+    <aura:handler name="Actionname" event="c:Actionevent"
+                  action="{!c.closeactionevt}"/>
+    
+    <aura:attribute name="servicePlanContracts" type="Object[]" />  
+    <aura:attribute name="assetFound" type="Object" /> 
+    <aura:attribute name="selectedServicePlan" type="Object" /> 
+    <aura:attribute name="currentUser" type="Object" />
+    <aura:attribute name="searchText" type="String" default=""/>
+    <aura:attribute name="showResults" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="foundResult" type="Boolean" default="false" />   
+    <aura:attribute name="showModal" type="Boolean" default="false"/> 
+    <aura:attribute name="showRDAModal" type="Boolean" default="false" />
+    <aura:attribute name="showNewSP" type="Boolean" default="true" />
+    <aura:attribute name="isExtended" type="Boolean" default="false"/>
+    <aura:attribute name="showExtendedBtn" type="Boolean" default="true"/>
+    <aura:attribute name="showExtendedButtonForExpired" type="Boolean" default="false"/>
+    <aura:attribute name="isCancel" type="Boolean" default="false"/>
+    <aura:attribute name="isTransfer" type="Boolean" default="false"/>
+    <aura:attribute name="showTransferBtn" type="Boolean" default="true"/>
+    <aura:attribute name="modalName" type="string"/>
+    <aura:attribute name="doNotShowNewServicePlanButton" type="Boolean" default="false" />
+    <aura:attribute name="missingDateInfo" type="Boolean" default="false" />
+    <aura:attribute name="showCancelBtn" type="Boolean" default="false" />
+    <aura:attribute name="complimentary" type="string"/>
+    <aura:attribute name="extended" type="string"/>
+    
+    <lightning:layout multipleRows="true" class="slds-form">
+        <lightning:layoutItem padding="around-small" size="12"><span >{!$Label.c.SPC_Search_For_Vehicle}</span></lightning:layoutItem>
+        <div class="slds-form-element slds-lookup" data-select="single">
+            
+            <div class="slds-form-element__control">
+                <span onkeyup="{!c.keyCheck}" class="slds-input-has-icon slds-input-has-icon--right">
+                    <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{!c.handleClick }" alternativeText="{!$Label.c.btnSearch}" class="slds-input__icon" />
+                    <ui:inputText aura:id="inputSearch" value="{!v.searchText}" class="slds-lookup__search-input slds-input" placeholder="{!$Label.c.SPC_Full_VIN_Search}" />
+                </span>
+            </div>
+        </div>   
+    </lightning:layout> 
+    <div><p> <br/></p></div>
+    <div><p></p></div>
+    <aura:if isTrue="{!v.showResults == true}">  
+        <aura:if isTrue="{!v.foundResult == true}">  
+            <lightning:card title="{!$Label.c.SPC_Asset_Results}">
+                <div><p></p></div>
+                <lightning:layout>
+                    <lightning:layoutItem size="12">
+                        <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid">
+                            <tbody>
+                                <tr></tr>                      
+                            </tbody>
+                        </table>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <aura:if isTrue="{!v.showSpinner}"><lightning:spinner /></aura:if>
+                <!-- Asset Search Results -->
+                
+                <lightning:layout multipleRows="true" class="slds-form">  
+                    <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">   <div style=" font-weight: bold; ">{!$Label.c.Vehicle}:&nbsp; {!v.assetFound.Name}</div>  </span></lightning:layoutItem>
+                    
+                    
+                    <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Asset+': &lt;/b&gt;'}"/></b>  <lightning:formattedText value="{!v.assetFound.Name}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Stock_Search_Brand+': &lt;/b&gt;'}"/></b>   <lightning:formattedText value="{!v.assetFound.Brand__r.Name}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Stock_Search_Model+': &lt;/b&gt;'}"/></b>  <lightning:formattedText value="{!v.assetFound.Model__r.Name}" /></lightning:layoutItem>
+                    <aura:if isTrue ="{!v.assetFound.AccountCountryCode__c != 'AU'}">
+                        <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Registration+': &lt;/b&gt;'}"/></b>  <lightning:formattedText value="{!v.assetFound.Registration_Number__c}" /></lightning:layoutItem>
+                        <aura:set attribute="else"> 
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Rego+': &lt;/b&gt;'}"/></b>  <lightning:formattedText value="{!v.assetFound.Registration_Number__c}" /></lightning:layoutItem>
+                        </aura:set>
+                    </aura:if>
+                    <!-- -->
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Model_Year+': &lt;/b&gt;'}"/></b>     <lightning:formattedText value="{!v.assetFound.Model_Year__c}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Transmission+': &lt;/b&gt;'}"/></b>    <lightning:formattedText value="{!v.assetFound.Transmission__c}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Stock_Search_Derivative+': &lt;/b&gt;'}"/></b>   <lightning:formattedText value="{!v.assetFound.Derivative__r.Name}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Colour_FB+': &lt;/b&gt;'}"/></b>   <lightning:formattedText value="{!v.assetFound.Exterior_Colour__c}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Warranty_Start_Date+': &lt;/b&gt;'}"/></b>   <lightning:formattedDateTime value="{!v.assetFound.Warranty_Start_Date__c}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Warranty_End_Date+': &lt;/b&gt;'}"/></b>    <lightning:formattedDateTime value="{!v.assetFound.Warranty_End_Date__c}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                    <aura:if isTrue="{!and(v.servicePlanContracts != null, v.servicePlanContracts.length > 0)}">
+                        <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title"><div style=" font-weight: bold; ">{!$Label.c.SPC_Existing_Service_Plan}</div> </span></lightning:layoutItem>
+                        <aura:iteration items="{!v.servicePlanContracts}" var="spc" indexVar="index">
+                            
+                            <aura:if isTrue="{!not(empty(spc.Country_ISO_Code__c))}">
+                                
+                                <lightning:layoutItem padding="around-small" size="5"><span class="slds-text-heading_small"><div style=" font-weight: bold; ">{!index+1}) {!spc.Assignment_Type__c}&nbsp;{!$Label.c.SPC_Service_Plan}: {!spc.Country_ISO_Code__c}    <aura:if isTrue="{!spc.Is_Active__c}"><lightning:badge label="{!$Label.c.SPC_Active}" size="small" class="slds-m-left_small" iconName="utility:success"/></aura:if><aura:if isTrue="{!and(spc.Cancellation_Date__c != null, spc.Is_Active__c == false)}"><lightning:badge label="{!$Label.c.SPC_Canceled}" class="slds-badge slds-theme_error Red" iconName="utility:ban"/></aura:if> </div></span>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" size="7">
+                                    <aura:if isTrue="{!v.showTransferBtn}">
+                                        <aura:if isTrue="{!empty(spc.Cancellation_Date__c)}">
+                                            <aura:if isTrue="{!if(and(and(and(v.currentUser.Market__c=='JP',spc.Country_ISO_Code__c=='JP'),spc.Assignment_Type__c==$Label.c.SPC_Extended),spc.Previous_Asset__c ==null),true,false)}">
+                                                <lightning:button class="font_Normal" name="{!index}" label="{!$Label.c.SPC_Transfer_Service_Plan}" onclick="{!c.transferSp}" />
+                                            </aura:if>
+                                        </aura:if>
+                                    </aura:if>
+                                </lightning:layoutItem>
+                            </aura:if>
+                            
+                            <!-- <lightning:layoutItem padding="around-small" size="6"> <lightning:formattedRichText value="&lt;b&gt;Reference: &lt;/b&gt; "/><lightning:formattedText value="{!spc.Service_Plan_Reference__c}" /></lightning:layoutItem> -->
+                            <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.SPC_Service_Plan_Number+': &lt;/b&gt;'}"/></b><lightning:formattedText value="{!spc.Name}" /></lightning:layoutItem>
+                            <!--lightning:layoutItem padding="around-small" size="6">     Is Active:<lightning:formattedText value="{!spc.Is_Active__c}" /></lightning:layoutItem-->
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Assignment_Type+': &lt;/b&gt;'}"/></b> <lightning:formattedText value="{!spc.Assignment_Type__c}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b> <lightning:formattedRichText value="{!$Label.c.SPC_Service_Plan_Type+': &lt;/b&gt;'}"/></b> <lightning:formattedText value="{!spc.Service_Plan_Product__r.Name}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Start_Date+': &lt;/b&gt;'}"/></b>  <lightning:formattedDateTime value="{!spc.Start_Date__c}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.SPC_End_Date+': &lt;/b&gt;'}"/></b> <lightning:formattedDateTime value="{!if(spc.Actual_End_Date__c !=null,spc.Actual_End_Date__c,spc.Start_Date__c)}" timeZone="{! $Locale.timezone}" /></lightning:layoutItem>
+                            <aura:if isTrue ="{!v.assetFound.AccountCountryCode__c == 'AU'}">
+                                <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.SPC_Corporate_Account+': &lt;/b&gt;'}"/></b><lightning:formattedText value="{!spc.Corporate_Partner__r.Name}" /></lightning:layoutItem>
+                            </aura:if> 
+                            <lightning:layoutItem padding="around-small" size="6"> <b><lightning:formattedRichText value="{!$Label.c.Months+': &lt;/b&gt;'}"/></b><lightning:formattedNumber value="{!spc.Months__c}" /></lightning:layoutItem>
+                            <aura:if isTrue ="{!v.assetFound.AccountCountryCode__c != 'JP'}">
+                                <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Asset_Mileage+': &lt;/b&gt;'}"/></b><lightning:formattedText value="{!spc.Mileage__c}" /></lightning:layoutItem>
+                            </aura:if>
+                            <aura:if isTrue ="{!v.assetFound.AccountCountryCode__c == 'JP'}">
+                                <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Retail_Purchase_Price+': &lt;/b&gt;'}"/></b>&nbsp;<lightning:formattedNumber minimumFractionDigits="0" value="{!spc.Retail_Purchase_Price__c}" style="currency" currencyCode="{!spc.CurrencyIsoCode}"/></lightning:layoutItem>
+                                <aura:set attribute="else">
+                                    <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Retail_Purchase_Price+': &lt;/b&gt;'}"/></b>&nbsp;<lightning:formattedNumber  value="{!spc.Retail_Purchase_Price__c}" style="currency" currencyCode="{!spc.CurrencyIsoCode}"/></lightning:layoutItem>
+                                </aura:set>
+                            </aura:if>
+                            
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Currency_Iso_Code+': &lt;/b&gt;'}"/></b>&nbsp;<lightning:formattedText value="{!spc.CurrencyIsoCode}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Retailer_Name+': &lt;/b&gt;'}"/></b>&nbsp;<lightning:formattedText value="{!spc.Retailer_Name__c}" /></lightning:layoutItem>
+                            <aura:if isTrue ="{!and(v.assetFound.AccountCountryCode__c == 'JP',spc.Assignment_Type__c==$Label.c.SPC_Extended)}">
+                                <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Purchased_Date+': &lt;/b&gt;'}"/></b>&nbsp;<lightning:formattedText value="{!spc.Purchased_Date__c}" /></lightning:layoutItem>
+                                <aura:set attribute="else">
+                                    <lightning:layoutItem padding="around-small" size="6"></lightning:layoutItem>
+                                </aura:set>
+                            </aura:if>
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Rental_Car+': &lt;/b&gt;'}"/></b>&nbsp;
+                                <aura:if isTrue="{!spc.Rental_Car__c}">
+                                    <lightning:icon iconName="utility:success"/>
+                                </aura:if>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Sold_By+': &lt;/b&gt;'}"/></b>&nbsp;<lightning:formattedText value="{!spc.Sold_By__c}" /></lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.Activated_By+': &lt;/b&gt;'}"/></b>&nbsp;<lightning:formattedText value="{!spc.Activated_By__r.Name}" /></lightning:layoutItem>
+                            <aura:if isTrue="{!and(spc.Refund__c,spc.Assignment_Type__c==$Label.c.SPC_Extended)}">
+                                <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Refund+': &lt;/b&gt;'}"/></b>&nbsp;
+                                    <lightning:icon iconName="utility:success"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" size="6"><b><lightning:formattedRichText value="{!$Label.c.SPC_Service_Plan_Contract_Status+': &lt;/b&gt;'}"/></b>&nbsp;
+                                    <lightning:formattedText value="{!spc.Service_Plan_Contract_Status__c}" />
+                                </lightning:layoutItem>
+                                <aura:set attribute="else">
+                                    <lightning:layoutItem padding="around-small" size="6"></lightning:layoutItem>
+                                </aura:set>
+                            </aura:if>
+                        </aura:iteration>
+                        <aura:set attribute="else">
+                            <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.SPC_No_Existing_Service_Plans} </span></lightning:layoutItem>
+                        </aura:set>
+                    </aura:if>
+                    <aura:if  isTrue="{!not(v.doNotShowNewServicePlanButton)}">
+                        <lightning:layoutItem padding="around-small" size="12">
+                            <aura:if isTrue="{!or(not(v.missingDateInfo),and( or(v.currentUser.Market__c=='APIO',v.currentUser.Market__c=='JP'),v.assetFound.Derivative__r.Service_Plan__r.Service_Plan_Type__c=='Paid For'))}">
+                                <div style="text-align:center">
+                                    <aura:if isTrue="{!v.showNewSP}">
+                                        <lightning:button name="{!v.assetFound.Id}" label="{!$Label.c.SPC_Add_Service_Plan}" onclick="{!c.addSP}" />
+                                    </aura:if>
+                                    <aura:If isTrue="{!v.currentUser.Market__c=='JP'}">
+                                        <aura:If  isTrue="{!v.showExtendedButtonForExpired}">
+                                            <lightning:button name="{!v.assetFound.Id}" label="{!$Label.c.SPC_Extend_Service_Plan}" onclick="{!c.addESP}" />
+                                        </aura:If>
+                                    </aura:If>
+                                    <aura:if isTrue="{!v.showCancelBtn}">
+                                        <lightning:button label="{!$Label.c.SPC_Cancel_Service_Plan}" onclick="{!c.cancelSP}" />
+                                    </aura:if>
+                                </div>
+                                <aura:set attribute="else">
+                                    <div style="text-align:center;  font-weight: bold; color:red;">
+                                        {!$Label.c.SPC_Date_missing_on_asset}
+                                    </div>
+                                </aura:set>
+                            </aura:if>
+                        </lightning:layoutItem>
+                        <aura:set attribute="else"> 
+                            <lightning:layoutItem padding="around-small" size="12">
+                                <!--   <aura:if isTrue="{!if(or(v.currentUser.Market__c=='APIO',v.currentUser.Market__c=='JP'),true,false)}"> -->
+                                <div style="text-align:center">
+                                    <aura:If isTrue="{!v.currentUser.Market__c=='JP'}">
+                                        <aura:If  isTrue="{!v.showExtendedBtn}">
+                                            <lightning:button name="{!v.assetFound.Id}" label="{!$Label.c.SPC_Extend_Service_Plan}" onclick="{!c.addESP}" />
+                                        </aura:If>
+                                    </aura:If>
+                                    <aura:if isTrue="{!v.showCancelBtn}">
+                                        <lightning:button label="{!$Label.c.SPC_Cancel_Service_Plan}" onclick="{!c.cancelSP}" />
+                                    </aura:if>
+                                </div>
+                                <!-- <aura:set attribute="else">
+                                        <div style="text-align:center;  font-weight: bold; color:red;">
+                                            {!$Label.c.SPC_Existing_Active_Service_Plan_Already_Exists}
+                                        </div>
+                                    </aura:set> 
+                                </aura:if>-->
+                                
+                            </lightning:layoutItem>
+                        </aura:set>
+                    </aura:if>
+                </lightning:layout> 
+            </lightning:card>
+            
+            <aura:if isTrue="{!v.showSpinner == true}">  
+                <lightning:spinner aura:id="mySpinner" alternativeText="Loading alternative" title="Validating Qantas Reference" />
+            </aura:if>
+            <aura:set attribute="else">
+                <lightning:layoutItem padding="around-small" size="12"><span class="slds-page-header__title">{!$Label.c.SPC_Result} </span></lightning:layoutItem>
+                <div style="text-align:center">  {!$Label.c.SPC_None_Found}   </div>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+    <!-- SHOW LOADING SPINNER--> 
+    <div aura:id="Id_spinner" class="slds-hide">
+        <lightning:spinner variant="brand" size="large"/>
+    </div>
+    <aura:if isTrue="{!v.showModal}">
+        <div class="slds-scrollable_y" style="height: 640px;">            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" style="overflow-y:auto;" class="slds-modal slds-fade-in-open">
+                <aura:if isTrue="{!v.isTransfer}">
+                    
+                    <div class="slds-modal__container" style="max-width: 80rem !important; min-height: 640px !important;"> 
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{!$Label.c.Close}" onclick="{!c.closeModal}">
+                                <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="close"  variant="error" />
+                                <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.modalName}</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" style="min-height: 275px;" id="modal-content-id-1">
+                            <c:TransferServicePlan ServicePlan="{!v.selectedServicePlan}" />
+                        </div>
+                    </div>
+                    
+                    <aura:set attribute="else">
+                        <div class="slds-modal__container" style="max-width: 80rem !important; max-height: 640px !important;"> 
+                            <header class="slds-modal__header">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{!$Label.c.Close}" onclick="{!c.closeModal}">
+                                    <lightning:icon aria-hidden="true" iconName="utility:close" alternativeText="close"  variant="error" />
+                                    <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                                </button>
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.modalName}</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <aura:if isTrue="{!v.isExtended}">
+                                    <c:ExtendServicePlan assetInputId="{!v.assetId}" currentUser="{!v.currentUser}" />
+                                    <aura:set attribute="else">
+                                        <aura:if isTrue="{!v.isCancel}">
+                                            <c:CancelServicePlan assetInputId="{!v.assetId}" /> 
+                                            <aura:set attribute="else">
+                                                <c:AddServicePlan assetFound="{!v.assetFound}" assetInputId="{!v.assetId}" currentUser="{!v.currentUser}" />                        
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                        </div>
+                    </aura:set>
+                </aura:if>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+</aura:component>

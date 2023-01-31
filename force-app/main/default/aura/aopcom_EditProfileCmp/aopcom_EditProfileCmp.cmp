@@ -1,0 +1,150 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" controller="aopcom_EditProfileCmp" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="submitButton" type="String" default="SUBMIT"/>
+    <aura:attribute name="cancelButton" type="String" default="CANCEL"/>
+
+    <aura:attribute name="ContactInformation" type="String" default="Contact Information"/>
+    <aura:attribute name="Address" type="String" default="Address"/>
+    
+    <aura:attribute name="firstName" type="String"/>   
+    <aura:attribute name="lastName" type="String"/>
+    <aura:attribute name="urlPortrait" type="String" default=""/>
+    <aura:attribute name="emailAddress" type="String"/>
+    <aura:attribute name="landlineNumber" type="String"/>
+    <aura:attribute name="mobileNumber" type="String"/>
+    <aura:attribute name="street" type="String"/>
+    <aura:attribute name="town" type="String"/>
+    <aura:attribute name="state" type="String"/>
+    <aura:attribute name="postcode" type="String"/>
+    
+    <aura:attribute name="firstNameTitle" type="String" default="First Name"/>
+    <aura:attribute name="lastNameTitle" type="String" default="Last Name"/>
+    <aura:attribute name="urlPortraitTitle" type="String" default="Upload a Profile picture"/>
+    <aura:attribute name="emailAddressTitle" type="String" default="Email Adress"/>
+    <aura:attribute name="landlineNumberTitle" type="String" default="Landline Number"/>
+    <aura:attribute name="mobileNumberTitle" type="String" default="Mobile Number"/>
+    <aura:attribute name="streetTitle" type="String" default="Street"/>
+    <aura:attribute name="townTitle" type="String" default="Town/City"/>
+    <aura:attribute name="stateTitle" type="String" default="Country/State"/>
+    <aura:attribute name="postcodeTitle" type="String" default="Postcode"/>
+    
+    <aura:attribute name="lastNameError" type="String" default="Error: Enter a Last Name"/>
+    <aura:attribute name="emailError" type="String" default="Error: Enter a value"/>
+    <aura:attribute name="emailError2" type="String" default="Error: Enter a valid email format"/>
+
+
+	
+    <aura:attribute name="fname" type="boolean" default="false"/>
+    <aura:attribute name="lname" type="boolean" default="false"/>   
+    <aura:attribute name="eaddress" type="boolean" default="false"/>   
+    <aura:attribute name="eaddress2" type="boolean" default="false"/>
+    <aura:attribute name="tn" type="boolean" default="false"/>  
+    <aura:attribute name="stt" type="boolean" default="false"/>
+    <aura:attribute name="ste" type="boolean" default="false"/>
+    <aura:attribute name="pcode" type="boolean" default="false"/>   
+    <aura:attribute name="message" type="String" default="Drag profile photo here"/>
+    <aura:attribute name="contactId" type="String"/>
+    <aura:attribute name="Context" type="String" />
+    <aura:attribute name="baseURL" type="String" />
+    <aura:attribute name="UploadPict" type="String" default="UPLOAD A"/>
+    <aura:attribute name="ProfilePict" type="String" default="PROFILE PICTURE"/>
+  
+    <aura:attribute name="CommunityUrl" type="String"/>   
+
+<form action="" method="post" class="form js-validate" enctype="multipart/form-data">
+    <div class="section section--fill">
+		<div class="grid">
+            <div class="grid_row">
+                <div class="grid__col span-12 large--span-6 large--offset-3">
+                    <div class="grid__row">
+                        <div class="grid__col span-6">
+                            <div class="upload-picture js-upload-picture-wrapper">
+                            	<div class="upload-picture__content">
+                            		<div class="upload-picture__content__overlay">
+                                        <p>{!v.UploadPict} <br/> {!v.ProfilePict}</p>
+                            		</div>
+									<img src="{!v.urlPortrait}" id="image" class="upload-picture__content__picture js-profile-picture"/>
+								</div>
+								<input type="file" id="files" onchange="{!c.sendImage}" class="upload-picture__file-input js-upload-picture" name="upload-picture"  />
+								
+								<!--<input type="file" id="files" onchange="{!c.sendImage}" >Load file</input><input type="button" value="Confirm" onclick="{!c.sendImageFull}"/>-->
+							</div>
+                           
+						</div><!-- .grid__col -->
+						<div class="grid__col span-6">
+                            <div class="form__form-group form__form-group--margin-top ">
+                                <div class="form__field">
+                                    <label for="forename">{!v.firstNameTitle}</label>
+                                    <ui:inputText aura:id="firstName" requiredIndicatorClass="forename" value="{!v.firstName}" />
+                                </div>
+								<div class="form__field">
+                                    <label for="surname">{!v.lastNameTitle}*</label>
+									<ui:inputText aura:id="lastName"  value="{!v.lastName}" required="true"/>
+									<aura:if isTrue="{!v.lname}">
+										<ui:message severity="error">{!v.lastNameError}</ui:message>
+									</aura:if>
+                                </div>
+							</div>
+						</div><!-- .grid__col -->
+					</div>
+				</div><!-- .grid__col -->
+			</div>
+		</div><!-- .grid -->
+	</div><!-- .section -->
+	<div class="section section--secondary">
+        <div class="grid">
+            <div class="grid__row">
+                <div class="grid__col span-12 large--span-6 large--offset-3">
+                    <div class="form__form-group">
+						<p class="form__form-group__heading">{!v.ContactInformation}</p>
+						<div class="form__field">
+                            <label for="email">{!v.emailAddressTitle}*</label>
+                            <ui:inputText aura:id="emailaddress" value="{!v.emailAddress}"  required="true"/>
+							<aura:if isTrue="{!v.eaddress}">
+								<ui:message severity="error">{!v.emailError}</ui:message>
+							</aura:if>
+                            <aura:if isTrue="{!v.eaddress2}">
+                            	<ui:message severity="error">{!v.emailError2}</ui:message>
+                            </aura:if>
+                        </div>
+						<div class="form__field">
+                            <label for="landline">{!v.landlineNumberTitle}</label>
+                            <ui:inputText aura:id="landlineNumber" value="{!v.landlineNumber}"/> 
+                        </div>
+						<div class="form__field">
+                            <label for="mobile">{!v.mobileNumberTitle}</label>
+							<ui:inputText aura:id="mobileNumber" value="{!v.mobileNumber}"/>
+                        </div>
+					</div>
+					<div class="form__form-group">
+						<p class="form__form-group__heading">{!v.Address}</p>
+						<div class="form__field">
+                            <label for="address-1">{!v.streetTitle}</label>
+                            <ui:inputText aura:id="street" value="{!v.street}" />      
+                        </div>
+						<div class="form__field">
+                            <label for="town">{!v.townTitle}</label>
+                            <ui:inputText aura:id="town" value="{!v.town}"/>
+                        </div>
+						<div class="form__field">
+                            <label for="county">{!v.stateTitle}</label>
+                            <ui:inputText aura:id="state" value="{!v.state}"/>
+                        </div>
+						<div class="form__field">
+                            <label for="postcode">{!v.postcodeTitle}</label>
+							<ui:inputText aura:id="postcode" value="{!v.postcode}"/>
+                        </div>
+					</div>
+					<div class="form__form-group text-center">
+						<ui:button press="{!c.sendInformation}" label="{!v.submitButton}" class="button button--center button--center--end hidden--medium hidden--large"/>
+                        <a href= "{!'/'+v.CommunityUrl+'/apex/aopcom_LoginRedirectionPage'}" class="button button--secondary button--center">{!v.cancelButton}</a>                      
+                        <ui:button press="{!c.sendInformation}" label="{!v.submitButton}" class="button button--center button--center--end hidden--small"><i class="button-icon button-icon--right icon icon--chevron-right"></i></ui:button>
+                        
+                    </div>	
+				</div>
+			</div>
+		</div><!-- .grid -->
+	</div><!-- .section -->
+    </form>
+</aura:component>

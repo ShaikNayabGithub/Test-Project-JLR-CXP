@@ -1,0 +1,513 @@
+<!-- 
+ *  Name        : VME_Submit_Claims
+ *  
+ *  Company     : ETMarlabs
+ *    
+ *  Purpose     : This component used to list out all the existing claims and upload the doc
+ *
+ *  Developer   : Tejashree J
+ *
+ *  Created Date: 26/04/2019
+ -->
+<aura:component controller="VME_Submit_Claims" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute name="resultList" type="List" />
+    <aura:attribute name="listOfAssets" type="List" />
+    <aura:attribute name="searchlistOfClaims" type="Object[]" />
+    <aura:attribute name="searchModal" type="Boolean" default="false" />
+    <aura:attribute name="isEdit" type="Boolean" default="true" />
+    <aura:attribute name="isSave" type="Boolean" default="true" />
+    <aura:attribute name="ClaimAmount" type="Integer" />
+    <aura:attribute name="initiallyclaimed" type="Integer" /> 
+    <aura:attribute name="statusOfClaims" type="List" />
+    <aura:attribute name="isNoClaims" type="Boolean" default="false" />
+    <aura:attribute name="submitClaims" type="List" />
+    <aura:attribute name="claimOfthisAsset" type="String" />
+    <aura:attribute name="fileToDelete" type="String" />
+    <aura:attribute name="assetId" type="String" />  
+    <aura:attribute name="isCalltogetClaims" type="Boolean" default="false" />
+    <aura:attribute name="financeUser" type="Boolean" default="false"/>
+    <aura:attribute name="isCreated" type="Boolean"  default="false" />
+    <aura:attribute name="isClaimDelete" type="boolean" default="false" />
+    <aura:attribute name="claimtobedeleted" type="String" />
+    <aura:attribute name="initialComment" type="String" />
+    <aura:attribute name="isClaimForApprovalList" type="List" />
+    <aura:attribute name="initialIsScheme" type="Boolean" default="false" />
+    <aura:attribute name="ClaimStatusList" type="List" default="[
+                                                                   {'label': 'APPROVED', 'value': 'APPROVED'},
+                                                                   {'label': 'SETTLED', 'value': 'SETTLED'},
+                                                                   {'label': 'PENDING', 'value': 'PENDING'},
+                                                                   ]" />
+    <aura:attribute name="selectedCS" type="String" />
+    <!--  Pagination attributes   -->
+    <aura:attribute name="MasterPageDataList" type="List"></aura:attribute>
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" description="User current page number. Dynamic value" />
+    <aura:attribute name="pageSize" type="Integer" default="5" description="Number of records to show on single page. Dynamic Selection" />
+    <aura:attribute name="totalPages" type="Integer" default="1" description="Total number of pages formed from data." />
+    <aura:attribute name="pageList" type="List" description="SHowing page number details." />
+    <aura:attribute name="TotalRecords" type="integer" default="0" description="This will tell you how many records came from Search." />
+    <aura:attribute name="RecordStart" type="integer" default="0" description="this will tell you records data start." />
+    <aura:attribute name="RecordEnd" type="integer" default="0" description="this will tell you records data end." />
+    <aura:attribute name="defaultRpp" type="Integer" default="5" description="User current page number. Dynamic value" />
+    <aura:attribute name="showResults" type="Boolean" default="FALSE" description="This attribute will toggle based on Data result filter."></aura:attribute>
+    <aura:attribute name="pageCapacityOption" type="List" default="[
+                                                                   {'label': '1', 'value': '1'},
+                                                                   {'label': '2', 'value': '2'},
+                                                                   {'label': '5', 'value': '5'},
+                                                                   {'label': '10', 'value': '10'},
+                                                                   {'label': '20', 'value': '20'}
+                                                                   ]" />
+    
+    <aura:attribute name="message" type="String" default="Enter VIN number" />
+    <aura:attribute name="showLoadingSpinner" type="boolean" default="false" />
+    <aura:attribute name="uploadRecId" type="Id" />
+    <aura:attribute name="isupload" type="Boolean" />
+    <aura:attribute name="activeSections" type="List" />
+    <aura:attribute name="activeSectionsMessage" type="String" default="" />
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="selectedstatus" type="String" default="All" />
+    <aura:attribute name="isEditingMode" type="boolean" default="false"/>
+    <aura:attribute name="blockSubmit" type="Boolean"/>
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.loadData}" />
+    
+    <!-- Header section  -->
+    <div class="slds-text-align_center slds-text-heading_large slds-theme_shade" style="padding-bottom: 10px ;padding-top: 10px ;text-shadow: 1px 1px #1e244361;"> MY VINS
+        <!--lightning:button name="newClaim" label="New Claim" onclick="{!c.create_claim}" iconName="utility:new" class="createClaim slds-text-heading_small"/-->
+    </div> 
+    <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom fixedWidthCss ">
+        <aura:if isTrue="{!v.Spinner}">
+            <div aura:id="spinnerId" class="slds-spinner_container">
+                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        <lightning:layout>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="3">
+                <lightning:input aura:id="custName" name="Customer Name" label="Customer Name" placeholder="Enter Customer Name" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3">
+                <lightning:input aura:id="custPhone" type="tel" maxlength="10" name="Customer Mobile No." label="Customer Mobile No." placeholder="Enter 10 digit mobile no." />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3">
+                <lightning:input aura:id="searchVIN" name="Search VIN" iconName="utility:search" label="Search VIN" placeholder="{!v.message}" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" class="search_button_align">
+                <lightning:button variant="brand" label="Search" iconName="utility:search" onclick="{!c.filterSearch}" />
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="3" class="RetailAligncss">
+                <label class="alignCss" style="margin-right: 0.5rem;font-size: .75rem;padding-left: 7px;">Retail Start Date</label>
+                <lightning:helptext content="Please Enter Date in dd-month-yyyy format" class="customIcon " />
+                <lightning:input aura:id="retailStartDate" name="Retail Start Date" label="Retail Start Date" type="date" variant="label-hidden" placeholder="Enter Start Date" autocomplete="off"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3" class="RetailAligncss">
+                <label class="alignCss" style="margin-right: 0.5rem;font-size: .75rem;padding-left: 7px;">Retail End Date</label>
+                <lightning:helptext content="Please Enter Date in dd-month-yyyy format" />
+                <lightning:input aura:id="retailEndDate" name="Retail End Date" label="Retail End Date" type="date" variant="label-hidden" placeholder="Enter End Date" autocomplete="off"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3">
+                 <lightning:combobox aura:id="searchClaim" name="ClaimStatus" label="Claim Status" value="{!v.selectedCS}" options="{!v.ClaimStatusList}" /> 
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" class="search_button_align">
+                <lightning:button label="Reset" class="resetVIn" iconName="action:reset_password" onclick="{!c.resetSearch}" variant="brand" />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+    <aura:if isTrue='{! v.currentPageNumber == v.totalPages}'>
+        <div id="parentDIV" style="background: #e3e9f1;color: #FF5722;height: 22px;font-size: 0.95rem;padding-left: 35%;font-weight: bold;" class="slds-form slds-theme_shade slds-form_stacked slds-border_bottom fixedWidthCss cVME_Submit_Claims">
+            <p style="position:relative;" id="tofloat">
+                <span>Not able see what you are looking for, try using filters and search.!!!</span>
+            </p>
+        </div>
+    </aura:if>
+    <div class="slds-form slds-theme_shade slds-form_stacked slds-border_bottom slds-scrollable " style="height:275px;width:100%">
+        <aura:iteration items="{!v.MasterPageDataList}" var="claim">
+            <lightning:layout class="centerAlign">
+                <lightning:layoutItem size="2">
+                    <lightning:input name="Customer Name" label="Customer Name" value="{!claim.asset.Account.Name}" title="{!claim.asset.Account.Name}" disabled="true" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <a href="{!'/CXP/s/asset/'+ claim.asset.Id + '/view'}" target="_blank">
+                    <lightning:input name="VIN" label="VIN" value="{!claim.asset.VIN__c}" title="{!claim.asset.VIN__c}" disabled="true" />
+					</a>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <lightning:input name="Model" label="Model" value="{!claim.asset.Model__r.Name}" title="{!claim.asset.Model__r.Name}" disabled="true" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <lightning:input name="Manufacture Year" label="Manufacture Year" value="{!claim.asset.Manufacture_Year__c}" title="{!claim.asset.Manufacture_Year__c}" disabled="true" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="css">
+                        <label class="alignCss slds-form-element__label" style="margin-right: 0.5rem;">Retail Date</label>
+                        <ui:outputDate value="{!claim.asset.VME_Retail_Date__c}" class="uiOutputDate slds-input uiDisabled" format="{!claim.asset.loggedInUser}"  /></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <lightning:button name="Claim" label="Claim" value="{!claim.asset}" variant="brand" onclick="{!c.get_Claims_Asset}" class="search_button_align" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:iteration>
+    </div>
+    <div class="slds-form slds-theme_shade slds-form_stacked slds-border_bottom">
+        <lightning:layout>
+            <lightning:layoutItem size="1" flexibility="auto">
+                <label class="slds-form-element__label" style="margin-right: -0.2rem;padding-left: 0.25rem;">VINs/page</label>
+                <lightning:helptext content="Number of VINs displayed per page." class="customIcon" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" flexibility="auto">
+                <aura:if isTrue="{!v.showResults}">
+                    <div class="slds-no-flex">
+                        <lightning:select name="Record_per_Page" aura:id="Record_per_Page" value="{!v.defaultRpp}" label="" class="label-hidden" onchange="{!c.onCapacityChange}">
+                            <aura:iteration items="{!v.pageCapacityOption}" var="po">
+                                <option value="{!po.value}">{!po.label}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                </aura:if>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="2" flexibility="auto">
+            </lightning:layoutItem>
+            <lightning:layoutItem size="7" flexibility="auto" class="button_align">
+                <aura:if isTrue="{!v.totalPages != 0}">
+                    <lightning:button label="First" iconName="utility:left" iconPosition="left" onclick="{!c.onFirst}" disabled="{! v.currentPageNumber == 1}" />
+                    <lightning:button iconName="utility:chevronleft" iconPosition="left" onclick="{!c.onPrev}" disabled="{! v.currentPageNumber == 1}" />
+                    <aura:if isTrue="{!v.totalPages != 1}">
+                        <span class="{! (v.currentPageNumber == 1) ? 'slds-p-horizontal_x-small paginationSpan' : 'slds-p-horizontal_x-small' }">
+                            <a onclick="{!c.processMe}" name="1" class="{! (v.currentPageNumber == 1) ? 'focusPage' : ''}">1</a>
+                        </span>
+                        <span class="slds-p-horizontal_xxx-small">
+                            <a>...</a>
+                        </span>
+                        <aura:iteration items="{!v.pageList}" var="item">
+                            <span class="{! (v.currentPageNumber == item) ? 'slds-p-horizontal_x-small paginationSpan' : 'slds-p-horizontal_x-small' }">
+                                <a onclick="{!c.processMe}" name="{!item}" class="{! (v.currentPageNumber == item) ? 'focusPage' : ''}">{!item}</a>
+                            </span>
+                        </aura:iteration>
+                        <span class="slds-p-horizontal_xxx-small">
+                            <a>...</a>
+                        </span>
+                    </aura:if>
+                    <span class="{! (v.currentPageNumber == v.totalPages) ? 'slds-p-horizontal_x-small paginationSpan' : 'slds-p-horizontal_x-small' }">
+                        <a onclick="{!c.processMe}" name="{!v.totalPages}" class="{! (v.currentPageNumber == v.totalPages) ? 'focusPage' : ''}">{!v.totalPages}</a>
+                    </span>
+                    <!-- <span class="slds-p-horizontal_xxx-small">Records : {!v.RecordStart}-{!v.RecordEnd} of {!v.TotalRecords} || Page {!v.currentPageNumber} of {!v.totalPages}</span> -->
+                    <lightning:button iconName="utility:chevronright" iconPosition="right" disabled="{! v.currentPageNumber == v.totalPages}" onclick="{!c.onNext}" />
+                    <lightning:button label="Last" iconName="utility:right" iconPosition="right" disabled="{! v.currentPageNumber == v.totalPages}" onclick="{!c.onLast}" />
+                </aura:if>
+            </lightning:layoutItem>
+        </lightning:layout>
+        <aura:if isTrue="{!v.searchModal}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close" onclick="{!c.close}" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                        <h2 id="modal-heading-01" class="title slds-text-heading--medium slds-hyphenate">CLAIMS OF VIN : {!v.claimOfthisAsset}</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1 ">
+                        <!--  The pop up to Edit the Claim records starts here   -->
+                        <lightning:layout>
+                            <lightning:layoutItem size="10">
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="2">
+                                <lightning:select name="select" aura:id="select" label="Status" onchange="{!c.onChangeSelectedStatus }" value="{!v.selectedstatus}">
+                                    <option value="All">All</option>
+                                    <option value="Generated">Generated</option>
+                                    <option value="Submitted">Submitted</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Settled">Settled</option>
+                                    <option value="Rejected">Rejected</option>
+                                    <option value="Recalled">Recalled</option>
+                                    <option value="Resubmitted">Resubmitted</option>
+                                    <option value="Rejected -Non claimable">Rejected -Non claimable</option>
+                                </lightning:select>
+                            </lightning:layoutItem>  
+                        </lightning:layout>
+                        <lightning:layout>
+                            <lightning:layoutItem size="12">
+                            </lightning:layoutItem>    
+                        </lightning:layout> 
+                        <table>
+                            <tbody>
+                                <aura:iteration items="{!v.searchlistOfClaims}" var="claim" indexVar="index">
+                                    <aura:if isTrue="{!v.selectedstatus!='All'}">
+                                        <aura:if isTrue="{!v.selectedstatus==claim.claims.VME_Status__c}">
+                                            <div style="padding: 0.5%;">
+                                                <div class="slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color:rgb(51, 129, 195);line-height: 1.7;padding: 2px 25px;">
+                                                    <lightning:icon iconName="utility:locker_service_api_viewer" iconPosition="left" alternativeText="Detail" size="small" variant="inverse"/>&nbsp;&nbsp;{!claim.claims.Name}
+                                                </div>
+                                                <lightning:layout>
+                                                    <lightning:layoutItem size="1" class="selectionBoxAlign">
+                                                        <aura:if isTrue="{!v.financeUser}">
+                                                            <aura:if isTrue="{!(claim.claims.VME_Status__c=='Recalled' || claim.claims.VME_Status__c=='Generated'||claim.claims.VME_Status__c=='Rejected')}">
+                                                                <aura:if isTrue="{!claim.claims.VME_Applied_Scheme__c == true}">
+                                                                    <lightning:input type="checkbox-button" label="Input One" name="input1" class="checkbox_align" disabled="{!claim.isSubmitable}"  value="{!claim.claims.Id}" checked="{!claim.isselected}" onchange="{!c.checkboxSelect}"/>
+                                                                </aura:if>
+                                                            </aura:if>
+                                                        </aura:if>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Category" label="Category" value="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Category__c}" disabled="true" title="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Category__c}" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Subcategory" label="Subcategory" value="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Sub_Category__c}" disabled="true" title="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Sub_Category__c}" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Status" label="Status" value="{!claim.claims.VME_Status__c}" title="{!claim.claims.VME_Status__c}" disabled="true" />
+                                                    </lightning:layoutItem>
+                                                    <!--lightning:helptext content="{!claim.submissionDates}" class="customIcon" iconName="action:record" /-->
+                                                    <aura:if isTrue="{!(!(claim.claims.VME_Status__c=='Approved'|| claim.claims.VME_Status__c=='Submitted'||claim.claims.VME_Status__c=='Resubmitted'||claim.claims.VME_Status__c=='Settled'))}">
+                                                        <lightning:layoutItem size="1">
+                                                            <lightning:button name="{!claim}" label="{!claim.bottonlabel}" variant="{!claim.bottonvariant}" onclick="{!c.edit_Claim}" tabindex="{!claim.claims.VME_Retailer_Contribution__c}" class="button_align button_align_Edit" value="{!claim.claims.Id}" disabled="{!(claim.claims.VME_Status__c=='Approved'|| claim.claims.VME_Status__c=='Submitted'||claim.claims.VME_Status__c=='Resubmitted'||claim.claims.VME_Status__c=='Settled' ||claim.financeUser==true)}" />
+                                                        </lightning:layoutItem>
+                                                    </aura:if>
+                                                </lightning:layout>
+                                                <lightning:layout>
+                                                    <lightning:layoutItem size="1" class="dateCss">
+                                                        <lightning:helptext content="{!claim.submissionDates}" iconName="utility:notification" class="myUniqueClass"/>
+                                                        <lightning:badge label="2" style="position: relative;top: -6px;right: 11px;background-color: #d41d17;color: #e8dddd;padding-right: 4px;padding-left: 4px;padding-top: 2px;padding-bottom: 1px;" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Maximum Attempts" label="Remaining Submission Attempts" value="{!claim.claims.VME_Maximum_Attempts__c}" disabled="true" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Claim Amount" type="number" label="Claimed Amount" maxlength="18" value="{!claim.claims.VME_Amount__c}" min="0" title="{!claim.claims.VME_Amount__c}" aura:id="claimAmt" disabled="{!claim.isEditable}" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <label style="margin-right: 0.2rem;padding-left: 0.25rem;font-size: .75rem;">Non Claimable(Additional Retailer Contribution)</label>
+                                                        <lightning:input variant="label-hidden" name="Retailer Contribution" label="Retailer Contribution" type="number" min="0" maxlength="18" value="{!claim.claims.VME_Retailer_Contribution__c}" disabled="{!claim.isEditable}" title="Non refundable" aura:id="claimAmt" style="margin-top: 0.2rem;" />
+                                                    </lightning:layoutItem>
+                                                    <aura:if isTrue="{!(claim.claims.VME_Status__c=='Submitted' || claim.claims.VME_Status__c=='Resubmitted')}">
+                                                        
+                                                        <aura:if isTrue="{!(!claim.isApprovedClaim)}">
+                                                            <lightning:layoutItem size="2" class="recallAlign">
+                                                                
+                                                                <aura:if isTrue="{!v.financeUser}">
+                                                                    <lightning:button label="Recall" class="button_align search_button_align_Recall " onclick="{!c.recallForApproval}" value="{!claim.claims.Id}" variant="brand" />
+                                                                </aura:if>
+                                                            </lightning:layoutItem>
+                                                        </aura:if>
+                                                    </aura:if>
+                                                    <aura:if isTrue="{!(!(claim.claims.VME_Status__c=='Approved'|| claim.claims.VME_Status__c=='Submitted'||claim.claims.VME_Status__c=='Resubmitted'||claim.claims.VME_Status__c=='Settled'))}">
+                                                        <lightning:layoutItem size="1">
+                                                            <aura:if isTrue="{!claim.bottonlabel!='Save'}">
+                                                                <lightning:button value="{!claim.claims.Id}" label="Delete" disabled="{!(claim.claims.VME_Status__c=='Approved'|| claim.claims.VME_Status__c=='Submitted'||claim.claims.VME_Status__c=='Resubmitted'||claim.claims.VME_Status__c=='Settled')}" class="button_align search_button_align_Delete" onclick="{!c.confirmDelete}" variant="brand" />
+                                                            </aura:if>
+                                                            <aura:if isTrue="{!claim.bottonlabel=='Save'}">
+                                                                <lightning:button label="Cancel" class="button_align search_button_align_Delete" onclick="{!c.cancelEditingClaim}" value="{!claim.claims.Id}" variant="destructive" />
+                                                            </aura:if>  
+                                                        </lightning:layoutItem>
+                                                    </aura:if>
+                                                </lightning:layout>
+                                                <lightning:layout>
+                                                    <lightning:layoutItem size="1">
+                                                        <div style="margin-top: 5px;margin-left: 12px;">  
+                                                            <label style="padding-left: 1.25rem;font-size: .75rem;">Applied </label>
+                                                        </div>
+                                                        <label style="padding-left: 2rem;font-size: .75rem;">Campaign </label>
+                                                        <ui:inputCheckbox aura:id="isSchemeApld" value="{!claim.claims.VME_Applied_Scheme__c}" disabled="{!claim.isEditable}" class="isSchemeCSS" change="{!c.isSchemeEdit}" name="{!claim.claims.VME_Last_Date_of_Submissiom__c}"/>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:textarea class="topText slds-scrollable" name="L3Description" label="L3Description" value="{!claim.claims.VME_Related_Scheme__r.VME_Level_3_Description__c}" disabled="true" title="{!claim.claims.VME_Related_Scheme__r.VME_Level_3_Description__c}" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:textarea aura:id="submitterc" name="Submitter Comments" label="Submitter Comments" value="{!claim.claims.VME_Submitter_Comments__c}" disabled="{!claim.isEditable}" class="topText slds-scrollable"/>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="5">
+                                                        <lightning:textarea name="Rejection Comments" label="Rejection Comments(If Any)" value="{!claim.approverComments}" disabled="true" class="topText slds-scrollable"/>
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                                <lightning:layout>
+                                                    <div onclick="{!c.displayUploadedFiles}" data-value="{!claim.claims.Id}" class="accordianShift">
+                                                        <lightning:accordion aura:id='fileAccordian' allowMultipleSectionsOpen="true" onsectiontoggle="{!c.handleSectionToggle}" activeSectionName="">
+                                                            <label  style="margin-right: 0.2rem;padding-left: 0.25rem;color:#0e63ac"><b>{!'Files ('+claim.uploadCount+')'}</b></label>
+                                                            <lightning:helptext content="Maximum size of 25MB per attachment is accepted
+                                                                                         having the extensions as .pdf, .png, .jpeg, .jpg, .pmp " class="customIcon" />
+                                                            <lightning:accordionSection name="{!claim.claims.Id}" >
+                                                                <div>
+                                                                </div>
+                                                                <div class="uploadDivScroll">
+                                                                    <aura:iteration items="{!claim.uploadEvidence}" var="map" indexVar="key">
+                                                                        <aura:if isTrue="{!map.value==''}">
+                                                                            <aura:if isTrue="{!and(claim.claims.VME_Status__c!='Approved',claim.claims.VME_Status__c!='Settled')}">
+                                                                                <div onclick="{!c.countFiles}" data-value="{!claim.claims.Id}" class="divBorder">
+                                                                                    <lightning:fileUpload label="{!map.key}" name="fileUploader" multiple="false" accept=".pdf, .png, .jpeg, .jpg, .pmp " recordId="{!claim.claims.Id}" onuploadfinished="{!c.handleUploadFinished}"/>
+                                                                                </div>
+                                                                            </aura:if>
+                                                                            <aura:set attribute="else">
+                                                                                <div class="divBorderFileCard">
+                                                                                    <lightning:fileCard fileId="{!map.value}" description="{!map.key}"></lightning:fileCard>
+                                                                                    <aura:if isTrue="{!and(claim.claims.VME_Status__c!='Approved',claim.claims.VME_Status__c!='Settled')}">
+                                                                                        <lightning:icon iconName="utility:delete" alternativeText="{!map.value}" variant="error" size="small" onclick="{!c.onDoubleCLickDelete}"  class="centered"/>
+                                                                                    </aura:if>
+                                                                                </div>
+                                                                            </aura:set>
+                                                                        </aura:if>
+                                                                    </aura:iteration>
+                                                                </div>
+                                                            </lightning:accordionSection>
+                                                        </lightning:accordion>
+                                                    </div>                                           
+                                                </lightning:layout>
+                                            </div>
+                                        </aura:if>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.selectedstatus=='All'}">
+                                        <div style="padding: 0.5%;">
+                                            <div class="slds-text-heading_medium" style="color: rgb(255, 255, 255); background-color:rgb(51, 129, 195);line-height: 1.7;padding: 2px 25px;">
+                                                <lightning:icon iconName="utility:locker_service_api_viewer" iconPosition="left" alternativeText="Detail" size="small" variant="inverse"/>&nbsp;&nbsp;{!claim.claims.Name}
+                                            </div>
+                                            <div style="slds-align_absolute-center">
+                                                <lightning:layout>
+                                                    <lightning:layoutItem size="1" class="selectionBoxAlign">
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Category" label="Category" value="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Category__c}" disabled="true" title="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Category__c}" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Subcategory" label="Subcategory" value="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Sub_Category__c}" disabled="true" title="{!claim.claims.VME_Related_Scheme__r.VME_Campaign__r.VME_Sub_Category__c}" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Status" label="Status" value="{!claim.claims.VME_Status__c}" title="{!claim.claims.VME_Status__c}" disabled="true" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3" class="helptext">
+                                                        <!--lightning:helptext content="{!claim.submissionDates}" class="customIcon" iconName="action:record" /-->
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                                <lightning:layout>
+                                                    <lightning:layoutItem size="1" class="dateCss" >
+                                                        <lightning:helptext content="{!claim.submissionDates}" iconName="utility:notification" class="myUniqueClass" />
+                                                        <lightning:badge label="2" style="position: relative;top: -6px;right: 11px;background-color: #d41d17;color: #e8dddd;padding-right: 4px;padding-left: 4px;padding-top: 2px;padding-bottom: 1px;" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Maximum Attempts" label="Remaining Submission Attempts" value="{!claim.claims.VME_Maximum_Attempts__c}" disabled="true" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:input name="Claim Amount" type="number" label="Claimed Amount" maxlength="18" value="{!claim.claims.VME_Amount__c}" min="0" title="{!claim.claims.VME_Amount__c}" aura:id="claimAmt" disabled="true" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <label style="margin-right: 0.2rem;padding-left: 0.25rem;font-size: .75rem;">Non Claimable(Additional Retailer Contribution)</label>
+                                                        <lightning:input variant="label-hidden" name="Retailer Contribution" label="Retailer Contribution" type="number" min="0" maxlength="18" value="{!claim.claims.VME_Retailer_Contribution__c}" disabled="true" title="Non refundable" aura:id="claimAmt" style="margin-top: 0.2rem;" />
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                                <lightning:layout>
+                                                    <lightning:layoutItem size="1">
+                                                        <div style="margin-top: 5px;    margin-left: 12px;">
+                                                            <label style="padding-left: 1.25rem;font-size: .75rem;">Applied </label>
+                                                        </div>
+                                                        <label style="padding-left: 2rem;font-size: .75rem;">Campaign </label>
+                                                        <ui:inputCheckbox aura:id="isSchemeApld" value="{!claim.claims.VME_Applied_Scheme__c}" disabled="true" class="isSchemeCSS"/>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:textarea class="topText slds-scrollable" name="L3Description" label="L3Description" value="{!claim.claims.VME_Related_Scheme__r.VME_Level_3_Description__c}" disabled="true" title="{!claim.claims.VME_Related_Scheme__r.VME_Level_3_Description__c}" />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:textarea aura:id="submitterc" name="Submitter Comments" label="Submitter Comments" value="{!claim.claims.VME_Submitter_Comments__c}" disabled="true" class="topText slds-scrollable"/>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem size="3">
+                                                        <lightning:textarea name="Approver Comments" label="Rejection Comments(If Any)" value="{!claim.approverComments}" disabled="true" class="topText slds-scrollable"/>
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                                <lightning:layout>
+                                                    <div onclick="{!c.displayUploadedFiles}" data-value="{!claim.claims.Id}" class="accordianShift">
+                                                        <lightning:accordion aura:id='fileAccordian' allowMultipleSectionsOpen="true" onsectiontoggle="{!c.handleSectionToggle}" activeSectionName="">
+                                                            <label  style="margin-right: 0.2rem;padding-left: 0.25rem;color:#0e63ac"><b>{!'Files ('+claim.uploadCount+')'}</b></label>
+                                                            <lightning:helptext content="Maximum size of 25MB per attachment is accepted
+                                                                                         having the extensions as .pdf, .png, .jpeg, .jpg, .pmp " class="customIcon" />
+                                                            <lightning:accordionSection name="{!claim.claims.Id}" >
+                                                                <div>
+                                                                </div>
+                                                                <div class="uploadDivScroll">
+                                                                    <aura:iteration items="{!claim.uploadEvidence}" var="map" indexVar="key">
+                                                                        <aura:if isTrue="{!map.value==''}">
+                                                                            <aura:if isTrue="{!and(claim.claims.VME_Status__c!='Approved',claim.claims.VME_Status__c!='Settled')}">
+                                                                                <div onclick="{!c.countFiles}" data-value="{!claim.claims.Id}" class="divBorder">
+                                                                                    <lightning:fileUpload label="{!map.key}" name="fileUploader" multiple="false" accept=".pdf, .png, .jpeg, .jpg, .pmp " recordId="{!claim.claims.Id}" onuploadfinished="{!c.handleUploadFinished}"/>
+                                                                                </div>
+                                                                            </aura:if>
+                                                                            <aura:set attribute="else">
+                                                                                <div class="divBorderFileCard">
+                                                                                    <lightning:fileCard fileId="{!map.value}" description="{!map.key}"></lightning:fileCard>
+                                                                                    <aura:if isTrue="{!and(claim.claims.VME_Status__c!='Approved',claim.claims.VME_Status__c!='Settled')}">
+                                                                                        <lightning:icon iconName="utility:delete" alternativeText="{!map.value}" variant="error" size="small" onclick="{!c.onDoubleCLickDelete}"  class="centered"/>
+                                                                                    </aura:if>
+                                                                                </div>
+                                                                            </aura:set>
+                                                                        </aura:if>
+                                                                    </aura:iteration>
+                                                                </div>
+                                                            </lightning:accordionSection>
+                                                        </lightning:accordion>
+                                                    </div>                                           
+                                                </lightning:layout>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                        <aura:if isTrue="{!v.isNoClaims}">
+                            <lightning:layoutItem size="12" class="slds-align_absolute-center .slds-text-title_bold"> Please change the status filter to obtain the required claims. </lightning:layoutItem>
+                        </aura:if>
+                    </div>
+                    <aura:if isTrue="{!v.financeUser}">
+                        <aura:if isTrue="{!v.selectedstatus!='All'}">
+                            <footer class="slds-modal__footer">
+                                <lightning:button variant="success" label="Submit Claim(s)" onclick="{!c.submit_All_Claims}" disabled="{!v.blockSubmit}" iconName="action:submit_for_approval"/>
+                            </footer>
+                        </aura:if>
+                    </aura:if>
+                </div>
+                <div class="demo-only"  style="height: 100%;">
+                    <aura:if isTrue="{!v.isClaimDelete}">
+                        <section  class="slds-modal slds-fade-in-open Popup">
+                            <div class="slds-modal__container ModalCss" >
+                                <div class="slds-modal__content slds-p-around_medium" > 
+                                    Are you sure you want to delete this Claim?                         
+                                </div>
+                                <footer class="slds-modal__footer"> 
+                                    <div class="slds-align_absolute-center">
+                                        <lightning:button variant="brand" label="OK" title="Ok" onclick="{! c.deleteClaim}" />
+                                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeDelete}" />
+                                    </div>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"/>
+                    </aura:if>
+                </div>
+                <div class="demo-only"  style="height: 100%;">
+                    <aura:if isTrue="{!v.isModalOpen}">
+                        <section  class="slds-modal slds-fade-in-open Popup">
+                            <div class="slds-modal__container ModalCss" >
+                                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeMe }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                                <div class="slds-modal__content slds-p-around_medium" > 
+                                    Deleting a file also removes it from any records or posts it is attached to! Are you sure you want to delete this File? 
+                                </div>
+                                <footer class="slds-modal__footer"> 
+                                    <div class="slds-align_absolute-center">
+                                        <aura:if isTrue="{!v.isModalOpen}">
+                                            <lightning:button variant="brand" label="OK" title="Ok" onclick="{! c.confirm}" />
+                                            <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeMe}" />
+                                        </aura:if>
+                                    </div>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </aura:if>
+                </div> 
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" />
+        </aura:if>
+    </div> 
+</aura:component>

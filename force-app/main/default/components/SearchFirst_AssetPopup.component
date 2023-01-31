@@ -1,0 +1,82 @@
+<apex:component controller="SearchFirst_AssetPopupController" AllowDML="true">
+    <apex:attribute name="host" type="SearchFirst_Controller_A" assignTo="{!searchFirstController}"  required="true" description="The controller for the page." />
+    <apex:form >
+        <apex:outputPanel id="assetpopup">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!ShowPopup}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!ShowPopup}">
+                <apex:outputLabel value="{!$Label.SearchFirstPopupDescription}"/>
+                <br/><br/>
+                <apex:outputPanel id="assetErrorPanel">
+                    <apex:pageMessage strength="2" title="{!ErrorTitle}" summary="{!ErrorMessage}" severity="error" rendered="{!ErrorMessage!=''}" />
+                </apex:outputPanel>
+                 <table width="100%"> 
+                    <tr>
+                        <td width="100%">   
+                            <table width="100%">
+                                <tr>
+                                    <td>
+                                        <apex:outputLabel value="{!$ObjectType.Account.fields.Phone.Label}" rendered="{!isAccessAvailable}"/>
+                                    </td>
+                                    <td width="100%">
+                                        <apex:inputText value="{!PopupAccount.Phone.Value}" id="accountInputPhone" rendered="{!isAccessAvailable}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <apex:outputLabel value="{!$ObjectType.Account.fields.PersonEmail.Label}" rendered="{!isAccessAvailable}"/>
+                                    </td>
+                                    <td width="100%">
+                                        <apex:inputText value="{!PopupAccount.PersonEmail.Value}" id="accountInputEmail" rendered="{!isAccessAvailable}"/>
+                                    </td>
+                                </tr>
+                               <tr>
+                                   <td>
+                                       <apex:outputLabel value="{!$ObjectType.Account.fields.PersonMobilePhone.Label}" rendered="{!isAccessAvailable}"/>
+                                   </td>
+                                   <td width="100%">
+                                       <apex:inputText value="{!PopupAccount.PersonMobilePhone.Value}" id="accountInputMobile" rendered="{!isAccessAvailable}"/>
+                                   </td>
+                               </tr>
+                                <tr>
+                                    <td>
+                                        <apex:commandButton value="{!$Label.sfSubmit}" action="{!MakeRecordKnown}" rerender="assetpopup,assetErrorPanel,assetSearchPanel" styleClass="searchFilterButton"/>
+                                    </td>
+                                    <td>
+                                        <apex:commandButton value="{!$Label.sfCancel}" action="{!ClosePopup}" rerender="assetpopup,assetErrorPanel" styleClass="searchFilterButton"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>  
+                    </tr>
+                </table>
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+    <style type="text/css">
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            overflow: 'hidden';
+            z-index: 9999;
+            left: 5%;
+            padding:10px;
+            position: fixed;
+            width: 90%;
+            margin-left: 0px;
+            top: 40%;
+        }
+        .popupBackground{
+            background-color:black;
+            overflow: 'hidden';
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+    </style>
+</apex:component>

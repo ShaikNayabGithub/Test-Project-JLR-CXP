@@ -1,0 +1,22 @@
+<template>
+    <div class="slds-grid slds-gutters">
+        <div if:true={showButton} class="slds-col">
+            <lightning-button variant="brand" label="중복 검사" class="slds-m-left_x-small" onclick={clickHandler}></lightning-button>
+            {userId}
+        </div>
+        <template if:true={viewMessage}>
+            <div class="slds-col slds-align-middle">
+                <template if:true={isDupAccnt}>
+                    <div class="dup">이미 등록된 고객입니다.</div>
+                    <div class="dup">담당자: <b>{ownerLastName}</b> - 진행 중인 상담: <b>{opptyCnt} 건</b></div>
+                </template>
+            
+                <template if:false={isDupAccnt}>
+                    <div class="no_dup"><b><p>신규 고객입니다.</p></b></div>
+                </template>
+            </div>
+        </template>
+    </div>
+    
+    
+</template>

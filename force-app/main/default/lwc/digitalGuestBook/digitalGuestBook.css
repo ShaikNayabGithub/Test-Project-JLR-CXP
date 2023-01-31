@@ -1,0 +1,21 @@
+:host {
+    --slds-c-button-brand-color-background:black;
+    --slds-c-button-brand-color-border: black;
+    --sds-c-slider-track-color-background: black;
+    --sds-c-slider-thumb-color-foreground: black;
+    
+  }
+
+  .guestbookTitle {
+    font-size: 2.5rem;
+  }
+  
+  .guestbookCarousel {
+    font-size: 2.5rem; 
+  }
+
+  .jlrFont {
+    /*
+    font-size: 1.2rem;
+    */
+  }

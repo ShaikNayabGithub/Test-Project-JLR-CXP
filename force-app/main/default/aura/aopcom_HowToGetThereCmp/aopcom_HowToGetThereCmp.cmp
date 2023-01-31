@@ -1,0 +1,11 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+	<aura:attribute name="Title" type="String" default="GOOGLE MAPS LINK"/>
+    <aura:attribute name="Description" type="String" />
+    <aura:attribute name="Link_label" type="String" default="LINK TO GOOGLE MAPS >"/>
+    <aura:attribute name="Coordinate1" type="String" />
+    <aura:attribute name="Coordinate2" type="String" />
+    
+    {!v.Title} <br/>
+    {!v.Description} <br/>
+    <a href="{!'http://maps.google.com/maps/@'+v.Coordinate1+','+v.Coordinate2+'z'}" target="_blank">{!v.Link_label}</a>
+</aura:component>

@@ -1,0 +1,20 @@
+.THIS table tbody tr td {
+        font-size: 12px !important;
+        vertical-align: middle !important;
+}
+.THIS .tableHeader {
+	word-break: break-word;
+	background-color: #ffffff;
+	font-size: 25px;
+	font-family: auto;
+	font-variant-caps: all-small-caps;
+}
+.THIS .tableHeaderChild {
+	word-break: break-word;
+	color: white;
+	background-color: #2196F3;
+}
+
+.THIS .boldtext {
+   font-weight: bold; 
+}

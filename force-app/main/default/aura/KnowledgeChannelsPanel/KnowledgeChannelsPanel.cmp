@@ -1,0 +1,18 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="simpleKnowledge" type="Object" />
+    <aura:attribute name="columnFields" type="String[]" default="['Title', 'IsVisibleInApp', 'IsVisibleInPkb', 'IsVisibleInCsp', 'IsVisibleInPrm']" />
+    
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetRecord="{!v.simpleKnowledge}" mode="VIEW" layoutType="FULL" />
+	
+  		<lightning:card title="Channels" iconName="standard:channel_programs" class="slds-p-around_xx-small">
+   			<p class="slds-p-horizontal_small">
+	           	<div class="slds-grid slds-wrap">
+                    <div class="slds-size--1-of-1 slds-p-horizontal_xx-small">{!v.recordId}</div>
+   					<div class="slds-size--1-of-1 slds-p-horizontal_xx-small">{!v.simpleKnowledge.Title}</div>
+        	        <div class="slds-size--1-of-1 slds-p-horizontal_xx-small">{!v.simpleKnowledge.IsVisibleInPkb}</div>
+                    <div class="slds-size--1-of-1 slds-p-horizontal_xx-small">{!v.simpleKnowledge.IsVisibleInPrm}</div>
+        	    </div>
+        	</p>
+    	</lightning:card>
+    
+</aura:component>

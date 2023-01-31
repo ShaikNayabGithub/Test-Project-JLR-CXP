@@ -1,0 +1,27 @@
+<aura:component implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes">
+    <aura:attribute name="recordId" type="String" />
+	<lightning:card title="{!$Label.c.Existing_Asset}" iconName="utility:travel_and_places"  >
+		
+		<lightning:recordEditForm aura:id="editOppLineItem" recordId="{!v.recordId}" objectApiName="OpportunityLineItem" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}">
+			<lightning:tabset variant="vertical" >
+				<lightning:tab label="{!$Label.c.Vista_Order_No}">
+                    <div>{!$Label.c.Vista_Order_No}</div>
+					<lightning:inputField label="{!$Label.c.Vista_Order_No}" fieldName="Vista_Order_Number__c" />
+					<lightning:button type="submit" label="{!$Label.c.Save}" />
+				</lightning:tab>
+				<lightning:tab label="{!$Label.c.Registration_No}">
+                    <div>{!$Label.c.Registration_No}</div>
+					<lightning:inputField label="{!$Label.c.Registration_No}" fieldName="Licence_Plate__c" />
+					<lightning:button type="submit" label="{!$Label.c.Save}" />
+				</lightning:tab>
+				<lightning:tab label="{!$Label.c.Asset_Vin_No}">
+                    <div>{!$Label.c.Asset_Vin_No}</div>
+					<lightning:inputField label="{!$Label.c.Asset_Vin_No}" fieldName="Asset__c" />
+					<lightning:button type="submit" label="{!$Label.c.Save}" />
+				</lightning:tab>
+			</lightning:tabset>
+		</lightning:recordEditForm>
+		
+	</lightning:card>
+
+</aura:component>

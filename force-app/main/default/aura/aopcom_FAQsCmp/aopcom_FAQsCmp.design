@@ -1,0 +1,104 @@
+<design:component>
+    <design:attribute name="image900_452Url1" label="Image 900x452 Url 1" />
+    <design:attribute name="image740_372Url1" label="Image 740x372 Url 1" />
+    <design:attribute name="titleQuestion1" label="Question 1 Title"/>
+    <design:attribute name="descriptionQuestion1" label="Question 1 Description"/>
+    <design:attribute name="image900_452Url2" label="Image 900x452 Url 2" />
+    <design:attribute name="image740_372Url2" label="Image 740x372 Url 2" />
+    <design:attribute name="titleQuestion2" label="Question 2 Title"/>
+    <design:attribute name="descriptionQuestion2" label="Question 2 Description"/>
+    <design:attribute name="image900_452Url3" label="Image 900x452 Url 3" />
+    <design:attribute name="image740_372Url3" label="Image 740x372 Url 3" />
+    <design:attribute name="titleQuestion3" label="Question 3 Title"/>
+    <design:attribute name="descriptionQuestion3" label="Question 3 Description"/>
+    <design:attribute name="image900_452Url4" label="Image 900x452 Url 4" />
+    <design:attribute name="image740_372Url4" label="Image 740x372 Url 4" />
+    <design:attribute name="titleQuestion4" label="Question 4 Title"/>
+    <design:attribute name="descriptionQuestion4" label="Question 4 Description"/>
+    <design:attribute name="image900_452Url5" label="Image 900x452 Url 5" />
+    <design:attribute name="image740_372Url5" label="Image 740x372 Url 5" />
+    <design:attribute name="titleQuestion5" label="Question 5 Title"/>
+    <design:attribute name="descriptionQuestion5" label="Question 5 Description"/>
+    <design:attribute name="image900_452Url6" label="Image 900x452 Url 6" />
+    <design:attribute name="image740_372Url6" label="Image 740x372 Url 6" />
+    <design:attribute name="titleQuestion6" label="Question 6 Title"/>
+    <design:attribute name="descriptionQuestion6" label="Question 6 Description"/>
+    <design:attribute name="image900_452Url7" label="Image 900x452 Url 7" />
+    <design:attribute name="image740_372Url7" label="Image 740x372 Url 7" />
+    <design:attribute name="titleQuestion7" label="Question 7 Title"/>
+    <design:attribute name="descriptionQuestion7" label="Question 7 Description"/>
+    <design:attribute name="image900_452Url8" label="Image 900x452 Url 8" />
+    <design:attribute name="image740_372Url8" label="Image 740x372 Url 8" />
+    <design:attribute name="titleQuestion8" label="Question 8 Title"/>
+    <design:attribute name="descriptionQuestion8" label="Question 8 Description"/>
+    <design:attribute name="image900_452Url9" label="Image 900x452 Url 9" />
+    <design:attribute name="image740_372Url9" label="Image 740x372 Url 9" />
+    <design:attribute name="titleQuestion9" label="Question 9 Title"/>
+    <design:attribute name="descriptionQuestion9" label="Question 9 Description"/>
+    <design:attribute name="image900_452Url10" label="Image 900x452 Url 10" />
+    <design:attribute name="image740_372Url10" label="Image 740x372 Url 10" />
+    <design:attribute name="titleQuestion10" label="Question 10 Title"/>
+    <design:attribute name="descriptionQuestion10" label="Question 10 Description"/>
+    <design:attribute name="image900_452Url11" label="Image 900x452 Url 11" />
+    <design:attribute name="image740_372Url11" label="Image 740x372 Url 11" />
+    <design:attribute name="titleQuestion11" label="Question 11 Title"/>
+    <design:attribute name="descriptionQuestion11" label="Question 11 Description"/>
+    <design:attribute name="image900_452Url12" label="Image 900x452 Url 12" />
+    <design:attribute name="image740_372Url12" label="Image 740x372 Url 12" />
+    <design:attribute name="titleQuestion12" label="Question 12 Title"/>
+    <design:attribute name="descriptionQuestion12" label="Question 12 Description"/>
+    <design:attribute name="image900_452Url13" label="Image 900x452 Url 13" />
+    <design:attribute name="image740_372Url13" label="Image 740x372 Url 13" />
+    <design:attribute name="titleQuestion13" label="Question 13 Title"/>
+    <design:attribute name="descriptionQuestion13" label="Question 13 Description"/>
+    <design:attribute name="image900_452Url14" label="Image 900x452 Url 14" />
+    <design:attribute name="image740_372Url14" label="Image 740x372 Url 14" />
+    <design:attribute name="titleQuestion14" label="Question 14 Title"/>
+    <design:attribute name="descriptionQuestion14" label="Question 14 Description"/>
+    <design:attribute name="image900_452Url15" label="Image 900x452 Url 15" />
+    <design:attribute name="image740_372Url15" label="Image 740x372 Url 15" />
+    <design:attribute name="titleQuestion15" label="Question 15 Title"/>
+    <design:attribute name="descriptionQuestion15" label="Question 15 Description"/>
+    <design:attribute name="image900_452Url16" label="Image 900x452 Url 16" />
+    <design:attribute name="image740_372Url16" label="Image 740x372 Url 16" />
+    <design:attribute name="titleQuestion16" label="Question 16 Title"/>
+    <design:attribute name="descriptionQuestion16" label="Question 16 Description"/>
+    <design:attribute name="image900_452Url17" label="Image 900x452 Url 17" />
+    <design:attribute name="image740_372Url17" label="Image 740x372 Url 17" />
+    <design:attribute name="titleQuestion17" label="Question 17 Title"/>
+    <design:attribute name="descriptionQuestion17" label="Question 17 Description"/>
+    <design:attribute name="image900_452Url18" label="Image 900x452 Url 18" />
+    <design:attribute name="image740_372Url18" label="Image 740x372 Url 18" />
+    <design:attribute name="titleQuestion18" label="Question 18 Title"/>
+    <design:attribute name="descriptionQuestion18" label="Question 18 Description"/>
+    <design:attribute name="image900_452Url19" label="Image 900x452 Url 19" />
+    <design:attribute name="image740_372Url19" label="Image 740x372 Url 19" />
+    <design:attribute name="titleQuestion19" label="Question 19 Title"/>
+    <design:attribute name="descriptionQuestion19" label="Question 19 Description"/>
+    <design:attribute name="image900_452Url20" label="Image 900x452 Url 20" />
+    <design:attribute name="image740_372Url20" label="Image 740x372 Url 20" />
+    <design:attribute name="titleQuestion20" label="Question 20 Title"/>
+    <design:attribute name="descriptionQuestion20" label="Question 20 Description"/>
+    <design:attribute name="image900_452Url21" label="Image 900x452 Url 21" />
+    <design:attribute name="image740_372Url21" label="Image 740x372 Url 21" />
+    <design:attribute name="titleQuestion21" label="Question 21 Title"/>
+    <design:attribute name="descriptionQuestion21" label="Question 21 Description"/>
+    <design:attribute name="image900_452Url22" label="Image 900x452 Url 22" />
+    <design:attribute name="image740_372Url22" label="Image 740x372 Url 22" />
+    <design:attribute name="titleQuestion22" label="Question 22 Title"/>
+    <design:attribute name="descriptionQuestion22" label="Question 22 Description"/>
+    <design:attribute name="image900_452Url23" label="Image 900x452 Url 23" />
+    <design:attribute name="image740_372Url23" label="Image 740x372 Url 23" />
+    <design:attribute name="titleQuestion23" label="Question 23 Title"/>
+    <design:attribute name="descriptionQuestion23" label="Question 23 Description"/>
+    <design:attribute name="image900_452Url24" label="Image 900x452 Url 24" />
+    <design:attribute name="image740_372Url24" label="Image 740x372 Url 24" />
+    <design:attribute name="titleQuestion24" label="Question 24 Title"/>
+    <design:attribute name="descriptionQuestion24" label="Question 24 Description"/>
+    <design:attribute name="image900_452Url25" label="Image 900x452 Url 25" />
+    <design:attribute name="image740_372Url25" label="Image 740x372 Url 25" />
+    <design:attribute name="titleQuestion25" label="Question 25 Title"/>
+    <design:attribute name="descriptionQuestion25" label="Question 25 Description"/>
+    <design:attribute name="previous" label="previousLabel"/>
+    <design:attribute name="next" label="nextLabel"/>
+</design:component>

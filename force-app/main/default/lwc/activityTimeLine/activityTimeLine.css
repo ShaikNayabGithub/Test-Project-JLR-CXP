@@ -1,0 +1,34 @@
+/**
+ * Created by GrantMillgate-EasyTe on 16/10/2019.
+ */
+
+.wrapper{
+    margin-top:10px;
+    background-color: white;
+    border-width: thin;
+    border-color: #b1b1b1;
+    border-style: solid;
+}
+
+.jlr-headings{
+    text-align: center;
+}
+h4{
+    text-transform: uppercase;
+    font-size: larger;
+    padding-top:10px;
+    padding-bottom:10px;
+    display: block;
+}
+
+.jlr-h5 {
+    text-transform: uppercase;
+    padding-left: 20px;
+}
+
+.jlr-row-dark{
+    background-color: #b1b1b1;
+    min-height: 3em;
+    padding-top:10px;
+    padding-bottom:10px;
+}

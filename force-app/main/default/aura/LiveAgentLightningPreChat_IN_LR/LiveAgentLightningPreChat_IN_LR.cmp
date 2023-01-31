@@ -1,0 +1,289 @@
+<aura:component implements="lightningsnapin:prechatUI" description="Pre-Chat Land Rover Mexico">
+
+    <ltng:require scripts="{!$Resource.LiveAgentLightningStatic + '/dist/js/main.js'}"  />
+
+    <aura:attribute name="prechatFieldComponents" type="List" description="An array of objects representing the pre-chat fields specified in pre-chat setup."/>
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:locator target="startButton" description="Pre-chat form submit button."/>
+
+    <lightningsnapin:prechatAPI aura:id="prechatAPI"/>
+
+    <div class="TabContainerUI TabContainerUI--chat">
+        <div class="ChatUI ChatUI--with-tab ChatUI--active" data-tab="chat">
+            <div class="ChatUI__content">
+                <h4>WELCOME</h4>
+
+                <p class="small">
+                    Our online assistants are here to help answer any Land Rover related questions you may have. 
+                    Before we get started, please help direct your chat by providing the following information.
+                </p>
+
+                <ul class="fieldsList" >
+                    {!v.prechatFieldComponents}
+                </ul>
+                <ul class="fieldsList" style="display: none;" >
+                    {!v.prechatFieldHiddenComponents}
+                </ul>
+
+                <div class="form-errors" id="chat-form-errors" role="alert" aria-atomic="true" data-defaultMsg="Unfortunately, there is an error with the information entered. Please re-enter your information and try submitting again."></div>
+                
+                <div class="startButtonWrapper">
+                    <ui:button aura:id="startButton" class="startButton" label="Start Chat" press="{!c.startButtonClick}"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="ChatUI ChatUI--with-tab ChatUI--dark" data-tab="legal">
+            <div class="ChatUI__content">
+                <h4 class="expanded">Legal Disclaimer</h4>
+
+                <p class="small">At Jaguar Land Rover we are committed to protecting the privacy of the users of our Live Help customer service tool. The following information will give you the details about what happens when you visit our website, what information is obtained from you and how (if at all) we use this information</p>
+
+                <div class="accordion">
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-1"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            What does Land Rover Live Help do?
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-1">
+							<p>LAND ROVER Live Help is an online chat and messaging technology that facilitates real-time sales and customer services on the LAND ROVER India www.landrover.in website and social media channels. </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-2"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            Land Rover Live Help users
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-2">
+                            <p>What information do we collect from LAND ROVER Live Help users? During the engagement, LAND ROVER Live Help enters into a live question and answer session with an agent either by text chat or social media messenger service. We maintain dialogue transcripts of these chats. After the chat, we ask LAND ROVER Live Help customers to fill out an exit survey in order to obtain valuable feedback about the levels of our service. Moreover, all personal data is only collected if you voluntarily supply it, e.g. when completing a contact form. If during the engagement the user chooses to enter personal or business data (email addresses, names, addresses), the disclosure of such data is done so by the user on a voluntary basis. Such information is not passed to any third parties or used for any other purpose(s) than that/those requested by the customer. We log browser information (e.g. Internet Protocol addresses and browser types) to help diagnose problems with our service, gather broad demographic information and administer our site. By choosing to engage in a chat and use the services, the user consents to such logging and processing of IP address.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-3"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            How does Jaguar Land Rover use information it collects from LAND ROVER Live Help users and will Jaguar Land Rover disclose such information to outside parties?
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-3">
+							<p> We access the information we collect for certain purposes (for example, to aggregate the information, to monitor the use of the service during certain engagements and for other lawful purposes). All LAND ROVER Live Help user information, including sensitive personal information, will not be shared with anyone. We do not sell, trade or rent the personal information or sensitive personal information that LAND ROVER Live Help users provide. Jaguar Land Rover may store and use such information and data for JLR marketing purposes to assist customers in procuring Jaguar Land Rover products as well as to provide any details about Jaguar Land Rover products. 
+For more information about how Jaguar Land Rover and its group companies handle and protect your Information, please refer to our JLR Group Privacy Policy at <a href="https://www.landrover.in/privacy-policy.html" target="_blank">https://www.landrover.in/privacy-policy.html</a> </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-4"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            What about "cookies“?
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-4">
+                            <p>Cookies are pieces of information that some websites transfer to the computer that is browsing that website and are used for record-keeping purposes on many websites. Use of cookies makes Web-surfing easier by performing certain functions such as saving passwords, lists of potential purchases, personal preferences regarding the use of the particular website and to make sure the user does not see the same offer of help repeatedly. Many consider the use of cookies to be an industry standard. Our site uses cookies to store information about customers’ preferences and passwords in order to enhance the user's experience by allowing us to recognize a user's return visit to our website.
+                            
+                            Browsers are usually set to accept cookies. However, if users would prefer not to receive cookies, they may alter the configuration of their browser to refuse cookies. If they choose to have their browser refuse cookies, it is possible that some areas of our site will not function as effectively when viewed by the users. Jaguar Land Rover recommends customers to be careful with the usage of their personal information by maintaining confidentiality so as to ensure that the customers do not knowingly or accidentally share, provide and facilitate unauthorised use of it.
+                            
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-5"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title" >
+                            Opt-Out Policy
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-5">
+                            <p>Jaguar Land Rover gives users options wherever necessary and practical. Such choices include opting not to engage in chat sessions.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-6"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            In summary
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-6">
+                            <p>We are committed to protecting the privacy of our website visitors and users of our live help services and we have taken all necessary and reasonable measures to protect the confidentiality of customer information and its transmission through the website and we shall not be held liable for disclosure of Information, in the course of your use of our website caused by abnormal and unforeseeable circumstances outside our reasonable control, which would have been unavoidable despite all efforts to the contrary, for example delays or failures caused by industrial action, problems with another system or network, third party viruses or malware, mechanical breakdown or data-processing failures. We use the information we collect to provide a better experience for future use of our services and to provide our customers with valuable feedback on their website visitors. Jaguar Land Rover takes the protection and privacy of our customers’ personal information very seriously. Any such information collected will be treated pursuant to the applicable privacy and data protection rules including the Information Technology Act, 2000 and the rules made thereunder.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-legal-7"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            Errors and Omissions
+                        </div>
+                        <div class="accordion__text" id="accordion-legal-7">
+                            <p>Errors and omissions excepted</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ChatUI ChatUI--with-tab ChatUI--dark" data-tab="help">
+            <div class="ChatUI__content">
+                <h4 class="expanded">About live Help</h4>
+
+                <div class="accordion">
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-1"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            What is Live Help?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-1">
+			              	<p> Land Rover Live Help is a new online service for customers browsing our website or certain social media channels. In the case of the website, it allows you to text chat with one of our helpful online agents. In the case of social media, it allows you to use Facebook Messenger to message your enquiries to our online agents. It is a fast and efficient way of asking for help whenever you need it. </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-2"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title" for="accordion-help-2">
+                            How do I know if Live help is available?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-2">
+                            <p>Live Help is available Monday to Sunday between the hours of 7am and 9pm. Whenever, Live Help is available, a ‘Live Help’ tab will appear on the bottom right-hand side of your browser window. If all our agents are currently engaged in customer chats, the ‘Live Help’ tab will not appear, and you will not be able to start a chat.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-3"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            What happens if all agents are busy?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-3">
+                            <p>Our assistants may be busy helping other customers, so you have the option to wait for the next available assistant.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-4"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <div class="accordion__title">
+                            How do I get help?
+                        </div>
+                        <div class="accordion__text" id="accordion-help-4">
+                            <p> Whenever you need help or assistance, simply click the ‘Live Help’ tab, submit the simple pre-chat survey,
+                                and your chat with one of our online agents will begin once accepted by one of our agents.
+                                If all our agents are currently engaged in customer chats, the ‘Live Help’ tab will not appear, and you will not be able to start a chat.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion__block"
+                         tabindex="0"
+                         onkeypress="{!c.accordionButtonPressed}"
+                         onclick="{!c.accordionButtonClick}"
+                         aria-controls="accordion-help-5"
+                         aria-expanded="false"
+                         role="button"
+                    >
+                        <label class="accordion__title">
+                            What about my privacy?
+                        </label>
+                        <div class="accordion__text" id="accordion-help-5">
+				              <p> We very much respect customers’ privacy and adhere to a strict Code of Conduct. For further information, please click <a href="https://www.LandRover.in/privacy-policy.html" target="_blank">here</a> to view our Privacy Policy.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ChatUI ChatUI--dialog ChatUI--disclaimer" data-tab="disclaimer">
+            <div class="ChatUI__content">
+                <div class="text-left">
+                    <div class="text-center">
+                        <h4>Consent Disclaimer:</h4>
+    
+                        <p class="small">IMPORTANT CONSUMER INFORMATION</p>
+                    </div>
+
+                    <div class="x-small">
+                        <p>In providing this information you consent to be contacted via phone call, SMS and / or email by Jaguar Land Rover India Ltd. and / or its appointed agencies, partners, affiliates, authorised retailers, etc. on the mobile numbers and / or email-id provided by you to  Jaguar Land Rover India Ltd. and / or its appointed agencies, partners, affiliates, authorised retailers, etc. to assist you with information on Jaguar and / or Land Rover products and services, their promotions, emailers, news-letters, marketing activities, including events, etc. from time to time.</p>
+
+                        <p>In purview of the Telecom Regulatory Authority of India (TRAI) guideline, I / We hereby authorise Jaguar Land Rover India Ltd. and its appointed agencies, partners, affiliates, authorised retailers, etc.  or any other related player in automobiles or otherwise who are accessing the data by virtue of the association with Jaguar Land Rover India Ltd. to communicate with me / us through telephone / mobile, email, SMS or other modes of communication even if my / our number / numbers is / are registered in the National Do Not Call Registry(NDNC) or <a target="_blank" href="http://www.nccptrai.gov.in">http://www.nccptrai.gov.in</a></p>
+                    </div>
+
+
+                    <p><button class="button button--primary button--block" onclick="{!c.agreedClick}">I agree</button></p>
+                    <p><button class="button button--secondary button--block" onclick="{!c.disAgreedClick}">I disagree</button></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="TabUI">
+        <button class="TabUI__button TabUI__button--active" onkeypress="{!c.tabButtonPressed}" onclick="{!c.tabButtonClick}" data-tab="chat" data-index="1">
+            <span class="TabUI__text">Chat</span>
+        </button>
+        <button class="TabUI__button" onkeypress="{!c.tabButtonPressed}" onclick="{!c.tabButtonClick}" data-tab="legal" data-index="2">
+            <span class="TabUI__text">Legal</span>
+        </button>
+        <button class="TabUI__button" onkeypress="{!c.tabButtonPressed}" onclick="{!c.tabButtonClick}" data-tab="help" data-index="3">
+            <span class="TabUI__text">Help</span>
+        </button>
+    </footer>
+</aura:component>

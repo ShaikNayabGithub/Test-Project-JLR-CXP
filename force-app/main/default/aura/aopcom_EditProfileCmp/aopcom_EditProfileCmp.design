@@ -1,0 +1,31 @@
+<design:component>
+    
+    
+    <!-- Buttons -->
+    <design:attribute name="submitButton" label="Submit button" />
+    <design:attribute name="cancelButton" label="Cancel button"/>	  
+    
+    <!-- Principal Titles-->
+    <design:attribute name="ContactInformation" label="Contact information principal Title" />
+    <design:attribute name="Address" label="Address principal Title"/>	    
+    
+    <!--Titles-->
+    <design:attribute name="firstNameTitle" label="First Name" />
+    <design:attribute name="lastNameTitle" label="Last Name"/>
+    <design:attribute name="emailAddressTitle" label="Email address"/>
+    <design:attribute name="landlineNumberTitle" label="Landline Number"/>
+	<design:attribute name="mobileNumberTitle" label="Mobile Number"/>
+    <design:attribute name="streetTitle" label="Street"/>
+    <design:attribute name="townTitle" label="Town/City"/>
+    <design:attribute name="stateTitle" label="Country/State"/>
+    <design:attribute name="postcodeTitle" label="Postcode"/>
+    <design:attribute name="UploadPict" label="Upload a"/>
+    <design:attribute name="ProfilePict" label="Profile Picture"/>
+    
+    <!--Errors-->
+    <design:attribute name="lastNameError" label="Last name error message"/>
+    <design:attribute name="emailError" label="Email error message"/>
+    <design:attribute name="emailError2" label="Email error format message" />
+
+  
+</design:component>

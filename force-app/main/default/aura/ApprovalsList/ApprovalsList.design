@@ -1,0 +1,4 @@
+<design:component>    
+    <design:attribute name="approvalTitle" label="Approval List Name" description="Enter a Title to display at the top of the list of Approval Requests" default="Vehicle Quote Approvals" />
+    <design:attribute name="approvalProcessNames" label="Approval Process Names" description="Enter a comma separated list of Approval Process DeveloperNames to filter the list of Approval Requests (leave blank for all)" default="" />
+</design:component>

@@ -1,0 +1,453 @@
+<aura:component controller="AccountPreferencesUpdateController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="currentAccount" type="Account"/>   
+    <aura:attribute name="recordError" type="String"/>
+    <aura:attribute name="currentAccountAccess" type="Boolean"/>
+    <aura:attribute name="accountFieldLabelMap" type="Map"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+     <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>    
+   <aura:handler event="aura:donewaiting" action="{!c.hideSpinner}"/>
+      <aura:if isTrue="{!v.showSpinner}">
+                            <lightning:spinner />
+                        </aura:if>
+    <aura:if isTrue="{!v.currentAccount.IsPersonAccount}">
+    
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-account" title="account">
+                        <span class="slds-assistive-text">{!$Label.c.Brand_and_Marketing_Topic_Preferences}</span>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                            <span>{!$Label.c.Brand_and_Marketing_Topic_Preferences}</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+               <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.persondonotcall} </label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.PersonDoNotCall}" onchange="{!c.mainOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.personhasoptedoutofemail}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.PersonHasOptedOutOfEmail}" onchange="{!c.mainOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label >{!v.accountFieldLabelMap.et4ae5__hasoptedoutofmobile__pc}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.et4ae5__HasOptedOutOfMobile__pc}" onchange="{!c.mainOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.direct_mail_opt_out__pc}</label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Direct_Mail_Opt_Out__pc}" onchange="{!c.mainOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+         
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.all_communications_opt_out__pc} </b></label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.All_Communications_opt_out__pc}" onchange="{!c.allCommOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6" /> 
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.jaguar_email_opt_out__pc}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Email_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label >{!v.accountFieldLabelMap.land_rover_email_opt_out__pc}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Email_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.jaguar_phone_opt_out__pc}</label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Phone_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label >{!v.accountFieldLabelMap.land_rover_phone_opt_out__pc}</label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Phone_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.jaguar_whitemail_opt_out__pc}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Whitemail_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label >{!v.accountFieldLabelMap.land_rover_whitemail_opt_out__pc}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Whitemail_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.jaguar_sms_opt_out__pc}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_SMS_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label >{!v.accountFieldLabelMap.land_rover_sms_opt_out__pc}</label>
+                    <lightning:input  type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_SMS_Opt_Out__pc}" onchange="{!c.oneCommOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />
+            <!--<lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.all_topics_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.All_Topics_Opt_Out__pc}" onchange="{!c.allTopsOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6" />
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label >{!v.accountFieldLabelMap.jaguar_opt_out_all_topics__pc}</label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Opt_out_all_Topics__pc}" onchange="{!c.JTopicsOptout}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label >{!v.accountFieldLabelMap.land_rover_opt_out_all_topics__pc}</label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Opt_out_all_Topics__pc}" onchange="{!c.LRTopicsOptout}" disabled="{! !v.currentAccountAccess}"/>
+                </lightning:layoutItem> 
+            </lightning:layout>
+            <br />
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.jaguar_event_experiences_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Event_Experiences_Opt_Out__pc}" onchange="{!c.JeventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Eve_Exp_Email__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone} </label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Eve_Exp_Phone__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Eve_Exp_Direct_Mail__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Eve_Exp_SMS__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label ><b>{!v.accountFieldLabelMap.land_rover_event_experiences_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Event_Experiences_Opt_Out__pc}" onchange="{!c.LReventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Eve_Exp_Email__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Eve_Exp_Phone__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Eve_Exp_Direct_Mail__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Eve_Exp_SMS__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.jaguar_in_control_connected_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_In_Control_Connected_Opt_Out__pc}" onchange="{!c.JeventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_InCon_Conn_Email__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_InCon_Conn_Phone__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_InCon_Conn_Direct_Mail__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_InCon_Conn_SMS__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label ><b>{!v.accountFieldLabelMap.land_rover_in_control_connected_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_In_Control_Connected_Opt_Out__pc}" onchange="{!c.LReventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_InCon_Conn_Email__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_InCon_Conn_Phone__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_InCon_Conn_Direct_Mail__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_InCon_Conn_SMS__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.jaguar_owner_vehicle_comm_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Owner_Vehicle_Comm_Opt_Out__pc}" onchange="{!c.JeventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Own_Veh_Email__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Own_Veh_Phone__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Own_Veh_Direct_Mail__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Own_Veh_SMS__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label ><b>{!v.accountFieldLabelMap.land_rover_owner_vehicle_comm_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Owner_Vehicle_Comm_Opt_Out__pc}" onchange="{!c.LReventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Own_Veh_Email__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Own_Veh_Phone__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Own_Veh_Direct_Mail__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Own_Veh_SMS__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.jaguar_partners_sponsorship_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Partners_Sponsorship_Opt_Out__pc}" onchange="{!c.JeventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Par_Spo_Email__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Par_Spo_Phone__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Par_Spo_Direct_Mail__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Par_Spo_SMS__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label ><b>{!v.accountFieldLabelMap.land_rover_partners_sponsorship_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Partners_Sponsorship_Opt_Out__pc}" onchange="{!c.LReventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Par_Spo_Email__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Par_Spo_Phone__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Par_Spo_Direct_Mail__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Par_Spo_SMS__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.jaguar_products_services_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Products_Services_Opt_Out__pc}" onchange="{!c.JeventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Ser_Email__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Ser_Phone__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Ser_Direct_Mail__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Ser_SMS__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label ><b>{!v.accountFieldLabelMap.land_rover_products_services_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Products_Services_Opt_Out__pc}" onchange="{!c.LReventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Ser_Email__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Ser_Phone__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Ser_Direct_Mail__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Ser_SMS__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.jaguar_promotions_offers_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Promotions_Offers_Opt_Out__pc}" onchange="{!c.JeventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Off_Email__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Off_Phone__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Off_Direct_Mail__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Pro_Off_SMS__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label ><b>{!v.accountFieldLabelMap.land_rover_promotions_offers_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Promotions_Offers_Opt_Out__pc}" onchange="{!c.LReventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Off_Email__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Off_Phone__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Off_Direct_Mail__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Pro_Off_SMS__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />-->
+            <lightning:layout multipleRows="true" class="rcorners2">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <label ><b>{!v.accountFieldLabelMap.jaguar_surveys_and_research_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Jaguar_Surveys_and_Research_Opt_Out__pc}" onchange="{!c.JeventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Sur_Res_Email__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Sur_Res_Phone__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Sur_Res_Direct_Mail__pc}" onchange="{!c.JeventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.J_Sur_Res_SMS__pc}" onchange="{!c.JeventExperiencesOptIn}"  disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6"> 
+                    <label ><b>{!v.accountFieldLabelMap.land_rover_surveys_and_research_opt_out__pc}</b></label>
+                    <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.Land_Rover_Surveys_and_Research_Opt_Out__pc}" onchange="{!c.LReventExperiencesOptOut}" disabled="{! !v.currentAccountAccess}"/>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Email}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Sur_Res_Email__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem> 
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.sfPhone}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Sur_Res_Phone__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.Vista_Direct_Mail}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Sur_Res_Direct_Mail__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="3"> 
+                            <label >{!$Label.c.SMS}</label>
+                            <lightning:input type="checkbox" variant="label-hidden" name="input1" checked="{!v.currentAccount.LR_Sur_Res_SMS__pc}" onchange="{!c.LReventExperiencesOptIn}" disabled="{! !v.currentAccountAccess}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br />
+            <lightning:layout multipleRows="true" class="rcorners2">
+            <lightning:layoutItem padding="around-small" size="12">
+                <div  class="slds-align_absolute-center " >
+              <lightning:button class="slds-align_absolute-right "  variant="brand" label="{!$Label.c.sfSave}" title="{!$Label.c.sfSave}" onclick="{!c.handleSaveRecord}" disabled="{! !v.currentAccountAccess}"/> 
+              <lightning:button class="slds-align_absolute-left "  variant="brand" label="{!$Label.c.btnReset}" title="{!$Label.c.btnReset}" onclick="{!c.doInit}" disabled="{! !v.currentAccountAccess}"/> 
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <footer class="slds-card__footer"></footer>
+    </article>
+        <aura:set attribute="else">
+    		<h1><b>{!$Label.c.Individual_Customers_Only}</b> </h1>
+    	</aura:set>
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,16 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="LC_UnlockRecord_Controller">
+    <aura:attribute name="locked" type="boolean" default="false" />
+    <aura:attribute name="userCanUnlock" type="boolean" default="false" />
+    <aura:attribute name="recordTypeName" type="String" default="Opportunity" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />    
+    
+    <center>
+    <aura:if isTrue="{!v.locked}">
+        <lightning:icon iconName="utility:lock" />&nbsp;&nbsp;
+        <aura:if isTrue="{!v.userCanUnlock}">
+    		<lightning:button variant="brand" iconName="utility:unlock" label="{!$Label.c.Unlock}" onclick="{!c.unlock}" />
+        </aura:if>
+    </aura:if>
+    </center>
+        
+</aura:component>

@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" >
+    <aura:attribute name="newRecordId" type="string"/>
+    <aura:attribute name="newRecordName" type="string"/>
+</aura:event>

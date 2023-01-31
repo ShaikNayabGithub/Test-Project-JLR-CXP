@@ -1,0 +1,81 @@
+/**
+ * Created by GrantMillgate-EasyTe on 6/09/2019.
+ */
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Regular.ttf');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Bold.ttf');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Medium.ttf');
+    font-style: normal;
+    font-weight: 500;
+}
+body{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+h1 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    text-align: left;
+    font-weight: 700;
+    font-size: 22px;
+    padding: 10px;
+}
+
+h2 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.jlr-button{
+    text-transform: uppercase;
+    padding: 5px;
+    margin: 5px;
+    border-style: solid;
+    border-width: thin;
+    text-align: center;
+}
+
+.jlr-button-inverse{
+    background-color: black;
+    color: white;
+    margin-top: 100px;
+}
+
+
+.jlr-button-cell{
+    text-transform: uppercase;
+    border-style: solid;
+    border-color: black;
+    border-width: thin;
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+    width: available;
+    cursor: pointer;
+}

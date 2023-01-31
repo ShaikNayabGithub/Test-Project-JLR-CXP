@@ -1,0 +1,79 @@
+<!--
+||      Name : VME_ShowClaimScheme.cmp
+||      Author: Deepti Tanguturi
+||      Purpose: VME ShowClaimScheme component is to display scheme and VME camppaign data related to Scheme
+||      Created Date : 30/04/2018
+||      Modified By: <Your name>
+||      Modified Date : Date
+||      Reason : <your reason>
+-->
+<aura:component controller="VME_ShowClaimScheme_Ctrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId">
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+        <aura:attribute name="recordId" type="String" />
+        <aura:attribute name="vmeschemeObj" type="Object" />
+        <aura:attribute name="vmeCampaignObj" type="Object" />
+        <aura:attribute name="UserCurrency" type="String"  />
+		<aura:attribute name="userInfo" type="user" />		
+        <lightning:card variant="Narrow" title="Related L3 VME Campaign" iconName="standard:account" footer="">
+                <aura:set attribute="actions">
+                        <lightning:buttonIcon iconName="utility:down" variant="border-filled" alternativeText="Show More" />
+                </aura:set>
+                <p class="slds-p-horizontal_small">
+                        <a href="{!'/lightning/r/VME_Schemes__c/'+ v.vmeschemeObj.Id + '/view'}" target="_blank" data-index="{!v.vmeschemeObj.Id}">{!v.vmeschemeObj.Name}</a>
+                </p>
+                <p class="slds-p-horizontal_small">Start Date : 
+                	 <ui:outputDate value="{!v.vmeschemeObj.VME_Start_Date__c}" format="{!v.userInfo.CPF__c}" />
+                </p>
+                <p class="slds-p-horizontal_small">End Date : 
+                	 <ui:outputDate value="{!v.vmeschemeObj.VME_End_Date__c}" format="{!v.userInfo.CPF__c}" />
+                </p>
+                <p class="slds-p-horizontal_small">JLR Share : {!v.vmeschemeObj.VME_JLR_Share__c}</p>
+                <p class="slds-p-horizontal_small">VME Type : {!v.vmeschemeObj.VME_Type__c}</p>
+                <p class="slds-p-horizontal_small">Scheme Type : {!v.vmeschemeObj.VME_Scheme_Type__c}</p>
+                <p class="slds-p-horizontal_small">Volume : {!v.vmeschemeObj.VME_Volume__c}</p>
+                
+                <p class="slds-p-horizontal_small">Retailer Contribution : 
+                     <lightning:formattedNumber value="{!v.vmeschemeObj.VME_Retailer_Contribution__c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code"  />
+                </p>
+                <p class="slds-p-horizontal_small">Level 3 Description : {!v.vmeschemeObj.VME_Level_3_Description__c}</p>
+                <p class="slds-p-horizontal_small">P/U Amount : 
+                	 <lightning:formattedNumber value="{!v.vmeschemeObj.VME_PU_Amount__c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code"  />
+                </p>
+               
+            
+                <p class="slds-p-horizontal_small">Total Amount Approved : 
+                	 <lightning:formattedNumber value="{!v.vmeschemeObj.VME_Total_Amount_Approved__c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code"  />
+                </p>
+                <p class="slds-p-horizontal_small">Total Claim Amount : 
+                	 <lightning:formattedNumber value="{!v.vmeschemeObj.VME_Total_Amount_Available__c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code"  />
+                </p>
+                
+               
+        </lightning:card>
+        <lightning:card variant="Narrow" title="Related L2 VME Category" iconName="standard:account" footer="">
+                <aura:set attribute="actions">
+                        <lightning:buttonIcon iconName="utility:down" variant="border-filled" alternativeText="Show More" />
+                </aura:set>
+                <p class="slds-p-horizontal_small">
+                        <a href="{!'/lightning/r/VME_Campaign__c/'+v.vmeCampaignObj.Id+'/view'}" target="_blank" data-index="{!v.vmeCampaignObj.Id}">{!v.vmeCampaignObj.Name}</a>
+                </p>
+                <p class="slds-p-horizontal_small">Category : {!v.vmeCampaignObj.VME_Category__c}</p>
+                <p class="slds-p-horizontal_small">Sub Category : {!v.vmeCampaignObj.VME_Sub_Category__c}</p>
+                <p class="slds-p-horizontal_small">Start Date : 
+                	<ui:outputDate value="{!v.vmeCampaignObj.VME_Start_Date__c}" format="{!v.userInfo.CPF__c}" />
+                </p>
+                <p class="slds-p-horizontal_small">End Date : 
+                	<ui:outputDate value="{!v.vmeCampaignObj.VME_End_Date__c}" format="{!v.userInfo.CPF__c}" />
+                </p>
+
+            	<p class="slds-p-horizontal_small">Planned P/U Amount : 
+                	 <lightning:formattedNumber value="{!v.vmeCampaignObj.VME_Planned_PU_Amount__c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code"  />
+                </p>
+                <p class="slds-p-horizontal_small">Approved Volume : {!v.vmeCampaignObj.VME_Approved_Volume__c}</p>
+              
+                <p class="slds-p-horizontal_small">Planned Budget : 
+                     <lightning:formattedNumber value="{!v.vmeCampaignObj.VME_Planned_Budget__c}" style="currency" currencyCode="{!v.userInfo.DefaultCurrencyIsoCode}" currencyDisplayAs="code"  />
+                </p>
+                <p class="slds-p-horizontal_small">Planned Volume : {!v.vmeCampaignObj.VME_Planned_Volume__c}</p>
+              </lightning:card>
+</aura:component>

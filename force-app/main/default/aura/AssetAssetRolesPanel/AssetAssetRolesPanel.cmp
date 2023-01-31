@@ -1,0 +1,24 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="LC_AssetRoleExtract_Controller">
+    <aura:attribute name="assetRoles" type="Role__c[]" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <lightning:card title="Asset Roles" iconName="standard:asset_relationship" class="slds-p-around_xx-small">
+        <aura:if isTrue="{!v.assetRoles.length > 0}">
+        <table columns="4">
+            <tr style="background-color:#f0f0f0">
+            	<th style="padding:2px"></th>
+                <th style="padding:2px"><ui:outputText value="{!$Label.c.Account}" /></th>
+                <th style="padding:2px"><ui:outputText value="{!$Label.c.Contact}" /></th>
+                <th style="padding:2px"><ui:outputText value="{!$Label.c.Asset_Role}" /></th>
+            </tr>
+    		<aura:iteration items="{!v.assetRoles}" var="role">
+                <tr>
+                    <td style="padding:2px"><a name="{!role.Id}" href="javascript:void(0)" onclick="{!c.navigateToRole}">{!role.Name}</a></td>
+                    <td style="padding:2px"><ui:outputText value="{!role.Account__r.Name}" /></td>
+                    <td style="padding:2px"><ui:outputText value="{!role.Contact__r.Name}" /></td>
+                    <td style="padding:2px"><ui:outputText value="{!role.Role__c}" /></td>
+                </tr>
+        	</aura:iteration>
+        </table>
+        </aura:if>
+    </lightning:card>
+</aura:component>

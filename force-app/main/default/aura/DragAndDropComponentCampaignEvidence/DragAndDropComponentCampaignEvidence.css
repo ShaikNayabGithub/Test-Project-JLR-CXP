@@ -1,0 +1,18 @@
+.THIS {
+	background-color: #ffffff !important;
+}
+
+.THIS.box1 {
+
+display: inline-block; /* Change this to block and see what happens */
+ padding: 20px;
+position:relative;
+}
+
+.THIS h1 {
+    font-size: 1.5em;
+}
+
+.THIS h2 {
+    font-size: 1.2em;
+}

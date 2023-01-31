@@ -1,0 +1,15 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="LC_AssetOwnershipMismatch_Controller">
+    <aura:attribute name="showWarningMessage" type="boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.showToast}" />
+    <aura:handler event="force:refreshView" action="{!c.showToast}" />
+    
+    <aura:if isTrue="{!v.showWarningMessage}">
+    	<div style="width:100%; text-align: center">
+        	<span class="slds-theme--warning slds-notify--toast slds-text-heading--small">
+            	<lightning:icon iconName="utility:warning" size="small" />&nbsp;&nbsp;
+         		{!$Label.c.Asset_Owner_Account_Mismatch}
+        	</span>
+    	</div>
+    </aura:if>
+    
+</aura:component>

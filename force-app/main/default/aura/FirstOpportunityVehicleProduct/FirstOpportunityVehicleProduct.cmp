@@ -1,0 +1,16 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="FirstOpportunityProduct_LC_Controller">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="communityRecordId" type="String" />
+    <aura:attribute name="oppProduct" type="OpportunityLineItem" />
+    <aura:attribute name="numberProducts" type="Integer" default="0" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+    
+    <aura:if isTrue="{!v.numberProducts == 1}">
+        <c:Opportunity_VehicleProduct recordId="{!v.oppProduct.Id}" />
+    </aura:if>
+    <aura:if isTrue="{!v.numberProducts == 0}">
+        <c:Opportunity_AddAsset recordId="{!v.recordId}" communityRecordId="{!v.communityRecordId}" />
+    </aura:if>
+</aura:component>

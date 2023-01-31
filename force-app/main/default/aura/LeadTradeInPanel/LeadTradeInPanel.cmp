@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="LC_OpportunityTradeIn_Controller">
+    <aura:attribute name="listOfSearchRecords" type="Lead[]" default="[]" />
+    <aura:attribute name="numRecords" type="Integer" default="0" />
+    <aura:attribute name="selectedModel" type="String" default="" />
+    <aura:attribute name="selectedBrand" type="String" default="" />
+    <aura:attribute name="tradeIn" type="boolean" default="false" />
+    <aura:attribute name="recordSaving" type="String" default="" />
+	
+    <lightning:card title="{!$Label.c.Lead_Trade_In}" iconName="standard:lead" class="slds-p-around_xx-small">
+       	<aura:set attribute="actions">
+           	<lightning:button label="{!$Label.c.sfSave}" type="submit" name="save" variant="brand" onclick="{!c.saveDetails}" />
+       	</aura:set>
+    	<p class="slds-p-horizontal_small">
+           	<div class="slds-grid slds-wrap">
+            	<div class="slds-size--1-of-1 slds-p-horizontal_xx-small"><ui:inputCheckbox label="Trade In?" value="{!v.tradeIn}" /></div>
+    			<div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:input label="Model" value="{!v.selectedModel}" onkeyup="{!c.populateBrand}" /></div>
+                <div class="slds-size--1-of-2 slds-p-horizontal_xx-small"><lightning:input label="Brand" value="{!v.selectedBrand}" disabled="true" /></div>
+            	<div class="slds-size--1-of-1 slds-p-horizontal_xx-small">
+                    <ui:menu>
+						<ui:menuTriggerLink aura:id="trigger" label="Available Models/Brands"/>
+	    				<ui:menuList class="actionMenu" aura:id="actionMenu" visible="{!v.numRecords>0}">
+	       				<aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+	           				<ui:actionMenuItem label="{!singleRec.Name + ' (' + singleRec.Make_Text__c + ')'}" click="{!c.divFunction}">{!singleRec.Name + ' (' + singleRec.Make_Text__c + ')'}</ui:actionMenuItem>
+	       				</aura:iteration>
+	    				</ui:menuList>
+    				</ui:menu>
+                </div>
+            </div>
+	    </p>
+    	<lightning:recordEditForm aura:id="leadEditForm" recordId="{!v.recordId}" objectApiName="Lead" onload="{!c.preloadValues}" class="slds-hidden">
+        	<lightning:inputField fieldName="Trade_In__c" disabled="true" class="slds-hidden" aura:id="typedTradeIn" />
+        	<lightning:inputField fieldName="Trade_in_Model__c" disabled="true" class="slds-hidden" aura:id="typedModel" />
+	    	<lightning:inputField fieldName="Trade_In_Brand__c" disabled="true" class="slds-hidden" aura:id="typedBrand" />
+		</lightning:recordEditForm>
+    </lightning:card>
+</aura:component>

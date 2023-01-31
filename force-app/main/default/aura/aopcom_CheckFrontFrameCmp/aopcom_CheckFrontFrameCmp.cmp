@@ -1,0 +1,13 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+    
+    <aura:attribute name="checkfrontActivJS" type="String" default="Please enable Javascript to make booking"/>
+    <aura:attribute name="serchingAvailability" type="String" default="Searching Availability..."/>
+            
+    <div id="CHECKFRONT_WIDGET_01">
+        <p id="CHECKFRONT_LOADER" style="background: url('https://keytree.checkfront.co.uk/images/loader.gif') left center no-repeat; padding: 5px 5px 5px 20px">{!v.serchingAvailability}</p>
+        <span id="nonjs" style="font-size: 16px">{!v.checkfrontActivJS} &raquo;</span>
+    </div>
+	
+            
+           
+</aura:component>

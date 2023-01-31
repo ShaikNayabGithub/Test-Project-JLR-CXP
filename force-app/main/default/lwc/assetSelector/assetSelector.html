@@ -1,0 +1,119 @@
+<!--
+ - Created by GrantMillgate-EasyTe on 29/11/2019.
+ -->
+
+<!-- Asset Selector -->
+<template>
+    <div class="slds-wrap slds-grid jlr-left-spacer">
+        <div if:true={doShowSearch} class="slds-col slds-size--12-of-12 jlr-bottom-spacer"><span class="jlr-h5">Search by Asset Name or Rego</span>
+        </div>
+        <div class="slds-wrap slds-grid slds-size--12-of-12">
+            <div if:true={doShowSearch} class="slds-col slds-size--8-of-12 jlr-bottom-spacer">
+                <lightning-input if:false={inputDisabled} onchange={handleSearchChange} variant="label-hidden">{searchKey}</lightning-input>
+                <lightning-input if:true={inputDisabled} onchange={handleSearchChange} variant="label-hidden" disabled>{searchKey}</lightning-input>
+            </div>
+            <div class="slds-wrap slds-grid slds-size--4-of-12" style="padding-left: 5px;">
+                <div if:true={doShowSearch} class="slds-col slds-size--12-of-12 jlr-button-cell jlr-button-cell-inverse-colours" onclick={handelSearchClick}>
+                    Search
+                </div>
+            </div>
+
+        </div>
+        <div if:true={isTooManyResults} class="slds-col slds-size-12-of-12 jlr-fill-width"><span class="jlr-errors">Too Many Results : {resultsSize} | Maximum is {maxResultsSize}<br/>Refine your search</span>
+        </div>
+
+        <div class="slds-col slds-size--3-of-12 jlr-bottom-border"><span class="jlr-h4">Asset</span></div>
+        <div class="slds-col slds-size--2-of-12 jlr-bottom-border"><span class="jlr-h4">Make</span></div>
+        <div class="slds-col slds-size--2-of-12 jlr-bottom-border"><span class="jlr-h4">Model</span></div>
+        <div class="slds-col slds-size--3-of-12 jlr-bottom-border"><span class="jlr-h4">Exterior Colour</span></div>
+        <div class="slds-col slds-size--2-of-12 jlr-bottom-border"><span class="jlr-h4">Rego</span></div>
+        <div class="slds-col slds-size-12-of-12 jlr-fill-width">
+            <template for:each={assets} for:item="asset">
+                <c-asset-item
+                        asset={asset}
+                        key={asset.Id}
+                        onassetitemselected={handleAssetItemSelected}>
+                </c-asset-item>
+            </template>
+        </div>
+    </div>
+
+    <!-- MODAL-->
+    <template if:true={showAssetAlreadyAssignedModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="max-width: 60rem;">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                        <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-modal__title slds-hyphenate">This Asset is Currently Associated to Another Opportunity</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <div class="slds-p-bottom_medium" if:false={assetDoesLosePriceProtection}>
+                        This asset is currently associated to another won opportunity that has not had an RDA processed:
+                    </div>
+                    <template if:true={assetDoesLosePriceProtection}>
+                        <div class="slds-p-bottom_medium" if:true={willRemoveAssetFromOpps}>
+                            <span class="jlr-errors"><strong>Warning</strong>: This asset is price protected</span> <br>
+                            This asset <span class="jlr-errors">is price protected</span> and is currently associated to another won opportunity that has not had an RDA processed:
+                        </div>
+                        <div class="slds-p-bottom_medium" if:false={willRemoveAssetFromOpps}>
+                            <span class="jlr-errors"><strong>Warning</strong>: This asset is price protected</span> <br>
+                            This asset <span class="jlr-errors">is price protected</span> and is currently associated to another opportunity that has not had an RDA processed:
+                        </div>
+                    </template>
+
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Opportunity Name">Opportunity Name</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Account Name">Opportunity Close Date</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Close Date">Opportunity Sales Owner</div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <template for:each={assetAlreadyAssignedModalTable} for:item="row" for:index="i">
+                            <tr class="slds-hint-parent" key={row.OpportunityName}>
+                                <th data-label="Opportunity Name" scope="row">
+                                    <div class="slds-truncate" title={row.OpportunityName}>{row.OpportunityName}</div>
+                                </th>
+                                <td data-label="Account Name">
+                                    <div class="slds-truncate" title={row.OpportunityCloseDate}>{row.OpportunityCloseDate}</div>
+                                </td>
+                                <td data-label="Close Date">
+                                    <div class="slds-truncate" title={row.OpportunitySalesOwnerName}>{row.OpportunitySalesOwnerName}</div>
+                                </td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                    <div class="slds-p-top_medium" if:false={assetDoesLosePriceProtection}>
+                        If you wish to proceed, the asset will be removed from the above opportunities and added to your opportunity. The Opportunity owner will receive an email to notify them of this action. Otherwise, please select a different asset to add to your opportunity.
+                    </div>
+                    <template if:true={assetDoesLosePriceProtection}>
+                        <div class="slds-p-bottom_medium" if:true={willRemoveAssetFromOpps}>
+                            If you wish to proceed, <span class="jlr-errors">the asset will lose price protection</span> and will be removed from the above opportunities and added to your opportunity. The Opportunity owner will receive an email to notify them of this action. Otherwise, please select a different asset to add to your opportunity.
+                        </div>
+                        <div class="slds-p-bottom_medium" if:false={willRemoveAssetFromOpps}>
+                            If you wish to proceed, <span class="jlr-errors">the asset will lose price protection</span>. Otherwise, please select a different asset to add to your opportunity.
+                        </div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button onclick={assetModelCancel} class="slds-button slds-button_neutral">Cancel</button>
+                    <button onclick={assetAlreadyAssignedModalProceed} class="slds-button slds-button_brand">Proceed</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

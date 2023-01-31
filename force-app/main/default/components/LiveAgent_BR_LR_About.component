@@ -1,0 +1,68 @@
+<apex:component layout="none" >
+    <header class="header header--dark">
+    <div class="header__middle">
+      <button  class="button button--back" onclick="showChat()">Voltar para Chat</button>
+    </div>
+  </header>
+ <main class="main-content main-content--dark">
+    <div class="main-content__inner">
+      <div class="liveagent__text liveagent__text--compact">
+        <h3 class="expanded">Sobre O Chat Online</h3>
+        <div class="accordion">
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion1" name="accordion1" />
+            <label class="accordion__title" for="accordion1">O QUE É O CHAT ONLINE?</label>
+            <div class="accordion__text">
+              <p>Land Rover Chat Online é um serviço online para todos que acessam nosso site oficial. Ele permite que você se comunique via chat com um de nossos agentes. É um modo mais fácil e eficiente de pedir ajuda para o que você precisar. 
+ </p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion2" name="accordion2" />
+            <label class="accordion__title" for="accordion2">COMO SEI QUE O CHAT ONLINE ESTÁ DISPONÍVEL?</label>
+            <div class="accordion__text">
+              <p>Land Rover Chat Online está disponível de Segunda a Sexta-feira, das 9h às 18h. Quando estiver disponível, uma aba verde escrita "Chat Online" aparecerá no canto inferior direito do seu navegador. Se todos os consultores estiverem em atendimento, essa aba ainda aparecerá, mas o chat não iniciará. Ao invés disso, poderá solicitar que o consultor te chame novamente assim que se tornar disponível, ou quando for conveniente para você.</p>
+            </div>
+          </div>
+          <div class="liveagent__block">
+            <input type="checkbox" id="accordion3" name="accordion3" />
+            <label class="accordion__title" for="accordion3">O QUE ACONTECE SE TODOS OS CONSULTORES ESTIVEREM OCUPADOS?</label>
+            <div class="accordion__text">
+              <p>Nossos consultores podem estar ocupados atendendo outros consumidores. Com isso, você tem a opção de esperar pelo próximo consultor disponível ou, caso prefira,  poderá solicitar que o mesmo te chame novamente assim que se tornar disponível.</p>
+            </div>
+          </div>
+             <div class="liveagent__block">
+            <input type="checkbox" id="accordion4" name="accordion4" />
+            <label class="accordion__title" for="accordion4">COMO CONSIGO AJUDA?</label>
+            <div class="accordion__text">
+              <p>Sempre que você precisar de ajuda ou assistência, clique na aba vermelha "Chat Online", responda o questionário e seu chat com um de nossos consultores online começará. Se todos os consultores estiverem em atendimento, o "Chat Online" ainda aparecerá mas você não conseguirá iniciar o chat. Ao invés disso, poderá solicitar que o consultor te chame novamente assim que se tornar disponível, ou quando for conveniente para você. </p>
+            </div>
+          </div>
+             <div class="liveagent__block">
+            <input type="checkbox" id="accordion5" name="accordion5" />
+            <label class="accordion__title" for="accordion5">O QUE ACONTECE SE TODOS OS CONSULTORES ESTIVEREM OCUPADOS?</label>
+            <div class="accordion__text">
+              <p>Nossos consultores podem estar ocupados atendendo outros consumidores. Com isso, você tem a opção de esperar pelo próximo consultor disponível ou, caso prefira,  poderá solicitar que o mesmo te chame novamente assim que se tornar disponível.</p>
+            </div>
+          </div>
+             <div class="liveagent__block">
+            <input type="checkbox" id="accordion7" name="accordion7" />
+            <label class="accordion__title" for="accordion7">O QUE ACONTECE SE NOSSOS ESCRITÓRIOS ESTIVEREM FECHADOS?</label>
+            <div class="accordion__text">
+              <p>LAND ROVER CHAT ONLINE está disponível de Segunda a Sexta-feira das 9h às 18h. Fora destes horários, você pode usar a opção de "Solicitar um Contato" e deixar seu telefone e email. Nós entraremos em contato assim que tivermos disponibilidade ou quando for conveniente para você.</p>
+            </div>
+          </div>
+               <div class="liveagent__block">
+            <input type="checkbox" id="accordion8" name="accordion8" />
+            <label class="accordion__title" for="accordion8">E SOBRE A MINHA PRIVACIDADE?</label>
+            <div class="accordion__text">
+              <p>Nós respeitamos muito a privacidade de nossos consumidores e aderimos a um código de conduta restrito. Para mais informações, por favor, clique aqui para ver nossa Política de Privacidade. (https://www.landrover.com.br/privacy-legal.html)</p>
+            </div>
+          </div>
+             
+        </div>
+      </div>
+    </div>
+  </main>
+    
+    </apex:component>

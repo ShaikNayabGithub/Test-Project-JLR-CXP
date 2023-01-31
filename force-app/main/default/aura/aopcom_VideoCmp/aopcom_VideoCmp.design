@@ -1,0 +1,8 @@
+<design:component>
+    <design:attribute name="videoURL" label="Video URL" />
+    <design:attribute name="videoType" label="Select Video Type" datasource="video/mp4,video/webm,video/ogg"/>
+    <design:attribute name="subtitles" label="Video subtitles"/>
+    <design:attribute name="ImageURL" label="Image URL" />
+    <design:attribute name="caption" label="Caption description text"/>
+    <design:attribute name="browserNotSupport" label="browserNotSupport"/>
+</design:component>

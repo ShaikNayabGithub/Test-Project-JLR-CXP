@@ -1,0 +1,27 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" controller="aopcom_MiniProfileCmp" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="lname" type="String"/>
+    <aura:attribute name="country" type="String"/>
+    <aura:attribute name="urlPortrait" type="String"/>
+    <aura:attribute name="Edit" type="String"/>
+    <aura:attribute name="context" type="String"/>
+    <aura:attribute name="CommunityUrl" type="String"/>
+    
+    
+    <a href="{!v.context+'/edit-profile'}"></a>
+    <div class="content-wrapper">
+    <div class="section section--secondary section--fill">
+        <div class="profile-user profile-user__center clearfix">
+            <img src="{!v.urlPortrait}" class="profile-user__profile-pic"></img>
+        
+            <div class="profile-user__profile-detail">
+                <p class="profile-detail__name">{!v.name}<br/>{!v.lname}</p>
+                <p class="profile-detail__nationality">{!v.country}</p>
+                <a href="{!v.context+'/edit-profile'}" class="profile-detail__edit">{!v.Edit}</a>
+                <p></p>
+            </div>
+        </div>    
+   	</div>
+    </div>
+</aura:component>

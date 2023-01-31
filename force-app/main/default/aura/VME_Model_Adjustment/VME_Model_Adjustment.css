@@ -1,0 +1,46 @@
+.THIS .colourCss svg{
+	fill : rgb(30, 226, 18);
+}
+.THIS .slds-input[disabled]{
+  background-color: #c5c5c5!important;
+} 
+.THIS .iconFireForCSS{
+padding-right: 4% !important;
+padding-left: 2% !important;
+padding-top: 1% !important;
+width: 23% !important;
+}
+.THIS .iconFireForCSSFirefox{
+	width: 69% !important;
+	
+}
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}
+.THIS .EditCSS {
+	  padding-right: 4%!important;
+    padding-left: 18%!important;
+    padding-top: 27%!important; 
+    margin-left: -26px !important;
+}
+.THIS .IOiconCSS{
+    padding-top: 21%!important;
+    width: 69%!important;
+    padding-left: 29%;
+}
+.THIS .Ali{
+          margin-left: 43px;
+
+}
+.THIS .AlignName{
+  margin-left: 90px;
+}
+.THIS .savebutton{
+  padding-right: 30px;
+  margin-left: 35px;
+}
+.THIS .editButtonCSS{
+  padding-right: 62px;
+  padding-left: 47px;
+}

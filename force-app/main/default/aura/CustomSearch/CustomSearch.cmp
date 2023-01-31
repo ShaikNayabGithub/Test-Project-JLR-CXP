@@ -1,0 +1,461 @@
+<aura:component implements="forceCommunity:searchInterface,forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" access="global" controller="CustomSearchController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="modalList" type="List" />  
+    <aura:attribute name="priceBookList" type="List" /> 
+    <aura:attribute name="isAssestSelectionEnabled" type="Boolean" default="false"/>  
+    <aura:attribute name="purchaseTypepickListValues" type="List" /> 
+    <aura:attribute name="stageTypepickListValues" type="List" /> 
+    <aura:attribute name="getRecordTypeList" type="List" />
+    <aura:attribute name="languageList" type="List" /> 
+    <aura:attribute name="language" type="String" /> 
+    <aura:attribute name="opportunityId" type="String" />  
+    <aura:attribute name="selectedModal" type="String" default="none" />  
+    <aura:attribute name="selectedPriceBook" type="String" /> 
+    <aura:attribute name="accountType" type="String" /> 
+    <aura:attribute name="nextAction" type="String"/>
+    <aura:attribute name="purchaseType" type="String" default="New Vehicle" />  
+    <aura:attribute name="searchOptions" type="List" default="[{'label':'Customer', 'value':'customer'}, {'label':'Vehicle', 'value':'vehicle'}]"/>
+    <aura:attribute name="chosenOption" type="String" default="customer" />
+    <aura:attribute name="searchText" type="String" default="" />
+    <aura:attribute name="AccountList" type="List" />
+    <aura:attribute name="duplicateAccountList" type="List" />
+    <aura:attribute name="selectedAccountId" type="String"/>
+    <aura:attribute name="contactList" type="List" />
+    <aura:attribute name="newOpportunity" type="Opportunity" default="{'sobjectType':'Opportunity','AccountId':'','CloseDate':'','Primary_Model_Interest__c':'','Brand__c':''}" />
+    <aura:attribute name="newAccount" type="Account" default="{'sobjectType':'Account', 'Salutation': '', 'FirstName': '','LastName': '','Phone': '', 'PersonEmail' : ''}" />
+      <aura:attribute name="corporateAccount" type="Account" default="{'sobjectType':'Account'}" />
+    <aura:attribute name="assestList" type="List" />
+    
+    <aura:attribute name="accountLabelMap" type="Map" /> 
+    <aura:attribute name="contactLabelMap" type="Map" />
+    <aura:attribute name="opportunityLabelMap" type="Map" /> 
+    <aura:attribute name="assetLabelMap" type="Map" /> 
+    
+    
+    
+    <aura:if isTrue="{! v.isAssestSelectionEnabled}">
+        <c:AssetProductSearch recordId="{!v.opportunityId}"/>
+        <aura:set attribute="else">
+            <div >
+                <lightning:card title="Customer Search">
+                    <lightning:layout multipleRows="true">
+                        <!--<lightning:layoutItem size="12" padding="around-small">
+                            <lightning:radioGroup type="radio" name="radioGroup" label="{!$Label.c.Search_Type}" options="{!v.searchOptions}" value="{!v.chosenOption}" onchange="{!c.refreshSearchResults}" />
+                        </lightning:layoutItem>-->
+                        <lightning:layoutItem size="10" padding="around-small">
+                            <lightning:input aura:id="searchInput" type="text" name="searchField" label="{!$Label.c.Search}" onkeyup="{!c.handleClick}" placeholder="Enter minimum three Characters to start search " value="{!v.searchText}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="2" padding="around-small" >
+                            <div style="padding-top: 1.4rem;">
+                                <lightning:button variant="brand" label="{!$Label.c.Create}" title="Create" onclick="{!c.handleCreateButton}" aura:id="createButton" class="slds-hide"/>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:card>   
+                <aura:if isTrue="{!(v.AccountList.length + v.contactList.length > 200) || v.assestList.length > 200}">
+                    <ui:message title="Warning" severity="warning" closable="true">
+                        {!$Label.c.Stock_Search_More_Results_Available} <!-- Search Results are more than 200. Please Enter More Details to narrow Search.   -->
+                    </ui:message>
+                </aura:if>
+                <!-- Account or Contact Search Results -->
+                <aura:if isTrue="{!v.AccountList.length >0 || v.contactList.length > 0}">
+                    
+                    <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_resizable-cols" role="grid" >
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="{!$Label.c.Account_Contact}">{!$Label.c.Account_Contact}</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="{!$Label.c.Email}">{!$Label.c.Email}</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="{!$Label.c.Phone_Lowercase}">{!$Label.c.Phone_Lowercase}</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="{!$Label.c.Billing_Address}" style="padding-right: 1.24rem;">{!$Label.c.Billing_Address}</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" style="padding-right: 1.24rem;" title="{!$Label.c.Mailing_Address}">{!$Label.c.Mailing_Address}</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="{!$Label.c.Mailing_Address}">Account Name</span>                              
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.AccountList}" var="account">
+                                <tr aria-selected="false" class="slds-hint-parent"> 
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!account.Name}"> 
+                                            <a id="{!account.Id}" aura:id="{!account.Id}" onclick="{!c.onSelectAccount}">{!account.Name}</a> 
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!account.PersonEmail}"> 
+                                            {!account.PersonEmail}
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!account.Phone}"> 
+                                            {!account.Phone}
+                                        </div>
+                                    </td> 
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!account.BillingStreet}"> 
+                                            {!account.BillingStreet}
+                                        </div>
+                                    </td> 
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!account.PersonMailingStreet}"> 
+                                            {!account.PersonMailingStreet}
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!account.Name}"> 
+                                            {!account.Name}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                            <aura:iteration items="{!v.contactList}" var="contact">
+                                <tr aria-selected="false" class="slds-hint-parent"> 
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!contact.Name}"> 
+                                            <a id="{!contact.Id}" aura:id="{!contact.Id}" onclick="{!c.onSelectAccount}">{!contact.Name} </a> 
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!contact.Email}"> 
+                                            {!contact.Email}
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!contact.Phone}"> 
+                                            {!contact.Phone}
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!contact.Account.BillingStreet }"> 
+                                            {!contact.Account.BillingStreet }
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!contact.MailingStreet}"> 
+                                            {!contact.MailingStreet}
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="{!contact.Account.Name}"> 
+                                            {!contact.Account.Name}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>   
+                </aura:if>
+                
+                <!-- Vehicle Search Results -->
+                <aura:if isTrue="{!v.assestList.length >0 }">
+                    <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid" >
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Stage">Vehicle Name</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Stage">Reg Number</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Stage">Chassis Number</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Stage">Owner</span>                              
+                                    </div>
+                                </th>
+                                <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Stage">Account Name</span>                              
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.assestList}" var="asset">
+                                <tr aria-selected="false" class="slds-hint-parent"> 
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="Asset Name"> 
+                                            <a id="{!asset.Id}" aura:id="{!asset.Id}" onclick="{!c.onSelectAsset}">{!asset.Name}</a> 
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="Registration Number">
+                                            <a id="{!asset.Id}" aura:id="{!asset.Id}" onclick="{!c.onSelectAsset}">{!asset.Registration_Number__c}</a>
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="Chassis Number"> 
+                                            {!asset.Chassis_Number__c}
+                                        </div>
+                                    </td>
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="Owner Name"> 
+                                            {!asset.Owner.Name}
+                                        </div>
+                                    </td>                   
+                                    <td scope="row" tabindex="0">
+                                        <div class="slds-truncate" title="Account Name"> 
+                                            {!asset.Account.Name}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>    
+                </aura:if>
+                
+                <!-- Account Creation -->
+                <lightning:card title="New Opportunity" aura:id="accountDiv" class="slds-hide">  
+                    <aura:if isTrue="{!v.duplicateAccountList.length >0 }">
+                        <lightning:card > 
+                            <h1><b>Duplicate(s) found, please Select one or change the details entered</b></h1>
+                            <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid" >
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                <span class="slds-truncate" title="Stage">Account/Contact</span>                              
+                                            </div>
+                                        </th>
+                                        <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                <span class="slds-truncate" title="Stage">Email</span>                              
+                                            </div>
+                                        </th>
+                                        <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                <span class="slds-truncate" title="Stage">Phone</span>                              
+                                            </div>
+                                        </th>
+                                        <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                <span class="slds-truncate" title="Stage">Address</span>                              
+                                            </div>
+                                        </th>
+                                        <th aria-label="Stage" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">                       
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                <span class="slds-truncate" title="Stage">Account Name</span>                              
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.duplicateAccountList}" var="account">
+                                        <tr aria-selected="false" class="slds-hint-parent"> 
+                                            <td scope="row" tabindex="0">
+                                                <div class="slds-truncate" title="Account Name"> 
+                                                    <a id="{!account.Id}" aura:id="{!account.Id}" onclick="{!c.onSelectAccount}">{!account.Name}</a> 
+                                                </div>
+                                            </td>
+                                            <td scope="row" tabindex="0">
+                                                <div class="slds-truncate" title="Email"> 
+                                                    {!account.PersonEmail}
+                                                </div>
+                                            </td>
+                                            <td scope="row" tabindex="0">
+                                                <div class="slds-truncate" title="Phone"> 
+                                                    {!account.Phone}
+                                                </div>
+                                            </td>
+                                            <td scope="row" tabindex="0">
+                                                <div class="slds-truncate" title="Address"> 
+                                                    {!account.PersonMailingStreet}
+                                                </div>
+                                            </td>                   
+                                            <td scope="row" tabindex="0">
+                                                <div class="slds-truncate" title="Account Name"> 
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>   
+                        </lightning:card>
+                    </aura:if>
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem padding="around-small" size="6">                                
+                                <lightning:layoutItem padding="around-small">                  
+                                    <lightning:select aura:id="a_opt" label="Account Type" name="flavor" value="{!v.accountType}" >
+                                        <aura:iteration items="{!v.getRecordTypeList}" var="rType">
+                                            <option text="{!rType.label}" value="{!rType.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>                
+                                </lightning:layoutItem>
+                              <aura:if isTrue="{!v.accountType == 'Corporate' }">
+                                 <lightning:layoutItem padding="around-small" >  
+                                    <lightning:input  label="Company Name" name="CompanyName" value="{!v.corporateAccount.Name}" required="true" />  
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small">
+                                    <lightning:inputAddress
+                                                            addressLabel="Address"
+                                                            streetLabel="Street"
+                                                            cityLabel="City"
+                                                            countryLabel="Country"
+                                                            provinceLabel="Province"
+                                                            postalCodeLabel="PostalCode"
+                                                            street="{!v.corporateAccount.BillingStreet}"
+                                                            city="{!v.corporateAccount.BillingCity}"
+                                                            country="{!v.corporateAccount.BillingCountry}"
+                                                            province="{!v.corporateAccount.BillingState}"
+                                                            postalCode="{!v.corporateAccount.BillingPostalCode}"
+                                                            fieldLevelHelp="Help Text for inputAddress field"
+                                                            />
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" >                 
+                                    <label class="slds-form-element__label" style="margin-right: 0.5rem;"><p style="color:blue; float: left;">*</p> <p style="float: right;">Company Phone</p> </label> 
+                                    <lightning:input type="tel" name="phone" value="{!v.corporateAccount.Phone}" variant="label-hidden"/>              
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small"  >   
+                                    <label class="slds-form-element__label" style="margin-right: 0.5rem;"><p style="color:blue; float: left;">*</p> <p style="float: right;">Company Email</p> </label> 
+                                    <lightning:input type="email" name="Email" value="{!v.corporateAccount.Retailer_Email__c}" variant="label-hidden"/> 
+                                </lightning:layoutItem> 
+                                   <lightning:layoutItem padding="around-small">                  
+                                    <lightning:select aura:id="a_opt" label="Language" name="flavor" value="{!v.language}" >
+                                        <aura:iteration items="{!v.languageList}" var="lg">
+                                            <option text="{!lg.label}" value="{!lg.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>                
+                                </lightning:layoutItem>
+                                  <h1><b>Primary Contact</b></h1>
+                            </aura:if>
+                                <lightning:layoutItem padding="around-small" >                  
+                                    <lightning:input  label="First Name" name="FirstName" value="{!v.newAccount.FirstName}"/>                
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" >                  
+                                    <lightning:input  label="Last Name" name="LastName" value="{!v.newAccount.LastName}" required="true"/>              
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" >                 
+                                    <label class="slds-form-element__label" style="margin-right: 0.5rem;"><p style="color:blue; float: left;">*</p> <p style="float: right;">Phone</p> </label> 
+                                    <lightning:input type="tel" name="phone" value="{!v.newAccount.Phone}" variant="label-hidden"/>              
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small"  >   
+                                    <label class="slds-form-element__label" style="margin-right: 0.5rem;"><p style="color:blue; float: left;">*</p> <p style="float: right;">Email</p> </label> 
+                                    <lightning:input type="email" name="Email" value="{!v.newAccount.PersonEmail}" variant="label-hidden"/> 
+                                </lightning:layoutItem>             
+                                <lightning:layoutItem padding="around-small" > 
+                                    <p style="color:blue;">* One of Phone or Email must be entered</p>
+                                </lightning:layoutItem>                            
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <lightning:layoutItem padding="around-small" >                    
+                                <lightning:select aura:id="a_opt" label="Purchase Type" name="flavor" value="{!v.purchaseType}" >
+                                    <aura:iteration items="{!v.purchaseTypepickListValues}" var="pType">
+                                        <option text="{!pType.label}" value="{!pType.value}"></option>
+                                    </aura:iteration>
+                                </lightning:select> 
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" >  
+                                <lightning:select aura:id="field" label="Model" name="flavor" required="true" value="{!v.selectedModal}">
+                                    <option text="None" value="none"></option>
+                                    <aura:iteration items="{!v.modalList}" var="model">
+                                        <option text="{!model.label}" value="{!model.value}"></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" > 
+                                <aura:if isTrue="{!v.selectedModal != 'none' }">
+                                    <lightning:select aura:id="field" label="Next Action" name="flavor" value="{!v.nextAction}" >
+                                        <aura:iteration items="{!v.stageTypepickListValues}" var="sType">
+                                            <option text="{!sType.label}" value="{!sType.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>   
+                                </aura:if> 
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" >  
+                                <aura:if isTrue="{!v.nextAction == 'Test Drive Taken/Booked' }">                     
+                                    <lightning:input type="datetime" label="Test Drive Preferred Date Time" name="preferedTime" value="{!v.newOpportunity.Test_Drive_Preferred_Date_Time__c}"/>  
+                                </aura:if>
+                                <aura:if isTrue="{!v.nextAction == 'Vehicle Selection' }">                     
+                                    <lightning:select aura:id="field" label="Price Book" name="flavor" value="{!v.selectedPriceBook}">
+                                        <aura:iteration items="{!v.priceBookList}" var="pb">
+                                            <option text="{!pb.label}" value="{!pb.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>   
+                                </aura:if>
+                            </lightning:layoutItem>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:button class="slds-m-top_small slds-float_right" variant="brand" name="update" label="Confirm" onclick="{!c.createAccount}" />   
+                    <lightning:button class="slds-m-top_small slds-float_right"  name="cancel" label="Cancel" onclick="{!c.cancelhandling}" />  
+                </lightning:card>
+                
+                <!-- Opportunity Creation -->  
+                <lightning:card title="New Opportunity" aura:id="opportunityDiv" class="slds-hide">      
+                    <lightning:layout multipleRows="true">            
+                        <lightning:layoutItem padding="around-small" size="6">  
+                            <lightning:select aura:id="field" label="Model" name="flavor" required="true" value="{!v.selectedModal}">
+                                <option text="None" value="none"></option>
+                                <aura:iteration items="{!v.modalList}" var="model">
+                                    <option text="{!model.label}" value="{!model.value}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">                    
+                            <lightning:select aura:id="a_opt" label="Purchase Type" name="flavor" value="{!v.purchaseType}" >
+                                <aura:iteration items="{!v.purchaseTypepickListValues}" var="pType">
+                                    <option text="{!pType.label}" value="{!pType.value}"></option>
+                                </aura:iteration>
+                            </lightning:select> 
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6"> 
+                            <aura:if isTrue="{!v.selectedModal != 'none' }">
+                                <lightning:select aura:id="field" label="Next Action" name="flavor" value="{!v.nextAction}">
+                                    <aura:iteration items="{!v.stageTypepickListValues}" var="sType">
+                                        <option text="{!sType.label}" value="{!sType.value}"></option>
+                                    </aura:iteration>
+                                </lightning:select>  
+                            </aura:if>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6">  
+                            <aura:if isTrue="{!v.nextAction == 'Test Drive Taken/Booked' }">                     
+                                <lightning:input type="datetime" label="Test Drive Preferred Date Time" name="preferedTime" value="{!v.newOpportunity.Test_Drive_Preferred_Date_Time__c}"/>  
+                            </aura:if>
+                            <aura:if isTrue="{!v.nextAction == 'Vehicle Selection' }">                     
+                                <lightning:select aura:id="field" label="Price Book" name="flavor" value="{!v.selectedPriceBook}">
+                                    <aura:iteration items="{!v.priceBookList}" var="pb">
+                                        <option text="{!pb.label}" value="{!pb.value}"></option>
+                                    </aura:iteration>
+                                </lightning:select>   
+                            </aura:if>
+                        </lightning:layoutItem>            
+                    </lightning:layout>
+                    <lightning:button class="slds-float_right"  variant="brand" label="{!$Label.c.Proceed}" title="{!$Label.c.Proceed}" onclick="{!c.createOpportunity}"/>   
+                    <lightning:button class="slds-float_right" name="{!$Label.c.Cancel}" label="{!$Label.c.Cancel}" onclick="{!c.cancelhandling}" />  
+                </lightning:card>
+            </div>
+            
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

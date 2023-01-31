@@ -1,0 +1,20 @@
+<aura:component >
+    <aura:attribute name="map" type="map"/>
+    <aura:attribute name="brandModelCountMap" type="Object"/>
+    <aura:attribute name="show" type="Boolean" default="false"/>
+    <aura:attribute name="columnsList" type="List"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.brandModelCountMap}" action="{!c.doInit}"/>
+    
+    <aura:If isTrue="{!v.show}">
+        <tr class="" style="padding-left:5px; color:white; font-weight: bold;" bgcolor="#808080">
+            <td class="" scope="col" style="background-color: #808080; width:140px;">
+                <div class="slds-truncate" title="Grand Total">Grand Total</div>
+            </td>
+            <aura:iteration items="{!v.columnsList}" var="column">
+                <c:ColumnWiseCount map="{!v.map}" key="{!column}"/>
+            </aura:iteration>
+        </tr>
+    </aura:If>
+    
+</aura:component>

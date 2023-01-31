@@ -1,0 +1,613 @@
+<apex:component controller="HeaderComponentController" allowDML="true" language="{!language}" layout="none"> 
+    <apex:attribute name="dtoClass" type="CreateSavedVehicleDto" assignTo="{!dto}" description="" />
+    <apex:attribute name="APO" type="Boolean" assignTo="{!IsAPO}" description="" />
+    <apex:attribute name="marketCode" type="String" assignTo="{!market}" description="Get market from parent page" />
+    <!-- <apex:includeScript value="{! URLFOR( $Resource.jQuery_JS)}" />   Commented previosuly - Changes made by TCS -29_May -->
+    <script src="https://code.jquery.com/jquery-3.3.1.js" type="text/javascript"/>
+    <script src="{! URLFOR( $Resource.jQueryBlockUI ) }" /> 
+        <script src="{! URLFOR( $Resource.jQuery_JS)}" async="async" /> 
+            <link rel="stylesheet" href="https://cdn-jaguarlandrover.com/system/whatsapp/floating-wpp.min.css" />
+                <script type="text/javascript" src="https://cdn-jaguarlandrover.com/system/whatsapp/floating-wpp.min.js"></script> 
+    <script>
+        var $jQueryBlockUI = jQuery.noConflict(true);
+    </script> 
+    
+    <script type="text/javascript">
+   
+        function modalBlock(){
+            $jQueryBlockUI.blockUI({
+                message: '<img src="{!URLFOR($Resource.BlockUIImage)}" alt=""/>',
+                css: {
+                    backgroundColor: '',
+                    border: 'none'
+                },
+                overlayCSS:  { 
+                    opacity: 0.2
+                }
+            });
+        }
+        
+        function modalUnBlock(){
+            $jQueryBlockUI.unblockUI();
+        }
+        
+        function switchLanguage(previousLanguage, nextLanguage){
+            if(previousLanguage === nextLanguage){
+                jQuery("[id$=selectLanguage]").click();
+                modalUnBlock();
+                return;
+            }
+            changeLanguage(nextLanguage);
+        }
+        
+        function loginCheck(){
+            // Go Account Page
+            if('{!$Profile.Name}' === '{!$Label.Udaan_User_Profile_Name}'){
+                modalBlock();
+                goAccountPage();
+                // Show Login Modal
+            }else{
+                setImplClassToDto();
+            }
+        }
+        
+        function goLogoutPage(){
+            var logoutURL;
+            if ('{!brandvalue}' == 'jaguar'){
+                
+                logoutURL = '{!logoutJGURL }' + '/secur/logout.jsp?retUrl=' + '{!logoutJGURL }' + '/VehicleSearch?brand=' + '{!brandvalue}' + '%26lang=' + '{!language}' + '%26market=' + '{!market}';
+                
+            }else{
+                logoutURL = '{!logoutLRURL }' + '/secur/logout.jsp?retUrl=' + '{!logoutLRURL }' + '/VehicleSearch?brand=' + '{!brandvalue}' + '%26lang=' + '{!language}' + '%26market=' + '{!market}';
+                
+            }
+            location.href = logoutURL;
+        }
+        
+    </script>
+    
+    <script type="application/javascript">
+        if ( '{!market}' == 'sg' ){
+            
+            var phonesg =  '{!brandvalue}' == 'jaguar' ?  '6597704385' : '6598276671';
+            var brandname = '{!brandvalue}' == 'jaguar' ? 'Jaguar' : 'Land Rover' ;
+            $jQueryBlockUI(function() {
+                $jQueryBlockUI('#WAButton').floatingWhatsApp({
+                    phone: phonesg ,
+                    headerTitle: 'Chat with '+ brandname+' on WhatsApp!', //Popup Title
+                    popupMessage: 'Thank you for contacting '+ brandname + ' Singapore. How may we assist you?', //Popup Message
+                    showPopup: true,
+                    size: '60',
+                    position: "right"    
+                });
+            });
+            
+            
+        }
+    
+    </script>
+    
+    <script type="application/javascript" async="async">
+    
+        if ( '{!market}' == 'sg'  ||'{!market}' == 'th'  || '{!market}' == 'hk'){
+            
+            window.fbAsyncInit = function() {
+                FB.init({
+                    xfbml            : true,
+                    version          : 'v2.0'
+                });
+            };
+            
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+                
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        }
+    
+    </script>    
+    
+    <script type="text/javascript">
+    
+        // TCRM-3744 Account detail starts
+        function closeAccountDetails() {
+            var close_acc_details =  document.getElementById('modal-limit-reached-account');
+            close_acc_details.classList.add('u-hidden-visually');
+            document.location.reload();   
+        }
+        
+        function callAccountDetails() {
+            var acc_deatails =  document.getElementById('modal-limit-reached-account');
+            acc_deatails.classList.remove('u-hidden-visually');
+        }
+        
+        function updateAccountDetail(updateAccountflag,errorMsg){
+            if(updateAccountflag === 'Success') {
+                var acc_details_msg =  document.getElementById('success_Account_Detail');
+                acc_details_msg.classList.remove('u-hidden-visually');
+                var form_id =  document.getElementById('account_update_form');
+                form_id.classList.add('u-hidden-visually');
+                var errorMsgElement = document.getElementById('accUpdateSucess');
+                errorMsgElement.innerHTML = errorMsg;
+                
+            }
+            else {
+                var acc_deatails_failed =  document.getElementById('error_account_Detail');
+                acc_deatails_failed.classList.remove('u-hidden-visually');
+                var errorMsgAccElement = document.getElementById('accUpdatefailed');
+                errorMsgAccElement.innerHTML = errorMsg;
+                //alert('errorMsgAccElement : '+errorMsg);
+            }
+            modalUnBlock();
+        }
+        
+        // TCRM-3744 Account detail stops - // window.onload = loadFeedackModal;
+        
+        //COSA-27 Feedback to OSA
+        $(document).keyup(function(e) {
+            if (e.keyCode === 27)  {
+                closeFeedbackModel();
+                closeFeedbackThanksModel();
+                //closeAccountDetails();
+                return false;
+            }
+        });
+        
+        function loadFeedackModal() {
+            var submittedFlag = '{!isFeedbackcommited}';
+            var timeToSet = '{!$Label.Set_Feedback_Time}';
+            if(submittedFlag != 'true') {
+                setTimeout(showFeedbackPopup, timeToSet)
+            }
+        }
+        
+        function showFeedbackPopup() {
+            var feedbackFlag = sessionStorage.getItem("isFeedbackSaved");
+            if(feedbackFlag != 'True') {
+                var feedback_div =  document.getElementById('Model_feedback');
+                feedback_div.classList.remove('u-hidden-visually');
+                sessionStorage.setItem('isFeedbackSaved','True');
+            }
+            
+        }
+        
+        function processingFeedback() {
+            document.getElementById('submitFeedbackbtn').disabled = true;
+            document.getElementById('submitFeedbackbtn').style.pointerEvents = "none";
+            modalBlock();
+        }
+        
+        function closeFeedbackModel() {
+            var close_feedback =  document.getElementById('Model_feedback');
+            close_feedback.classList.add('u-hidden-visually');
+        }
+        
+        function submitFeedback(isFeedbackSaved, isCommentBlank, isSuccess) {
+            if(isCommentBlank == 'true') {
+                var comment_blank = document.getElementById('blankCommentId');
+                comment_blank.classList.remove('u-hidden-visually');
+                document.getElementById('submitFeedbackbtn').disabled=false;
+                document.getElementById('submitFeedbackbtn').style.pointerEvents = "auto";
+                modalUnBlock();
+            } else if(isSuccess == "false") {
+                var reCaptchaBlock = document.getElementById('reCaptchaId');
+                reCaptchaBlock.classList.remove('u-hidden-visually');
+                document.getElementById('submitFeedbackbtn').disabled=false;
+                document.getElementById('submitFeedbackbtn').style.pointerEvents = "auto";
+                modalUnBlock();
+            } else {
+                modalUnBlock();
+                if(isFeedbackSaved == 'true') {
+                    var feedback_thankYou =  document.getElementById('feedbackThankYou');
+                    feedback_thankYou.classList.remove('u-hidden-visually');
+                    var form_id =  document.getElementById('Model_feedback');
+                    form_id.classList.add('u-hidden-visually');  
+                } else {
+                    alert('Error occured');
+                }
+            }
+        }
+        
+        function closeFeedbackThanksModel() {
+            var close_feedback =  document.getElementById('feedbackThankYou');
+            close_feedback.classList.add('u-hidden-visually');
+        }
+    
+    </script>
+    <!-----Header---->
+        
+    <a href="#modal-1" class="js-login" ></a>
+    <c:LoginComponent id="loginComponent" dtoClass="{!dto}" />
+    <!-- Current Page Name -->
+    <apex:form id="formHeader" style="height:100%;">
+        <!--<header class="site-header">-->
+            <apex:actionFunction name="setImplClassToDto" action="{!setImplClassToDto}"  oncomplete="document.querySelector('.js-login').click(); return false;" />
+            <apex:actionFunction name="goAccountPage" action="{!goAccountPage}" rerender="formHeader" />
+        <div class="site-header__brand">
+            <a class="site-header__logo o-logo" href="{!IF( brandvalue == 'jaguar' , DXLinkJG, DXLinkLR ) }">
+                <span class="u-hidden-visually">{!brandvalue}</span>
+            </a>
+            <apex:outputPanel rendered="{!market != 'br'}">
+                <p class="site-header__title">{! if( brandvalue == 'jaguar' , $Label.Reserve_your_Jaguar_online , $Label.Reserve_your_Land_Rover_online ) }</p>
+            </apex:outputPanel>
+            
+            <nav class="cta-nav">
+                <ul class="cta-nav__list">
+                    
+                    <li class="cta-nav__item"> 
+                        <apex:commandLink onclick="modalBlock();" action="{! goVehicleSearchPage }" styleClass="undefined cta-nav__link cta-nav__link--primary cta-nav__link--{!brandvalue} site-nav__link site-nav__link--desktop"> 
+                            <apex:outputText value="{! if( brandvalue == 'jaguar' , $Label.Find_A_Jaguar , $Label.Find_A_Land_Rover ) }"/>
+                        </apex:commandLink>
+                    </li>
+                                
+                  <apex:outputPanel rendered="{!(IsAPO == FALSE && market != 'br' ) }"> 
+                      <li class="site-nav__item" style="height:100%;">
+                          
+                          <apex:commandLink onclick="modalBlock();" action="{! APOSwitch }" styleClass="undefined cta-nav__link cta-nav__link--primary cta-nav__link--{!brandvalue} site-nav__link site-nav__link--desktop" >
+                              <apex:outputText value="{! $Label.APPROVED_PRE_OWNED }"/>
+                          </apex:commandLink>
+                          
+                      </li>
+                    </apex:outputPanel>             
+                    
+                </ul>
+            </nav>
+            
+        </div>
+        <button class="o-panel__toggle site-header__toggle js-panel-toggle">
+            <span class="u-hidden-visually">Toggle Navigation</span>
+        </button>
+        <apex:outputPanel id="pb1" >
+            <div class="o-panel">
+                <div class="o-panel__inner">
+                    <nav class="site-nav">
+                        <ul class="site-nav__list">
+                            <li class="site-nav__item">
+                                <apex:commandLink onclick="modalBlock();" action="{! goVehicleSearchPage }" styleClass="site-nav__link site-nav__link--primarundefined site-nav__link site-nav__link--primary site-nav__link--{!brandvalue} site-nav__link site-nav__link--mobile"> 
+                                    <apex:outputText value="{! if( brandvalue == 'jaguar' , $Label.Find_A_Jaguar , $Label.Find_A_Land_Rover ) }"/>
+                                </apex:commandLink>
+                            </li>
+                            
+                            <apex:outputPanel rendered="{!vehicleTypeSwitch}" style="padding-top: 25px;">
+                                <li class="site-nav__item">
+                                    <apex:selectList value="{!selectedVehicleType}" size="1" onchange="switchType();">
+                                        <apex:selectOptions value="{!vehicleTypes}"/>
+                                    </apex:selectList>
+                                    <apex:actionFunction name="switchType" action="{!switchVehicleTypePage}" />
+                                </li>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!AND(APOAvailable == TRUE, vehicleTypeSwitch == FALSE)}">
+                                <apex:outputPanel rendered="{!IsAPO == TRUE}"> 
+                                    <li class="site-nav__item" style="height:100%;">
+                                        <apex:commandLink onclick="modalBlock();" action="{! APOSwitch  }" styleClass="site-nav__link site-nav__link--primary"   >
+                                            <apex:outputText value="{! $Label.NEW_VEHICLES }" />
+                                        </apex:commandLink> 
+                                    </li>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!(IsAPO == FALSE && market != 'br' ) }"> 
+                                    <li class="site-nav__item" style="height:100%;">
+                                        <apex:commandLink onclick="modalBlock();" action="{! APOSwitch }" styleClass="undefined site-nav__link site-nav__link--primary site-nav__link--mobile" >
+                                            <apex:outputText value="{! $Label.APPROVED_PRE_OWNED }"/>
+                                        </apex:commandLink>
+                                    </li>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <li class="site-nav__item" >
+                                <apex:outputPanel rendered="{!(isVehicleAvailable == true  && $CurrentPage.parameters.market != 'br'  )}">
+                                    <a  href="#" class="site-nav__link site-nav__link--primary site-nav__link--icon site-nav__link--trigger site-nav__link--tick js-subnav-toggle" >
+                                        
+                                        <!-- <a href="#" class="site-nav__link site-nav__link--primary site-nav__link--icon site-nav__link--trigger site-nav__link--tick js-subnav-toggle open"> -->
+                                        
+                                        <!--<svg class="o-icon site-nav__icon" >
+<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.dist_landrover,'svg/icons.svg#icon-user')}"></use>
+</svg>-->
+                                        <svg class="o-icon site-nav__icon" >
+                                            <path d="M1.2 24c-.7 0-1-.4-1.1-1-.5-3.7.7-6.6 3.7-8.9C5.3 13 7.1 12.4 9 12.4c2.5 0 4.9 1 6.5 2.8 2 2.1 2.8 4.6 2.4 7.6-.1.8-.4 1.1-1.2 1.1H1.2zM16 22c.3-2.5-.8-5-3.1-6.5-1.1-.7-2.5-1.1-3.9-1.1-1.6 0-3.1.5-4.2 1.4C2.4 17.6 1.7 20.2 2 22h14zM9 10.7c-1.4 0-2.7-.6-3.7-1.6S3.7 6.7 3.7 5.3C3.7 2.4 6.1 0 9 0c3 0 5.3 2.3 5.3 5.3 0 1.4-.5 2.8-1.5 3.8s-2.4 1.6-3.8 1.6zm0-8.8c-.9 0-1.8.4-2.4 1-.6.7-1 1.5-1 2.4 0 1.9 1.5 3.4 3.4 3.4s3.4-1.5 3.4-3.4S10.9 1.9 9 1.9v-.1.1z"></path>
+                                            <!-- <use xlink:href="{!URLFOR($Resource.dist_landrover,'svg/icons.svg#icon-user')}"></use>  -->
+                                        </svg>
+                                        <span  class=" site-nav__label">{! $Label.User_Login} </span>
+                                        <!-- </apex:commandLink> -->
+                                    </a> 
+                                    
+                                    
+                                    <ul class="site-sub-nav">
+                                        <li><apex:commandLink onclick="loginCheck(); return false;" styleClass="site-nav__link site-nav__link--secondary" >{! IF($Profile.Name == $Label.Udaan_User_Profile_Name,$Label.YOUR_ACCOUNT,$Label.LOGIN_REGISTER)}</apex:commandLink></li>
+                                        <!-- <li><a href="#" class="site-nav__link site-nav__link--secondary {! IF('{!$Profile.Name}' == '{!$Label.Udaan_User_Profile_Name}','','u-hidden-visually')}" >Log out</a></li> -->
+                                        <!-- TCRM-3744 Account Detail-->
+                                        <li class="{! IF($Profile.Name == $Label.Udaan_User_Profile_Name,'','u-hidden-visually')}"><apex:commandLink styleClass="site-nav__link site-nav__link--secondary" onclick="callAccountDetails(); return false;">{!$Label.Account_Details}</apex:commandLink></li>
+                                        <li class="{! IF($Profile.Name == $Label.Udaan_User_Profile_Name,'','u-hidden-visually')}"><apex:commandLink styleClass="site-nav__link site-nav__link--secondary" onclick="modalBlock(); goLogoutPage();return false;">{!$Label.LOGOUT}</apex:commandLink></li>
+                                    </ul>
+                                </apex:outputPanel>
+                            </li>
+                            <li class="site-nav__item" id="loginIcon" >
+                                <!-- <apex:commandLink onclick="loginCheck(); return false;" styleClass="site-nav__link site-nav__link--primary site-nav__link--icon site-nav__link--trigger js-subnav-toggle" > -->
+                                <apex:outputPanel rendered="{!(isVehicleAvailable == false && $CurrentPage.parameters.market != 'br')}">
+                                    <a href="#" class="site-nav__link site-nav__link--primary site-nav__link--icon site-nav__link--trigger js-subnav-toggle">
+                                        <!--<svg class="o-icon site-nav__icon" >
+<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.dist_landrover,'svg/icons.svg#icon-user')}"></use>
+</svg>-->
+                                        <svg class="o-icon site-nav__icon" >
+                                            <path d="M1.2 24c-.7 0-1-.4-1.1-1-.5-3.7.7-6.6 3.7-8.9C5.3 13 7.1 12.4 9 12.4c2.5 0 4.9 1 6.5 2.8 2 2.1 2.8 4.6 2.4 7.6-.1.8-.4 1.1-1.2 1.1H1.2zM16 22c.3-2.5-.8-5-3.1-6.5-1.1-.7-2.5-1.1-3.9-1.1-1.6 0-3.1.5-4.2 1.4C2.4 17.6 1.7 20.2 2 22h14zM9 10.7c-1.4 0-2.7-.6-3.7-1.6S3.7 6.7 3.7 5.3C3.7 2.4 6.1 0 9 0c3 0 5.3 2.3 5.3 5.3 0 1.4-.5 2.8-1.5 3.8s-2.4 1.6-3.8 1.6zm0-8.8c-.9 0-1.8.4-2.4 1-.6.7-1 1.5-1 2.4 0 1.9 1.5 3.4 3.4 3.4s3.4-1.5 3.4-3.4S10.9 1.9 9 1.9v-.1.1z"></path>
+                                            <!-- <use xlink:href="{!URLFOR($Resource.dist_landrover,'svg/icons.svg#icon-user')}"></use>  -->
+                                        </svg>
+                                        <span  class=" site-nav__label">{! $Label.User_Login} </span>
+                                        <!-- </apex:commandLink> -->
+                                    </a>
+                                    <ul class="site-sub-nav">
+                                        <li><apex:commandLink onclick="loginCheck(); return false;" styleClass="site-nav__link site-nav__link--secondary" >{! IF($Profile.Name == $Label.Udaan_User_Profile_Name,$Label.YOUR_ACCOUNT,$Label.LOGIN_REGISTER)}</apex:commandLink></li>
+                                        <!-- <li><a href="#" class="site-nav__link site-nav__link--secondary {! IF('{!$Profile.Name}' == '{!$Label.Udaan_User_Profile_Name}','','u-hidden-visually')}" >Log out</a></li> -->
+                                        <li class="{! IF($Profile.Name == $Label.Udaan_User_Profile_Name,'','u-hidden-visually')}"><apex:commandLink styleClass="site-nav__link site-nav__link--secondary" onclick="callAccountDetails(); return false;">{!$Label.Account_Details}</apex:commandLink></li>
+                                        <li class="{! IF($Profile.Name == $Label.Udaan_User_Profile_Name,'','u-hidden-visually')}"><apex:commandLink styleClass="site-nav__link site-nav__link--secondary" onclick="modalBlock(); goLogoutPage();return false;">{!$Label.LOGOUT}</apex:commandLink></li>
+                                    </ul>
+                                </apex:outputPanel>   
+                            </li>
+                            
+                                <apex:outputPanel >
+                                    <div class="modal u-hidden-visually" id="Model_feedback" aria-hidden="false" role="dialog" aria-labelledby="modal__heading">
+                                        <div class="modal__wrapper">
+                                            <div class="modal__content">
+                                                <div class="modal-dialog modal-dialog--compact js-modal-dial">
+                                                    <button class="modal__close js-modal-close" onclick="closeFeedbackModel();return false;">
+                                                        <svg class="o-icon">
+                                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.dist_jaguar, 'svg/icons.svg#icon-cross')}"></use>
+                                                        </svg><span class="u-hidden-visually">{!$Label.Close}</span>
+                                                    </button>
+                                                    <div class="modal-dialog__content">
+                                                        <div class="lu_form_modal" > 
+                                                            <div class="o-wrapper"> 
+                                                                <div class="u-padding-vertical-small">
+                                                                    <div id="feedback_form_details">
+                                                                        <h5 class="u-text-center u-margin-small" id="modal__heading">
+                                                                            <strong>{!$Label.OSA_Feedback_Header}</strong>  </h5>
+                                                                        <p class="u-text-center">
+                                                                            {!$Label.OSA_Feedback_Header2}                               
+                                                                        </p>    
+                                                                        <div class="error_wrapper u-hidden-visually" id = "blankCommentId" style="margin-top: 20px;">
+                                                                            <div class="error" style="color:white">{!$Label.Comments_Message}</div>
+                                                                        </div>
+                                                                        <div class="form__field">
+                                                                            <label class="form__label" for="message">{!$Label.Comment}:</label>                                   
+                                                                            <div>                                       
+                                                                                <apex:inputTextarea id="message" value="{!comment}" styleclass="input-text input-text--dark" rows="6"></apex:inputTextarea>                                  
+                                                                            </div>                               
+                                                                        </div>
+                                                                        
+                                                                        <div class="error_wrapper u-hidden-visually" id = "reCaptchaId" style="margin-top: 20px;">
+                                                                            <div class="error" style="color:white">{!$Label.Invalid_reCaptcha}</div>
+                                                                        </div>
+                                                                        <c:reCaptcha ></c:reCaptcha>
+                                                                        
+                                                                        <div class="form__field u-text-center" id="submitFeedbackbtn">
+                                                                            <apex:commandButton value="{!$Label.SUBMIT_osa}" action="{!submitFeedback}" onclick="processingFeedback();" oncomplete="submitFeedback('{!isFeedbackSaved}','{!isCommentBlank}', '{!isSuccess}'); return false;" styleClass="button u-margin-vertical-small"  />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel >
+                                    <div class="modal u-hidden-visually" id="feedbackThankYou" aria-hidden="false" role="dialog" aria-labelledby="modal__heading">
+                                        <div class="modal__wrapper">
+                                            <div class="modal__content">
+                                                <div class="modal-dialog modal-dialog--compact js-modal-dial">
+                                                    <button class="modal__close js-modal-close" onclick="closeFeedbackThanksModel();return false;">
+                                                        <svg class="o-icon">
+                                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.dist_jaguar, 'svg/icons.svg#icon-cross')}"></use>
+                                                        </svg><span class="u-hidden-visually">{!$Label.Close}</span>
+                                                    </button>
+                                                    <div class="modal-dialog__content">
+                                                        <div class="lu_form_modal" > 
+                                                            <div class="o-wrapper"> 
+                                                                <div class="u-padding-vertical-small">
+                                                                    <div class = "form__field" >
+                                                                        <h3 class="u-text-center u-margin-small" id="modal__heading"><strong>{!$Label.Thank_You_Page}</strong></h3>
+                                                                        <p class="u-text-center">{!$Label.OSA_Feedback_ThankYouNote}</p>
+                                                                        <div class="form__field u-text-center">
+                                                                            <apex:commandButton value="{!$Label.Close}" onclick="closeFeedbackThanksModel();return false;" styleClass="button"  />
+                                                                        </div>
+                                                                    </div>    
+                                                                </div>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                
+                                <!-- COSA- 27 stops-->
+                                <apex:outputPanel >
+                                    <div class="modal u-hidden-visually" id="modal-limit-reached-account" aria-hidden="false" role="dialog" aria-labelledby="modal__heading">
+                                        <div class="modal__wrapper">
+                                            <div class="modal__content">
+                                                <div class="modal-dialog js-modal-dialog">
+                                                    <button class="modal__close js-modal-close" onclick="closeAccountDetails();return false;">
+                                                        <svg class="o-icon">
+                                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.dist_landrover, 'svg/icons.svg#icon-cross')}"></use>
+                                                        </svg><span class="u-hidden-visually">Close</span>
+                                                    </button>
+                                                    <div class="modal-dialog__content">
+                                                        <div class="lu_form_modal">
+                                                            <div class="o-wrapper">
+                                                                <div class="luform__login u-padding-vertical-medium">
+                                                                    <h3 class="u-text-center u-margin-small" id="modal__heading"><strong>{!$Label.My_Details}</strong></h3>
+                                                                    <div class="form__field" id = "account_update_form">
+                                                                        <p class="u-text-center">{!$Label.Account_Details_Description}</p>  
+                                                                        <div class="form__field" >
+                                                                            <label class="form__label" for="firstname">{!$Label.FIRST_NAME}:</label>
+                                                                            <div>
+                                                                                <apex:inputText id="firstname" value="{!firstName}" styleClass="input-text" maxlength="256"/>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form__field">
+                                                                            <label class="form__label" for="lastname">{!$Label.LAST_NAME}:</label>
+                                                                            <div>
+                                                                                <apex:inputText id="lastname" value="{!lastName}" styleClass="input-text" maxlength="256"/>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form__field">
+                                                                            <label class="form__label" for="phone">{!$Label.Enquiry_Phone_Number}:</label>
+                                                                            <div>
+                                                                                <apex:inputText id="phone" value="{!phone}" styleClass="input-text" maxlength="256"/>
+                                                                            </div>
+                                                                        </div>
+                                                                        <apex:outputPanel rendered="{!market == 'br'}">
+                                                                            <div class="form__field">
+                                                                                <label class="form__label" for="CPF">{!$Label.CPF}:</label>
+                                                                                <div>
+                                                                                    <apex:inputText id="CPF" value="{!CPF}" styleClass="input-text" maxlength="256"/>
+                                                                                </div>
+                                                                            </div>
+                                                                        </apex:outputPanel>
+                                                                        <div style="padding-bottom: 12px;padding-top:12px;vertical-align:middle;">
+                                                                            <span style="vertical-align:middle;"><apex:inputCheckbox value="{!emailOptedOut}"/></span>
+                                                                            <span>{!$Label.Email_Opt_Out}</span>
+                                                                        </div>
+                                                                        <div class="error_wrapper u-hidden-visually" id = "error_account_Detail" style="margin-top: 20px;">
+                                                                            <div class="error">
+                                                                                <h3 class="modal__heading h_error" >{!$Label.An_Error_Has_Occurred}</h3>
+                                                                                <p  class="p_error" id = "accUpdatefailed" ></p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <p class="u-text-center">
+                                                                            <apex:commandLink styleclass="button u-margin-top" action="{!saveAccountDetails}" style="margin:auto" onclick="modalBlock();"  oncomplete="updateAccountDetail('{!updateAccountflag}','{!errorMsg}');return false;">{!$Label.Save_Changes}</apex:commandLink>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="error_wrapper_register u-hidden-visually" id = "success_Account_Detail" style="margin-top: 20px;">
+                                                                        <div class="error">
+                                                                            <p class="u-text-center" id = "accUpdateSucess" style="color:black;"></p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>    
+                                                    </div>    
+                                                </div>
+                                            </div>    
+                                        </div>
+                                    </div>   
+                                </apex:outputPanel>
+                                
+                                <!--  Select Language -->
+                                <apex:variable var="tempLangs" value="{!''}{!langs}" />
+                                <li class="site-nav__item">
+                                    <a href="#" class="site-nav__link site-nav__link--primary site-nav__link--trigger site-nav__link--market js-subnav-toggle" id="selectLanguage">
+                                        <!-- <img src="{!If( language == 'en', URLFOR($Resource.dist_apo,'images/en_keyline.jpg'), URLFOR($Resource.dist_apo,'images/jp_keyline.jpg') )}" alt="{!If( language== 'en', 'EN', 'JP')}"/> <span class="site-nav__label">{! $Label.Select_Language }</span> -->
+                                        <img src="{!If( language == 'en', URLFOR($Resource.dist_apo,'images/en_keyline.jpg'), If( language == 'pt_BR',URLFOR($Resource.dist_apo,'images/BR.png') , URLFOR($Resource.dist_apo,'images/jp_keyline.jpg')) )}" alt="{!If( language== 'en', 'EN', 'JP')}"/> <span class="site-nav__label">{! $Label.Select_Language }</span>
+                                    </a>
+                                    <ul class="site-sub-nav" >
+                                        <apex:outputPanel rendered="{!$CurrentPage.parameters.market != 'br'}">
+                                            <li style="cursor: pointer; display: {!IF(CONTAINS(tempLangs, 'en'), 'block', 'none')};">
+                                                <a onclick="modalBlock(); switchLanguage('en','{!language}');return false;" class="site-nav__link site-nav__link--secondary site-nav__link--market">
+                                                    <img src="{!URLFOR($Resource.dist_apo,'images/en_keyline.jpg')}" alt="GB"/> English
+                                                </a>
+                                            </li>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!$CurrentPage.parameters.market == 'br'}">
+                                            <li style="cursor: pointer; display: {!IF(CONTAINS(tempLangs, 'en'), 'block', 'none')};">
+                                                <a onclick="modalBlock(); switchLanguage('en','{!language}');return false;" class="site-nav__link site-nav__link--secondary site-nav__link--market">
+                                                    <img src="{!URLFOR($Resource.dist_apo,'images/en_keyline.jpg')}" alt="GB"/> ENG
+                                                </a>
+                                            </li>
+                                        </apex:outputPanel>
+                                        <li style="cursor: pointer; display: {!IF(CONTAINS(tempLangs, 'ja'), 'block', 'none')};">
+                                            <a onclick="modalBlock(); switchLanguage('ja', '{!language}');return false;" class="site-nav__link site-nav__link--secondary site-nav__link--market">
+                                                <img src="{!URLFOR($Resource.dist_apo,'images/jp_keyline.jpg')}" alt="JP"/>日本語
+                                            </a>
+                                        </li>
+                                        <li style="cursor: pointer; display: {!IF(CONTAINS(tempLangs, 'pt_BR'), 'block', 'none')};">
+                                            <a onclick="modalBlock(); switchLanguage('pt_BR', '{!language}');return false;" class="site-nav__link site-nav__link--secondary site-nav__link--market">
+                                                <img src="{!URLFOR($Resource.dist_apo,'images/BR.png')}" alt="PT"/>pt_BR
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <apex:actionFunction name="changeLanguage" action="{!changeLanguage}" oncomplete="return;"/ >
+                                    
+                                    
+                                    <li class="site-nav__item">
+                                        <apex:commandLink onclick="modalBlock();" action="{!mainSite}" styleClass="site-nav__link site-nav__link--primary" value="{!$Label.Main_Site}"> 
+                                            <!--<apex:outputText value="{!$Label.Main_Site}"/>-->
+                                        </apex:commandLink>
+                                    </li>
+                                    <li class="site-nav__item">
+                                        <apex:outputPanel rendered="{!brandvalue == 'jaguar' }"> 
+                                            <apex:commandLink onclick="modalBlock();" action="{! brandSwitch  }" styleClass="site-nav__link site-nav__link--primary"   >
+                                                <apex:outputText value="{! $Label.View_Land_Rover }" />
+                                            </apex:commandLink> 
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!brandvalue == 'landrover' }"> 
+                                            <apex:commandLink onclick="modalBlock();" action="{! brandSwitch }" styleClass="site-nav__link site-nav__link--primary" >
+                                                <apex:outputText value="{! $Label.View_Jaguar }"/>
+                                            </apex:commandLink>
+                                        </apex:outputPanel>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+                <!--</header>-->
+        </apex:form>
+    
+        <apex:variable var="marketname" value="{!if(market =='sg', 'Singapore', market)}"  />
+        <apex:variable var="marketname" value="{!if(market =='hk' && market !='sg', 'Hong Kong', if(market =='th', 'Thailand', 'Singapore'))}"  />
+        
+        
+        <apex:outputPanel rendered="{!brandvalue == 'landrover' }"> 
+            
+            
+            <apex:variable var="test1" value="{!if(market =='sg', 146036598761606, market )}"  />
+            <apex:variable value="{!if(market !='sg' && market =='hk', 143398155690578, if(market !='sg', 366569400054227, 146036598761606))}" var="test1"/>
+            
+            <div class="fb-customerchat"
+                 attribution="setup_tool"
+                 page_id="{!test1}"
+                 theme_color="#006400"
+                 logged_in_greeting="Thank you for contacting Land Rover {!marketname}.  How may we assist you?"
+                 logged_out_greeting="Thank you for contacting Land Rover {!marketname}.  How may we assist you?" 
+                 greeting_dialog_display="hide">
+            </div>
+        </apex:outputPanel> 
+        
+        
+        
+        <apex:outputPanel rendered="{!brandvalue == 'jaguar'}"> 
+            <apex:variable value="{!if(market =='sg', 149493871736216, market)}" var="rowNum"/>
+            
+            <apex:variable value="{!if(market !='sg' && market =='hk', 431911593486064, if(market !='sg',395600477178291, 149493871736216))}" var="rowNum"/>
+            
+            <div class="fb-customerchat"
+                 page_id="{!rowNum}"
+                 attribution="setup_tool"      
+                 theme_color="#9E1B32"
+                 logged_in_greeting="Thank you for contacting Jaguar {!marketname}.  How may we assist you?"
+                 logged_out_greeting="Thank you for contacting Jaguar {!marketname}.  How may we assist you?" 
+                 greeting_dialog_display="hide">
+            </div>
+        </apex:outputPanel>
+    
+        <apex:outputPanel rendered="{!brandvalue = 'jaguar' }"> 
+            <apex:stylesheet value="{!URLFOR($Resource.dist_jaguar, 'css/main.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.dist_jaguar, 'img/touch/192.png')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.overrides, 'dist_jaguar/css/main.css')}" />
+            <!-- <apex:includeScript value="{!URLFOR($Resource.dist_jaguar, 'js/main.bundle.js')}" / -->
+        </apex:outputPanel> 
+        <apex:outputPanel rendered="{!brandvalue = 'landrover' }">
+            <apex:stylesheet value="{!URLFOR($Resource.dist_landrover, 'css/main.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.dist_landrover, 'img/touch/192.png')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.overrides, 'dist_landrover/css/main.css')}" />
+        </apex:outputPanel>
+        <apex:includeScript value="{!URLFOR($Resource.dist_landrover, 'js/main.bundle.js')}" />
+</apex:component>

@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="Title" label="Enter a title" />
+    <design:attribute name="Descriptiontext" label="Enter a description"/>
+</design:component>

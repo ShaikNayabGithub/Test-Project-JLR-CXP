@@ -1,0 +1,100 @@
+.THIS .slds-spinner {
+	position: absolute;
+	top: 25%;
+	left: 50%;
+	z-index: 9051;
+	transform: translate(-50%, -50%) rotate(90deg);
+}
+.THIS .slds-icon-standard-product-request {
+	background-color: #F44336;
+}
+.THIS .slds-icon-standard-work-order {
+	background-color: #F44336;
+}
+.THIS .slds-icon-standard-product-item-transaction {
+	background-color: #F44336;
+}
+.THIS .slds-icon-standard-product-required {
+	background-color: #F44336;
+}
+.THIS .slds-icon-standard-search {
+	background-color: #F44336;
+}
+.THIS .slds-icon-standard-date-time {
+	background-color: #F44336;
+}
+.THIS .slds-icon-standard-related-list {
+	background-color: #F44336;
+}
+
+.THIS .refresh:after {
+	position: absolute;
+	background-color: white;
+	content: 'Please wait while refreshing...';
+	font-size: large;
+	color: #1651bb;
+	width: 100%;
+	text-align: center;
+	top: calc(22% + 3em);
+	font-weight: bold;
+}
+.THIS .saves:after {
+	position: absolute;
+	background-color: white;
+	content: 'Please wait while saving...';
+	font-size: large;
+	color: #1651bb;
+	width: 100%;
+	text-align: center;
+	top: calc(22% + 3em);
+	font-weight: bold;
+}
+.THIS .slIconcss{
+	width: 5.333333% !important;
+}
+.THIS .slheadertext{
+	width: 50% !important;
+}
+.THIS .slrefreshIcon{
+	width: 18% !important;
+}
+.THIS .slIconcss{
+	width: 5.333333% !important;
+}
+
+.THIS .scrollBody {
+	height: 300px;
+	overflow: auto;
+	width: 100%;
+    }
+.THIS .slds-spinner_container {
+	position: absolute;
+	top: 60px !important;
+}
+.THIS .gridCls {
+
+	width : 100%;
+	background: red;
+	overflow-x : scroll;
+}
+.THIS .checkBoxCls{
+	float:left;
+	margin-left: -8px;
+}
+.THIS .headerBack{
+	background-color: #bbbaba;
+}
+.THIS .isDisableCheck{
+	width: 1.1rem;
+	height: 1.1rem;
+	background-blend-mode: exclusion;
+	background-color: rgb(255, 255, 255) !important;
+}
+.THIS .tableHeader {
+        word-break: break-word;
+        background-color: #b3b3b3;
+}
+.THIS .myUniqueClass svg {
+	width: 25px;
+	height: 25px;
+}

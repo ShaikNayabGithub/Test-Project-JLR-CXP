@@ -1,0 +1,63 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="simpleAsset" type="Object" />
+    <!--<aura:attribute name="accountIcon" type="String" default="standard:account" />
+    <aura:attribute name="vinIcon" type="String" default="standard:portal" />
+    <aura:attribute name="modelIcon" type="String" default="standard:work_order" />
+    <aura:attribute name="derivativeIcon" type="String" default="custom:custom83" />
+    <aura:attribute name="plateIcon" type="String" default="standard:scan_card" />-->
+    <aura:attribute name="recallIcon" type="String" default="standard:recent" />
+    <!--<aura:attribute name="newIcon" type="String" default="standard:topic" />
+    <aura:attribute name="mileageIcon" type="String" default="custom:custom64" />-->
+    <aura:attribute name="vinImg" type="String" default="/Asset/Icon_VIN.png" />
+    <aura:attribute name="modelImg" type="String" default="/Asset/Icon_Model.png" />
+    <aura:attribute name="derivativeImg" type="String" default="/Asset/Icon_Derivative.png" />
+    <aura:attribute name="newUsedImg" type="String" default="/Asset/Icon_NewUsed.png" />
+    <aura:attribute name="mileageImg" type="String" default="/Asset/Icon_Mileage.png" />
+    <aura:attribute name="recallImg" type="String" default="/More/Icon_Recall.png" />
+    <aura:attribute name="columnFields" type="String[]" default="['VIN__c', 'Model__c', 'Model__r.Name', 'Derivative__c', 'Derivative__r.Name', 'Registration_Number__c', 'New_or_Used__c', 'Mileage__c', 'Subject_to_Recall_Indicator__c', 'Recall_Campaign__c', 'Account.Name', 'Brand__c', 'Brand__r.Name']" />
+    
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" targetFields="{!v.simpleAsset}" mode="VIEW" fields="{!v.columnFields}" />
+    
+    <lightning:layout>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.vlColumnHeaderVIN}"><img src="{!$Resource.MENAHeaderIcons + v.vinImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleAsset.VIN__c!=null, v.simpleAsset.VIN__c, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Stock_Search_Model}"><img src="{!$Resource.MENAHeaderIcons + v.modelImg}" style="width:40px; height:40px" /></span>
+            <aura:if isTrue="{!v.simpleAsset.Model__c!=null}">
+                <a href="javascript:void(0)" onclick="{!c.navigateToModelRecord}">{!v.simpleAsset.Model__r.Name}</a>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small" class="slds-truncate">
+            <span style="padding-right:4px" title="{!$Label.c.Stock_Search_Derivative}"><img src="{!$Resource.MENAHeaderIcons + v.derivativeImg}" style="width:40px; height:40px" /></span>
+            <aura:if isTrue="{!v.simpleAsset.Derivative__c!=null}">
+                <a href="javascript:void(0)" onclick="{!c.navigateToDerivativeRecord}">{!v.simpleAsset.Derivative__r.Name}</a>
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Asset_New_or_Used}"><img src="{!$Resource.MENAHeaderIcons + v.newUsedImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleAsset.New_or_Used__c!=null, v.simpleAsset.Registration_Number__c, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            <span style="padding-right:4px" title="{!$Label.c.Asset_Mileage}"><img src="{!$Resource.MENAHeaderIcons + v.mileageImg}" style="width:40px; height:40px" /></span>
+            <lightning:formattedText value="{!if(v.simpleAsset.Mileage__c!=null, v.simpleAsset.Mileage__c, '-')}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="3" mediumDeviceSize="3" largeDeviceSize="1" padding="around-small">
+            <aura:if isTrue="{!v.simpleAsset.Subject_to_Recall_Indicator__c}">
+	            <span style="padding-right:4px" title="{!$Label.c.Asset_Recall}"><img src="{!$Resource.MENAHeaderIcons + v.recallImg}" style="width:40px; height:40px" /></span>
+                <lightning:formattedText value="{!if(v.simpleAsset.Recall_Campaign__c!=null, v.simpleAsset.Recall_Campaign__c, '-')}" />
+            </aura:if>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="3" mediumDeviceSize="3" largeDeviceSize="1" padding="around-small" class="slds-p-top_x-small">
+            <aura:if isTrue="{!v.simpleAsset.Brand__r.Name == 'Jaguar'}">
+	       		<img src="{!$Resource.LightningBrandJaguar}" />
+            </aura:if>
+            <aura:if isTrue="{!v.simpleAsset.Brand__r.Name == 'Land Rover'}">
+                <img src="{!$Resource.LightningBrandLandRover}" />
+            </aura:if>
+        </lightning:layoutItem>
+	</lightning:layout>
+    
+</aura:component>

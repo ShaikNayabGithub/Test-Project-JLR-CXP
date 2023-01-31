@@ -1,0 +1,25 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">
+    <lightning:tabset>
+        <lightning:tab label="Customs">
+            <c:customsSubmission name="customs" />
+        </lightning:tab>
+        <lightning:tab label="Customs Bulk Upload">
+            <c:csvBulkUploader name="customscsv" adminObjects="Asset" adminOperations="Update" adminUpdateKey="VIN__c" />
+        </lightning:tab>
+        <lightning:tab label="Wholesale">
+            <c:wholesaleSubmission name="wholesale" />
+        </lightning:tab>
+        <lightning:tab label="Wholesale Bulk Upload">
+            <c:csvBulkUploader name="wholesalecsv" adminObjects="Asset" adminOperations="Update" adminUpdateKey="VIN__c" />
+        </lightning:tab>
+        <lightning:tab label="PDI Quota">
+            <c:pdiQuota />
+        </lightning:tab>
+        <lightning:tab label="PDI">
+            <c:pdiRequests name="pdi" />
+        </lightning:tab>
+        <lightning:tab label="PDI Bulk Upload">
+            <c:csvBulkUploader name="pdicsv" adminObjects="PDI_Request__c" adminOperations="Insert,Update" adminUpdateKey="Id"/>
+        </lightning:tab>
+    </lightning:tabset>
+</aura:component>

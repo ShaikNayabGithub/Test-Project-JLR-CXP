@@ -1,0 +1,23 @@
+<design:component>
+	<design:attribute name="Title" label="Title" />
+    <design:attribute name="Description" label="Description" />
+    <design:attribute name="Video1URL" label="Video 1 URL" />
+    <design:attribute name="Video1Type" label="Video 1 type" datasource="video/mp4,video/webm,video/ogg"/>
+    <design:attribute name="Video1Title" label="Video 1 Title" />
+    <design:attribute name="VideoImage1" label="Video 1 Image" />
+    <design:attribute name="Image1URL" label="Image 1 URL" />
+    <design:attribute name="Image1Title" label="Image 1 Title" />
+    <design:attribute name="Video2URL" label="Video 2 URL" />
+    <design:attribute name="Video2Type" label="Video 2 type" datasource="video/mp4,video/webm,video/ogg"/>
+    <design:attribute name="Video2Title" label="Video 2 Title" />
+    <design:attribute name="VideoImage2" label="Video 2 Image" />
+    <design:attribute name="Image2URL" label="Image 2 URL" />
+    <design:attribute name="Image2Title" label="Image 2 Title" />
+    <design:attribute name="Video3URL" label="Video 3 URL" />
+    <design:attribute name="Video3Type" label="Video 3 type" datasource="video/mp4,video/webm,video/ogg"/>
+    <design:attribute name="Video3Title" label="Video 3 Title" />
+    <design:attribute name="VideoImage3" label="Video 3 Image" />
+    <design:attribute name="Image3URL" label="Image 3 URL" />
+    <design:attribute name="Image3Title" label="Image 3 Title" />
+    <design:attribute name="Link_label" label="Link more videos label" />
+</design:component>

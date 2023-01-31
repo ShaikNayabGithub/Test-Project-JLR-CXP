@@ -1,0 +1,41 @@
+<aura:component controller="LC_RDACancellation_Controller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:attribute name="simpleRDA" type="Object" />
+    <aura:attribute name="record" type="Object" />
+    
+<force:recordData aura:id="recordEditor"
+    layoutType="COMPACT"
+    recordId="{!v.recordId}"
+    targetError="{!v.recordError}"
+    targetRecord="{!v.record}"
+    targetFields="{!v.simpleRDA}"
+    fields="['Is_Locked__c', 'Submitted_Status__c', 'Is_Out_Of_Date__c', 'Account__r.Name', 'Account__c', 'RecordType.Name']"
+    
+    />
+    <center>
+        <aura:if isTrue="{!v.simpleRDA.Is_Locked__c}">
+            <p style="font-size:1.1em; font-style:bold; vertical-align:middle">You cannot Cancel this RDA as it is locked</p>
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.simpleRDA.Is_Out_Of_Date__c}">
+                    <p style="font-size:1.1em; font-style:bold; vertical-align:middle">You cannot Cancel this RDA as it was not submitted during the current month</p>
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!and(v.simpleRDA.Submitted_Status__c != 'Submitted', v.simpleRDA.Submitted_Status__c != 'Completed', v.simpleRDA.Submitted_Status__c != 'In Progress')}">
+                            <p style="font-size:1.1em; font-style:bold; vertical-align:middle">You cannot Cancel this RDA as it is not currently Submitted/Completed or In Progress</p>                           
+							
+							<aura:set attribute="else">
+							<aura:if isTrue="{!v.simpleRDA.RecordType.Name != 'Trade In'}">
+                               <p style="font-size:1.1em; font-style:bold; padding-bottom:8px">You must also cancel the Asset handover in Vista. Are you sure you wish to cancel this RDA?</p>							
+							<aura:set attribute="else">
+							<p style="font-size:1.1em; font-style:bold; padding-bottom:8px">Are you sure you wish to cancel this RDA?</p>
+							</aura:set>
+                            </aura:if>
+                                <lightning:button aura:id="createButton" class="button" variant="brand" label="{!$Label.c.YES}" title="{!$Label.c.YES}" onclick="{!c.cancelRDA}"/>
+                                <lightning:button aura:id="updateButton" class="button" variant="brand" label="{!$Label.c.NO}" title="{!$Label.c.NO}" onclick="{!c.closeModal}"/>
+                            </aura:set>
+                        </aura:if>
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </center>
+    
+ </aura:component>

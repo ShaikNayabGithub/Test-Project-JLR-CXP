@@ -1,0 +1,88 @@
+<template>
+    
+    <template if:true={Isvisible}>  
+    <div class="slds-col slds-size--12-of-12">
+                        <!-- Row 1 -->
+                        <div class="slds-grid slds-wrap jlr-opportunity-header-row-r">
+                            <div class="slds-col slds-size--3-of-12 jlr-button-cell jlr-sale-type-new"
+                                 onclick={handleSaleType_NewClick}>{labelCode.NewLabel}
+                            </div>
+                        
+                    
+                            <div class="slds-col slds-size--3-of-12 jlr-button-cell jlr-sale-type-pre-owned"
+                                 onclick={handleSaleTypeDemoorUsed}>{labelCode.UsedLabel}
+                            </div>
+                    
+                        </div>
+                       
+                           
+                            <!-- Row 5 -->
+                            <template if:true={corporatePartner}>
+                                <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                                    <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Corporate Partner</span></div>
+                                    <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable">
+                                        {corporatePartner.Name}
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={corporatePartner}>
+                                <template if:false={isPersonAccount}>
+                                    <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                                        <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span> </span></div>
+                                        <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable">
+    
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                        
+                    </div>
+        <div class="header-line">
+                        <h1>{labelCode.Utilities}</h1>
+                    </div>
+                <div class="slds-col slds-size--8-of-12">    
+                   
+                        <!--END PLANS-->
+                        <!-- Expand / Collapse -->
+                        <div class="slds-col slds-size--1-of-12 ">
+                            <div class="jlr-rda-validator-expand-button jlr-pointer"     onclick={handleRDAValidatorExpand}>
+                                <span><lightning-icon icon-name="utility:add"></lightning-icon></span>
+                            </div>
+                            <div class="jlr-rda-validator-collapse-button jlr-pointer jlr-hidden"  onclick={handleRDAValidatorCollapse}>
+                                <span><lightning-icon icon-name="utility:dash"></lightning-icon></span>
+                            </div>
+                        </div>
+                        <!-- Label -->
+                        <div class="slds-col slds-size--11-of-12 ">
+                            <div class="rda-container">
+                              <!--  <h1>Check RDA</h1>  -->
+                                     <h1>{labelCode.CheckHandover}</h1>
+                                <div if:true={tickBoolValue}>
+                                    <lightning-icon size="small" class="rda-item" icon-name="utility:success" alternative-text="Success!" variant="success"
+                                                    title="success variant"></lightning-icon>
+                                </div>
+                                <div if:false={tickBoolValue}>
+                                    <lightning-icon size="small" class="rda-item" icon-name="utility:error" alternative-text="Error!" variant="error" title="error variant">
+                                    </lightning-icon>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- rda validator -->
+                        <div class="slds-col slds-size--1-of-12 ">&nbsp;</div>
+                        <div class="slds-col slds-size--11-of-12 ">
+                            <div class="jlr-rda-validator jlr-hidden">
+                                <c-mena-Opp-Validation-Table
+    
+                                        get-id-from-parent={opportunityId}
+                                        oncalltickevent={tickEvent}
+                                        table-refresh={validationTableRefresh}
+                                >
+                                </c-mena-Opp-Validation-Table>
+                            </div>
+                        </div>
+                       
+                </div>    
+    </template>
+        
+    </template>

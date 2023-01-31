@@ -1,0 +1,165 @@
+<aura:component implements="force:appHostable" controller="VME_DealerMixCtrl">
+    <ltng:require scripts="{!$Resource.VME_SweetAlert}" />
+    <aura:attribute name="dealerNameSearchValue" type="String" default="" />
+    <aura:attribute name="isOpenComp" type="boolean" default="true" />
+    <aura:attribute name="schemeId" type="String" />
+    <aura:attribute name="revisedSchemeValue" type="VME_Schemes__c" />
+    <aura:attribute name="dealerSearchList" type="VME_DealerMixCtrlWrapper[]" />
+    <aura:attribute name="searchedData" type="boolean" />
+    <aura:attribute name="paginationDealersList" type="VME_DealerMixCtrlWrapper[]" />
+    <aura:attribute name="existingDealerList" type="VME_DealerMixCtrlWrapper[]" />
+    <aura:attribute name="pageSize" type="Integer" />
+    <aura:attribute name="pageNumber" type="Integer" default="0" />
+    <aura:attribute name="totalPages" type="Integer" default="0" />
+    <aura:attribute name="parameterName" type="String" />
+    <aura:attribute name="formatDate" type="String" />
+    <aura:attribute name="VMECampDiscreationary" type="String" />
+    <aura:attribute name="parentVMECampaign" type="VME_Campaign__c" />
+    <aura:attribute name="schemeApplicable" type="String" />
+    <aura:attribute name="compIdentityValue" type="String" />
+    <aura:attribute name="filtersValue" type="boolean" />
+    <aura:registerEvent name="refreshCmpEvt" type="c:VME_OpenModel" />
+    <aura:registerEvent name="VME_VinMixEvt" type="c:VME_SavedRecordDetailsEvent" />
+    <aura:registerEvent name="adjustVariantEvt" type="c:VME_OpenAdjustVariantModel" />
+    <aura:handler name="adjustVariantEvt" event="c:VME_OpenAdjustVariantModel" action="{!c.cancelDealerMix}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:if isTrue="{!v.isOpenComp}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container ModalCss">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeConfirmModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" title="close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Retailer MIX </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-align--absolute-center" style="position: relative;">
+                        <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large"  style="position: fixed !important;" />
+                    </div>
+                    <lightning:tabset>
+                        <aura:if isTrue="{!not(empty(v.existingDealerList))}">
+                            <lightning:tab label="Existing Retailer List">
+                                <div>
+                                    <lightning:card class="slds-card slds-card_boundary" title="Existing Variant List" iconName="utility:travel_and_places" variant="base">
+                                        <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right">
+                                            <table class="slds-table slds-no-row-hover slds-table_bordered" style="border-top : 1px solid #dddbda ; border-bottom : 1px solid #dddbda">
+                                                <thead>
+                                                    <tr class="slds-text-title_caps border_top border_bottom">
+                                                        <th>
+                                                            <div class="slds-truncate">&nbsp;</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Name</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Dealer CI Code</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Region or Market</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Trading Date</div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <aura:iteration items="{!v.existingDealerList}" var="exisObj" indexVar="index">
+                                                    <tr class="border_bottom">
+                                                        <td>
+                                                            <lightning:input type="checkbox-button" label="Input One" checked="{!exisObj.isSelected}" />
+                                                        </td>
+                                                        <td>{!exisObj.accountObj.Name}</td>
+                                                        <td>{!exisObj.accountObj.Dealer_CI_Code__c}</td>
+                                                        <td>{!exisObj.accountObj.Region_or_Market__c}</td>
+                                                        <td>
+                                                            <ui:outputDate value="{!exisObj.accountObj.Stopped_Trading__c}" format="{!v.formatDate}" />
+                                                        </td>
+                                                    </tr>
+                                                </aura:iteration>
+                                            </table>
+                                        </div>
+                                    </lightning:card>
+                                </div>
+                            </lightning:tab>
+                        </aura:if>
+                        <lightning:tab label="Search Layout">
+                            <div class="slds-form slds-theme_shade slds-form_stacked slds-border_top slds-border_bottom slds-border_left slds-border_right slds-scrollable_y" aura:id="changeDiv">
+                                <lightning:layout>
+                                    <lightning:layoutItem size="4"></lightning:layoutItem>
+                                    <lightning:layoutItem size="4">
+                                        <lightning:input value="{!v.dealerNameSearchValue}" class="slds-align_absolute-center" label="Search Retailer :" placeholder="Enter Retailer Here.." required="true" type="text" variant="standard"></lightning:input>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="4"></lightning:layoutItem>
+                                </lightning:layout>
+                                <br />
+                                <div>
+                                    <lightning:button onclick="{!c.searchDealers}" class="slds-theme_brand slds-align_absolute-center" variant="brand" label="Search"></lightning:button>
+                                </div>
+                                <aura:if isTrue="{!v.searchedData}">
+                                    <lightning:card title="Retailer Search Result" iconName="utility:people" variant="base">
+                                        <aura:set attribute="actions">
+                                        </aura:set>
+                                        <div class="slds-card__body_inner slds-scrollable--y">
+                                            <table class="slds-table slds-no-row-hover slds-table_bordered" style="border-top : 1px solid #dddbda ; border-bottom : 1px solid #dddbda">
+                                                <thead >
+                                                    <tr class="slds-text-title_caps border_top border_bottom">
+                                                        <th>
+                                                            <div class="slds-truncate">&nbsp;</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Name</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Dealer CI Code</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Region or Market</div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="slds-truncate " title="Column 1">Trading Date</div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <aura:iteration items="{!v.paginationDealersList}" var="dealerObj" indexVar="index">
+                                                    <tr class="border_bottom">
+                                                        <td>
+                                                            <lightning:input type="checkbox-button" label="Input One" checked="{!dealerObj.isSelected}" />
+                                                        </td>
+                                                        <td>{!dealerObj.accountObj.Name}</td>
+                                                        <td>{!dealerObj.accountObj.Dealer_CI_Code__c}</td>
+                                                        <td>{!dealerObj.accountObj.Region_or_Market__c}</td>
+                                                        <td>
+                                                            <ui:outputDate value="{!dealerObj.accountObj.Stopped_Trading__c}" format="{!v.formatDate}" />
+                                                        </td>
+                                                    </tr>
+                                                </aura:iteration>
+                                            </table>
+                                        </div>
+                                        <aura:set attribute="footer">
+                                            Page {!v.pageNumber} of {!v.totalPages} &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <aura:if isTrue="{!(v.pageNumber > 1)}">
+                                                <lightning:button onclick="{!c.previousPage}" class="slds-theme_brand" variant="brand" label="Previous"></lightning:button>
+                                            </aura:if>
+                                            <aura:if isTrue="{!(v.pageNumber != v.totalPages)}">
+                                                <lightning:button onclick="{!c.nextPage}" class="slds-theme_brand" variant="brand" label="Next"></lightning:button>
+                                            </aura:if>
+
+                                        </aura:set>
+                                    </lightning:card>
+                                </aura:if>
+                            </div>
+                        </lightning:tab>
+                    </lightning:tabset>
+                    <ul class="slds-list_horizontal"></ul>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="brand" label="{! if(v.parentVMECampaign.RecordTypeId==v.VMECampDiscreationary,'Save and Next','Save and Finish')}" onclick="{!c.saveDealerMix}" title="dealers" />
+                    <lightning:button variant="brand" label="Cancel" onclick="{!c.closeConfirmModel}" title="close" />
+
+
+                </footer>
+
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

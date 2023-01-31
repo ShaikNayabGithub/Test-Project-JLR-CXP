@@ -1,0 +1,72 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="communityRecordId" type="String" default="" />
+    <aura:attribute name="showSaveButton" type="boolean" default="false" />
+    <aura:attribute name="showSpinnerOverlay" type="boolean" default="false" />
+    <aura:attribute name="simpleOpp" type="Object" />
+    <aura:attribute name="simpleAccount" type="Object" />
+    <aura:attribute name="sliderAccount" type="Account" />
+    <aura:attribute name="oppFields" type="String[]" default="['Id', 'AccountId', 'Account.RecordType.Name', 'Account.Annual_Mileage__pc']" />
+    <aura:attribute name="mileage" type="Integer" />
+    <aura:attribute name="timing" type="Integer" />
+
+    <aura:handler event="force:refreshView" action="{!c.hideSave}" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <force:recordData aura:id="recordLoader" recordId="{!v.recordId}" targetFields="{!v.simpleOpp}" mode="EDIT" fields="{!v.oppFields}" />
+    
+    <aura:if isTrue="{!v.showSpinnerOverlay}">
+        <lightning:spinner />
+    </aura:if>
+     
+    <aura:if isTrue="{!v.simpleOpp.Account.RecordType.Name == 'Individual'}">
+        <lightning:recordEditForm recordId="{!v.simpleOpp.AccountId}" objectApiName="Account" onload="{!c.hideSave}" onsubmit="{!c.doSave}" onsuccess="{!c.doSuccess}">
+            <lightning:messages />
+            <lightning:card title="{!$Label.c.Person_Account_Emotion}" iconName="standard:feed" class="removeborder">
+                <div class="slds-grid slds-box slds-wrap">
+                    <lightning:inputField fieldName="Likes_About_Current_Car__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:inputField fieldName="Dislikes_About_Current_Car__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <!--<lightning:inputField fieldName="Interests__pc" onchange="{!c.showSave}" />-->
+                </div>
+            </lightning:card>
+            <lightning:card title="{!$Label.c.Person_Account_Practical}" iconName="standard:solution" class="removeborder">
+                <div class="slds-grid slds-box slds-wrap">
+                    <lightning:inputField fieldName="Essential_Use_of_the_Car__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:inputField fieldName="Must_Have_Features__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:inputField aura:id="txtMileage" fieldName="Annual_Mileage__pc" disabled="true" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:slider aura:id="sliderMileage" value="{!v.mileage}" min="0" max="100000" step="500" onchange="{!c.handleMileage}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:inputField fieldName="No_of_Passengers__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:inputField fieldName="Space_and_Towing__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                </div>
+            </lightning:card>
+            <lightning:card title="{!$Label.c.Person_Account_Financial}" iconName="standard:partner_marketing_budget" class="removeborder">
+                <div class="slds-grid slds-box slds-wrap">
+                    <lightning:inputField fieldName="Usual_Method_of_Finance__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:inputField fieldName="Trade_In_Valuation__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                </div>
+            </lightning:card>
+            
+            <lightning:card title="{!$Label.c.Person_Account_Decision_Making}" iconName="standard:skill_entity" class="removeborder">
+                <div class="slds-grid slds-box slds-wrap">
+                    <lightning:inputField fieldName="Who_is_the_Main_Driver__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                    <lightning:inputField fieldName="Who_Else_Will_be_Driving_the_Car__pc" onchange="{!c.showSave}" class="slds-size--1-of-2 slds-p-horizontal_xxx-small" />
+                </div>
+            </lightning:card>
+            <lightning:card class="removeborder">
+            	<div>
+                    <lightning:inputField fieldName="Additional_Notes__pc" onchange="{!c.showSave}" class="slds-size--1-of-1 slds-p-horizontal_xxx-small" />
+                </div>
+            </lightning:card>
+            <div class="slds-m-top_medium">
+                <aura:if isTrue="{!v.showSaveButton}">
+                    <lightning:button name="cancel" label="{!$Label.c.sfCancel}" onclick="{!c.doCancel}" />
+                </aura:if>
+                <lightning:button variant="brand" type="submit" name="save" label="{!$Label.c.sfSave}" disabled="{!v.showSaveButton==false}" />
+            </div>
+        </lightning:recordEditForm>
+        <aura:set attribute="else">
+            {!$Label.c.Person_Account_Preferences}
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

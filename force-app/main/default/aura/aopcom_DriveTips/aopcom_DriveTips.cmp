@@ -1,0 +1,89 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <aura:attribute name="image900_452Url1" type="String" />
+    <aura:attribute name="image740_372Url1" type="String" />
+    <aura:attribute name="titleQuestion1" type="String" />
+    <aura:attribute name="descriptionQuestion1" type="String" />
+    <aura:attribute name="image900_452Url2" type="String" />
+    <aura:attribute name="image740_372Url2" type="String" />
+    <aura:attribute name="titleQuestion2" type="String" />
+    <aura:attribute name="descriptionQuestion2" type="String" />
+    <aura:attribute name="image900_452Url3" type="String" />
+    <aura:attribute name="image740_372Url3" type="String" />
+    <aura:attribute name="titleQuestion3" type="String" />
+    <aura:attribute name="descriptionQuestion3" type="String" />
+    <aura:attribute name="image900_452Url4" type="String" />
+    <aura:attribute name="image740_372Url4" type="String" />
+    <aura:attribute name="titleQuestion4" type="String" />
+    <aura:attribute name="descriptionQuestion4" type="String" />
+    <aura:attribute name="image900_452Url5" type="String" />
+    <aura:attribute name="image740_372Url5" type="String" />
+    <aura:attribute name="titleQuestion5" type="String" />
+    <aura:attribute name="descriptionQuestion5" type="String" />
+    <aura:attribute name="AWSUrl" type="String" />
+
+
+    <div class="content-wrapper">
+        <div class="section">
+            <div class="media-column-blocks media-column-blocks--alternate">
+                <div class="media-column-block">
+                    <div class="media-column-block__media">
+                        <!--[if IE 9]><video style="display: none;"><![endif]-->
+                        <img src="{!v.AWSUrl+v.image900_452Url1}" media="(min-width: 741px)" class="pic"><img srcset="{!v.AWSUrl+v.image740_372Url1}" alt=""/></img>
+                        <!--[if IE 9]></video><![endif]-->
+                    </div>                    
+                    <div class="media-column-block__content">
+                        <h2 class="media-column-block__heading">{!v.titleQuestion1}</h2>
+                        <aura:unescapedHtml value="{!v.descriptionQuestion1}"/>
+                    </div>
+                </div>                
+                <div class="media-column-block">
+					<div class="media-column-block__media">
+						<!--[if IE 9]><video style="display: none;"><![endif]-->
+						<img src="{!v.AWSUrl+v.image900_452Url2}" media="(min-width: 741px)" class="pic"><img srcset="{!v.AWSUrl+v.image740_372Url2}" alt=""/></img>
+						<!--[if IE 9]></video><![endif]-->
+					</div>    
+					<div class="media-column-block__content">
+						<h2 class="media-column-block__heading">{!v.titleQuestion2}</h2>
+						<aura:unescapedHtml value="{!v.descriptionQuestion2}"/>
+					</div>
+				</div>                
+				<div class="media-column-block">
+					<div class="media-column-block__media">
+						<!--[if IE 9]><video style="display: none;"><![endif]-->
+						<img src="{!v.AWSUrl+v.image900_452Url3}" media="(min-width: 741px)" class="pic"><img srcset="{!v.AWSUrl+v.image740_372Url3}" alt=""/></img>
+						<!--[if IE 9]></video><![endif]-->
+					</div>
+					<div class="media-column-block__content">
+						<h2 class="media-column-block__heading">{!v.titleQuestion3}</h2>
+						<aura:unescapedHtml value="{!v.descriptionQuestion3}"/>
+					</div>
+				</div>                
+				<div class="media-column-block">
+					<div class="media-column-block__media">
+						<!--[if IE 9]><video style="display: none;"><![endif]-->
+						<img src="{!v.AWSUrl+v.image900_452Url4}" media="(min-width: 741px)" class="pic"><img srcset="{!v.AWSUrl+v.image740_372Url4}" alt=""/></img>
+						<!--[if IE 9]></video><![endif]-->
+					</div>
+					<div class="media-column-block__content">
+						<h2 class="media-column-block__heading">{!v.titleQuestion4}</h2>
+						<aura:unescapedHtml value="{!v.descriptionQuestion4}"/>
+					</div>
+				</div>                
+				<div class="media-column-block">
+                	<div class="media-column-block__media">
+                    	<!--[if IE 9]><video style="display: none;"><![endif]-->
+                    	<img src="{!v.AWSUrl+v.image900_452Url5}" media="(min-width: 741px)" class="pic"><img srcset="{!v.AWSUrl+v.image740_372Url5}" alt=""/></img>
+                    	<!--[if IE 9]></video><![endif]-->
+                	</div>                    
+                	<div class="media-column-block__content">
+                    	<h2 class="media-column-block__heading">{!v.titleQuestion5}</h2>
+						<aura:unescapedHtml value="{!v.descriptionQuestion5}"/>
+					</div>
+				</div>               
+             
+			</div>
+   	 	</div><!-- .section -->
+	</div>
+</aura:component>

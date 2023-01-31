@@ -1,0 +1,8 @@
+.THIS {
+    padding: 0px;
+    margin-bottom: 50px;
+}
+
+.THIS .media-column-blocks--alternate .media-column-block{
+    flex-direction: row;
+}

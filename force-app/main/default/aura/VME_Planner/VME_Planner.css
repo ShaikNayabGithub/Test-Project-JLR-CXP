@@ -1,0 +1,144 @@
+.THIS table tbody tr td {
+        font-size: 12px;
+        vertical-align: baseline;
+}
+.THIS .sliderIconCss{
+    padding-top: .5rem;
+    width: 1%!important;
+}
+.THIS .container-outer {
+        overflow: scroll;
+        width: 100%;
+        min-height: 255px !important;
+        height: 255px;
+}
+.THIS .slds-slider__range {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 75%;
+        background: transparent;
+        border-radius: .125rem;
+    }
+
+/*Slidee CSS begin*/
+
+.THIS .slds-slider-label__label{
+    display: none;
+}
+.THIS .slds-slider-label__range{
+    display: none;
+}
+.THIS .slds-slider__value{
+    display: none;
+}
+
+/*Slider CSS end*/
+.THIS .container-inner {
+        width: 150%;
+        padding: 1%;
+}
+
+.THIS .dropDown-padding {
+        padding: 0% 0.5% 0% 0%;
+        max-width: 16%;
+}
+
+.THIS .dropDown-padding_x-small {
+        padding: 0% 2% 0% 0%;
+        /*max-width: 10%;*/
+}
+
+.THIS .dropDown-paddingButton {
+        padding: 1.5rem 0rem 0rem 0rem;
+        max-width: 15%;
+}
+
+.THIS .smallColumn {
+        max-width: 11%;
+        width: 12%;
+}
+
+.THIS .slds-dropdown-trigger .slds-dropdown {
+        z-index: 10 !important;
+        max-height: 200px;
+}
+
+.THIS .tableHeader {
+        word-break: break-word;
+        background-color: #b3b3b3;
+}
+
+.THIS .backGroundColourRed {
+        background: #f7aba6;
+}
+
+.THIS .backGroundColourGreen {
+        background: #acd878;
+}
+
+.THIS .backGroundColourGrey {
+        background: #c3c3c3;
+}
+.THIS .boxText {
+  color: #000000;
+  font-weight: bolder;
+}
+
+.THIS .colourCss svg {
+        fill: #4caf50;
+}
+
+.THIS td {
+        text-align: center;
+}
+
+.THIS th {
+        text-align: left;
+}
+
+.THIS .vmePlanner{
+        flex: 0 1 8%;
+        min-width: 0;
+}
+
+.THIS .paginationSpan {
+        background-color: #3F51B5;
+        border-radius: 50%;
+}
+.THIS .focusPage {
+        color : white;
+}
+.THIS .selected{
+    color:orange;
+}
+
+.THIS .container-outer700 {
+        overflow: scroll;
+        width: 100%;
+        min-height: 20em !important;
+        height: 20em;
+}
+.THIS .container-outer800 {
+        overflow: scroll;
+        width: 100%;
+        min-height: 30em!important;
+        height: 30em;
+}
+.THIS .container-outer900 {
+        overflow: scroll;
+        width: 100%;
+        min-height: 40em !important;
+        height: 40em;
+}
+.THIS .container-outer1000 {
+        overflow: scroll;
+        width: 100%;
+        min-height: 50em !important;
+        height: 50em;
+}
+
+/*Removing Record per page label modal*/
+.THIS .label-hidden > label {
+    display: none;
+}

@@ -1,0 +1,7 @@
+<design:component>
+	<design:attribute name="showCheckStock" label="Check Stock List View" description="The list view to direct to for Check Stock" />
+    <design:attribute name="showTradeIn" label="Trade In List View" description="The list view to direct to for Trade In" />
+    <design:attribute name="showServiceVehicle" label="Service Vehicle List View" description="The list view to direct to for Service Vehicle" />
+    <design:attribute name="showHandoverRDA" label="Handover RDA List View" description="The list view to direct to for Handover/RDA" />
+    <design:attribute name="showFleetAndBusiness" label="Fleet and Business List View" description="The list view to direct to for Fleet &amp; Business" />
+</design:component>

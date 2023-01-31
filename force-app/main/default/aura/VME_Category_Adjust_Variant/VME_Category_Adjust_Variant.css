@@ -1,0 +1,104 @@
+.THIS .ModalCss{
+    max-width: 70rem !important;
+    width:95% !important;
+   /* overflow-y: scroll !important;*/
+}
+.THIS .endButtonCss{
+	padding-left: 18%!important;
+    /*padding-top: 21%;*/
+}
+.THIS .splitButtonCss{
+	margin-top: 3%!important; 
+    margin-left: 18%;
+}
+.THIS .paraCss{
+	text-align: center;
+    font-size: large;
+}
+.THIS .SizeCss{
+    padding-left: 9%!important;
+}
+.THIS .slds-p-left_x-large {
+    padding-left: 1.8rem!important;
+}
+/*.THIS .modal-backdrop {
+    visibility: hidden !important;
+       z-index: 1040 !important;
+}
+.THIS .modal.in {
+    background-color: rgba(0,0,0,0.5);
+}
+
+.THIS.modal-dialog {
+    margin: 2px auto;
+    z-index: 1100 !important;
+}*/
+.THIS .ButtonRightCss{
+    padding-top: 1%;
+    padding-bottom: 1%;
+ 
+}
+.THIS .paddingEditButtonCss {
+    padding-left: 40% !important;
+    padding-bottom: 2% !important;
+    padding-top: 10%  !important;
+}
+
+.THIS .paddingAdjustButtonCss{
+    padding-left: 25% !important;
+}
+.THIS .BaseEndBtnCss{
+    padding-left: 18%;
+    margin-left: 23%;
+    padding-right: 22%;
+    margin-bottom: 2%;
+    margin-top: 20%;
+}
+.THIS .BaseReviseBtnCss{
+padding-left: 17%;
+    margin-left: 23%;
+    padding-right: 16%;
+}
+.THIS .firstColCss{
+        margin-left: 4%;
+        width: 18%!important;
+}
+.THIS .colCss{
+    width: 19%!important;
+}
+.THIS .configueButtonCss{
+   padding-left: 12%;
+    margin-left: 23%;
+    padding-right: 19%;
+}
+
+.THIS .endOtherBtnCss{
+   padding-left: 11%;
+    margin-left: 23%;
+    padding-right: 28%;
+    margin-bottom: 2%;
+    margin-top: 2%;
+}
+.THIS .endOtherSchemeBtnCss{
+   padding-left: 14%;
+    margin-left: 23%;
+    padding-right: 25%;
+    margin-bottom: 2%;
+    margin-top: 20%;
+}
+
+.THIS .showRetailerCss{
+      margin-left: 23%;
+    margin-top: 8%;
+    
+}
+.THIS .reviseotherBtnCSS{
+   padding-left: 11%;
+    margin-left: 23%;
+    padding-right: 21%;
+
+}
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}

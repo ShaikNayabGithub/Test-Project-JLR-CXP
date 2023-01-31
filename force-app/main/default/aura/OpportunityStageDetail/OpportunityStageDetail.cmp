@@ -1,0 +1,30 @@
+<aura:component controller="OpportunityStageDetailController" implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="saved" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="fieldsList" type="String[]" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:dependency resource="markup://force:showToast" type="EVENT" />
+    <aura:handler event="force:showToast" action="{!c.doInit}" />
+	<aura:handler event="force:refreshView" action="{!c.doInit}" />
+	
+    <lightning:notificationsLibrary aura:id="notifLib" />
+
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+   
+    <aura:if isTrue="{!v.fieldsList.length >0}">
+	    <lightning:recordEditForm onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}" recordId="{!v.recordId}" objectApiName="Opportunity">
+        	<lightning:layout multipleRows="true">
+            		<aura:iteration items="{!v.fieldsList}" var="fieldName">
+                	    <lightning:layoutItem padding="around-small" size="6"><lightning:inputField fieldName="{!fieldName}" /></lightning:layoutItem>
+                	</aura:iteration>
+			</lightning:layout>
+    	    <div style="width:100%;text-align:right">
+        	    <lightning:button disabled="{!v.disabled}" variant="brand" type="submit" name="save" label="{!$Label.c.Save}" />
+            </div>
+	    </lightning:recordEditForm>
+    </aura:if>
+     
+</aura:component>

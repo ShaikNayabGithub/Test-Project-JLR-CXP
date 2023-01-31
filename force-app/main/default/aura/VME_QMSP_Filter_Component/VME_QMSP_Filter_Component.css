@@ -1,0 +1,37 @@
+.THIS .customIcon div{
+    vertical-align: top !important;
+}
+/*.THIS .slds-dropdown .slds-dropdown-trigger{
+    max-height: 90%;
+
+}*/
+
+/*.THIS .slds-dropdown .slds-dropdown-trigger .slds-dropdown-trigger_click .slds-is-open{
+    max-height: 40px !important;
+    height:50px !important;
+}*/
+.THIS .paddingCss{
+	padding-top: 1.8% !important;
+	padding-left: 11px !important; 
+	/*padding-left: 1% !important;*/
+}
+.THIS .paddingLeftCss{
+	padding-left: 15px !important;
+}
+.THIS .slds-dropdown-trigger .slds-dropdown {
+   max-height: 200px;
+    overflow: auto;
+}
+.THIS .slds-spinner_container {
+    position: fixed!important;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9050;
+    background-color: rgba(255, 255, 255, 0.75);
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .2s ease,visibility 0s;
+    transition-delay: 0s,.3s;
+}

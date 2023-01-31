@@ -1,0 +1,598 @@
+<aura:component controller="FinanceContractController"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:html tag="style">
+        .slds-modal__container {
+        width : 60% !important;
+        max-width : 60% !important;
+        height : 99% !important;
+        max-height : 99% !important;
+        }
+    </aura:html>
+    
+    <aura:attribute name="cont" type="Contract" default="{ 'sobjectType': 'Contract'}"/>
+    <aura:attribute name="contlkp" type="Contract" default="{ 'sobjectType': 'Contract'}"/>
+    <aura:attribute name="selectedFinRec" type="sObject" default="{}"/>
+    <aura:attribute name="selectedCurrFinRec" type="sObject" default="{}"/>
+    <aura:attribute name="selectedFinanceType" type="sObject" default="{}"/>
+    <aura:attribute name="selectedProductType" type="sObject" default="{}"/>
+    <aura:attribute name="currentVehicleBrand" type="sObject" default="{}"/>
+    <aura:attribute name="currentVehicle" type="sObject" default="{}"/>
+    <aura:attribute name="currVehicleVal" type="sObject" default="{}"/>
+    <aura:attribute name="FinContWrap" type="FinanceContractWrapper"/>
+    <aura:attribute name="contractStatusList" type="List"/>
+    <aura:attribute name="productTypeList" type="List"/>
+    <aura:attribute name="productCentralList" type="List"/>
+    <aura:attribute name="subventionList" type="List"/>
+    <aura:attribute name="subventionTypeList" type="List"/>
+    <aura:attribute name="languageList" type="List"/>
+    <aura:attribute name="genderList" type="List"/>
+    <aura:attribute name="financeTypeList" type="List"/>
+    <aura:attribute name="financeSourcingChanneList" type="List"/>
+    <aura:attribute name="financierList" type="List"/>
+    <aura:attribute name="userRegion" type="String"/>
+    <aura:attribute name="countryCode" type="String"/>
+    <c:FinanceContractHelper aura:id="finContHelperId"/>
+    <aura:attribute name="financeRenewalList" type="List" default="[
+                                                                   {'label': 'Yes', 'value': 'Yes'},
+                                                                   {'label': 'No', 'value': 'No'}
+                                                                   ]"/>
+    <aura:attribute name="salutationList" type="List"/>
+    
+    <aura:attribute name="fchName" type="String" />
+    <aura:attribute name="financeRenewal" type="String" />
+    <aura:attribute name="finRefHelpText" type="String" />
+    <aura:attribute name="fchCheck" type="boolean" default="false"/>
+    <!-- added for CXPD-2365 : Contract Attributes Feedback -->
+    <aura:attribute name="disableContractMandatory" type="boolean" default = "true"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="contractnumber" type="String" />
+    <aura:attribute name="contractId" type="String" />
+    <aura:attribute name="brandValue" type="String" default="null" />
+    <aura:attribute name="fchShowCls" type="String" default="slds-show" />
+    <aura:attribute name="fchHideCls" type="String" default="slds-hide" />
+    <aura:attribute name="isNonIndiaUser" type="Boolean" default="false" />
+    <aura:attribute name="endDate" type="Date"/>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner alternativeText="Loading" aura:id="mySpinner" variant="brand" size="large"/>
+    </aura:if>
+    <aura:handler name="FinanceContractEvent" event="c:FinanceContractEvent" action="{!c.handleComponentEvent}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <div aura:id="toggle1">
+        <center><img src="{!$Resource.CXP_logo_lightning_home_page}"/><br/><hr/><div class="slds-card slds-text-heading_large">"{!$Label.c.Finance_New_Finance_Contract}"</div></center>
+        <lightning:accordion aura:id="accordion" activeSectionName="custInfo">
+            <lightning:accordionSection name="custInfo" label="{!$Label.c.Finance_Customer_Information}">
+                <div class="slds-form" role="list">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem"></div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <span><lightning:input aura:id="FCHCheckId" type="checkbox" onchange="{!c.handlecheckBoxChange}" label="{!$Label.c.Finance_Tick_if}" name="FCHCheck" checked="{!v.fchCheck}"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <center><div class="slds-text-heading_medium">"{!$Label.c.Finance_Account_Opportunity}"</div></center><br/>
+                                <div class="slds-form-element__control">
+                                    <center><b>{!v.FinContWrap.accName}</b>&nbsp;&nbsp;({!v.FinContWrap.accType})</center>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <center><div class="slds-text-heading_medium">"{!$Label.c.Finance_Finance_Contract_Holder}"</div></center><br/>
+                                <div class="slds-form-element__control">
+                                    <span><center><b>{!v.fchName}</b>&nbsp;&nbsp;({!v.FinContWrap.accType})</center></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <legend style="margin-left: 129px;"><center><span class="slds-truncate" title="Customer Information" data-aura-rendered-by="128:629;a">"{!$Label.c.Finance_Contact_Information}"</span></center></legend>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <legend style="margin-left: 129px;"><center><span class="slds-truncate" title="Customer Information" data-aura-rendered-by="128:629;a">"{!$Label.c.Finance_Contact_Information}"</span></center></legend>
+                        </div>
+                    </div><br/><br/>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <aura:if isTrue="{!v.disableContractMandatory}">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:combobox aura:id="fieldValid" name="Salutation" label="{!$Label.c.Finance_Contract_Salutation}" options="{! v.salutationList }" value="{!v.FinContWrap.salutation}" onchange="{!c.handleChange}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                            </aura:if>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <aura:if isTrue="{!v.disableContractMandatory}">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <div class="{!v.fchShowCls}"><br/><lightning:formattedText class="fchStyle slds-text-heading_small"  value="{!v.cont.Salutation__c}" /></div>
+                                    <lightning:combobox class="{!v.fchHideCls}" aura:id="fieldValid" label="Salutation" options="{! v.salutationList }" value="{!v.cont.Salutation__c}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                            </aura:if>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <aura:if isTrue="{!v.disableContractMandatory}">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" name="firstName" label="{!$Label.c.Finance_First_Name}" value="{!v.FinContWrap.firstName}" onchange="{!c.handleChange}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                            </aura:if>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <aura:if isTrue="{!v.disableContractMandatory}">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <div class="{!v.fchShowCls}"><br/><lightning:formattedText class="fchStyle slds-text-heading_small"  value="{!v.cont.FCH_First_Name__c}" /></div>
+                                    <lightning:input class="{!v.fchHideCls}" aura:id="fieldValid" label="First Name" value="{!v.cont.FCH_First_Name__c}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                            </aura:if>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" name="lastName" onchange="{!c.handleChange}" label="{!$Label.c.Finance_Last_Name}" value="{!v.FinContWrap.lastName}" required="true" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <div class="{!v.fchShowCls}"><br/><lightning:formattedText class="fchStyle slds-text-heading_small"  value="{!v.cont.FCH_Last_name__c}" /></div>
+                                    <lightning:input class="{!v.fchHideCls}" aura:id="fieldValid" name="finLName" label="Last Name"  value="{!v.cont.FCH_Last_name__c}" required="true" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" onchange="{!c.handleChange}" type="email" label="Email" name="finEmail" value="{!v.FinContWrap.email}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field" messageWhenTypeMismatch="Please enter valid email" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <div class="{!v.fchShowCls}"><br/><lightning:formattedText class="fchStyle slds-text-heading_small"  value="{!v.cont.FCH_Email__c}" /></div>
+                                    <lightning:input class="{!v.fchHideCls}" aura:id="fieldValid" type="email" label="Email" name="email2" value="{!v.cont.FCH_Email__c}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field" messageWhenTypeMismatch="Please enter valid email" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" onchange="{!c.handleChange}" type="tel" label="{!$Label.c.Finance_Phone}"  name="finPhone" value="{!v.FinContWrap.phone}" required="{OR( !v.isNonIndiaUser,!v.disableContractMandatory)}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <div class="{!v.fchShowCls}"><br/><lightning:formattedText class="fchStyle slds-text-heading_small"  value="{!v.cont.FCH_Phone__c}" /></div>
+                                    <lightning:input class="{!v.fchHideCls}" aura:id="fieldValid" type="tel" label="Phone"  name="phone1" value="{!v.cont.FCH_Phone__c}"  required="{OR( !v.isNonIndiaUser,!v.disableContractMandatory)}" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" onchange="{!c.handleChange}" type="tel" label="{!$Label.c.Finance_Mobile}"  name="finMobile" value="{!v.FinContWrap.mobile}" required="{!v.isNonIndiaUser}" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <div class="{!v.fchShowCls}"><br/><lightning:formattedText class="fchStyle slds-text-heading_small"  value="{!v.cont.FCH_Mobile__c}" /></div>
+                                    <lightning:input class="{!v.fchHideCls}" aura:id="fieldValid" type="tel" label="Mobile"  name="phone4" value="{!v.cont.FCH_Mobile__c}" required="{!v.isNonIndiaUser}" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div aura:id="contSectionId" class="slds-hide">
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem"></div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <div class="slds-form-element__control">
+                                        <lightning:combobox aura:id="fchFieldValid" value="{!v.FinContWrap.language}" required="true" label="Language" placeholder="Select Language" options="{! v.languageList }" messageWhenValueMissing="Please Complete this field" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem"></div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <div class="slds-form-element__control">
+                                        <lightning:combobox aura:id="fchFieldValid" value="{!v.FinContWrap.gender}" required="true" fieldLevelHelp="Populate - Improves Marketing Communications" label="Gender" placeholder="Select Gender" options="{! v.genderList }" messageWhenValueMissing="Please Complete this field" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </lightning:accordionSection>
+            <lightning:accordionSection name="addInfo" label="{!$Label.c.Finance_Address_Information}">
+                <div class="slds-form" role="list">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing slds-form-element_1-col">
+                                <div class="slds-form-element__control">
+                                    <lightning:inputAddress
+                                                            aura:id="billingAddress" 
+                                                            addressLabel="{!$Label.c.Finance_Billing_Information}"
+                                                            streetLabel="{!$Label.c.Finance_Street}"
+                                                            cityLabel="{!$Label.c.Finance_City}"
+                                                            countryLabel="{!$Label.c.Finance_Country}"
+                                                            provinceLabel="{!$Label.c.Finance_Province_State}"
+                                                            postalCodeLabel="{!$Label.c.Finance_PostalCode}"
+                                                            street="{!v.FinContWrap.acc.BillingStreet}"
+                                                            city="{!v.FinContWrap.acc.BillingCity}"
+                                                            province="{!v.FinContWrap.acc.BillingState}"
+                                                            country="{!v.FinContWrap.acc.BillingCountry}"
+                                                            postalCode="{!v.FinContWrap.acc.BillingPostalCode}"
+                                                            showAddressLookup="true"
+                                                            />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </lightning:accordionSection>
+            <lightning:accordionSection name="extContInfo" label="{!$Label.c.Finance_Exising_Contract_Inforamtion}">
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing slds-form-element_1-col">
+                            <div class="slds-form-element__control">
+                                <lightning:combobox aura:id="fieldValid" value="{!v.financeRenewal}" label="{!$Label.c.Financial_FS_Renewal}" placeholder="Select Finance Renewal" options="{! v.financeRenewalList }" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <c:CustomLookup objectAPIName="Finance_service_provider__c" searchtype="Partner" fieldName="Finance_Service_Dealer_With_Market__c" IconName="standard:people" selectedRecord="{!v.selectedCurrFinRec}" label="{!$Label.c.Finance_Existing_Financial_Service_Partner}" region="{!v.userRegion}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing slds-form-element_1-col">
+                            <div class="slds-form-element__control">
+                                <lightning:input aura:id="fieldValid" type="number" value="{!v.cont.Existing_Contract_Term_months__c}" label="{!$Label.c.Finance_Existing_Contract_Term_months}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <aura:if isTrue="{!v.userRegion == 'IN'}">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing slds-form-element_1-col">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" value="{!v.cont.Existing_Finance_Reference__c}" label="Existing Finance Reference" />
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing slds-form-element_1-col">
+                            <div class="slds-form-element__control">
+                                <c:CustomLookup objectAPIName="Vehicle_Specification__c" fieldName="Name" brandValue="{!v.brandValue}" searchtype="VehicleBrand" IconName="custom:custom67" selectedRecord="{!v.currentVehicleBrand}" label="{!$Label.c.Finance_Current_Vehicle_Brand}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <div aura:id="vehicleNameId" class="slds-form-element slds-hide slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <c:CustomLookup objectAPIName="Vehicle_Specification__c" fieldName="Name" brandValue="{!v.brandValue}" searchtype="Vehicle" IconName="custom:custom67" selectedRecord="{!v.currentVehicle}" label="Current Vehicle"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </lightning:accordionSection>
+            <lightning:accordionSection name="contrInfo" label="{!$Label.c.Finance_Contract_Information}">
+                <aura:if isTrue="{!v.userRegion == 'IN'}">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:combobox aura:id="fieldValid" value="{!v.cont.Financier_Name__c}" required="true" label="Financier Name" placeholder="Select Financier Name" options="{! v.financierList }" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <c:CustomLookup objectAPIName="Contract_Field_Data__c"  fieldName="Name" searchtype="Contact_Data"  IconName="standard:people" fieldType="Finance Type" selectedRecord="{!v.selectedFinanceType}" label="Finance Type" countryCode="{!v.countryCode}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aura:if>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <lightning:input aura:id="fieldValid" label="{!$Label.c.Finance_Financial_Reference}"  name="Finance_Reference" value="{!v.cont.Finance_Reference__c}" fieldLevelHelp="{!v.finRefHelpText}" />  
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <aura:if isTrue="{!v.userRegion != 'IN'}">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing slds-form-element_1-col">
+                                <div class="slds-form-element__control">
+                                    <c:CustomLookup region="{!v.userRegion}" objectAPIName="Finance_service_provider__c" searchtype="Partner" fieldName="Finance_Service_Dealer_With_Market__c" IconName="standard:people" selectedRecord="{!v.selectedFinRec}" label="{!$Label.c.Finance_Financial_Service_Partner}"/>
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <label class="slds-form-element__label" style="margin-right: 0.2rem;">{!$Label.c.Finance_Contract_Onwner}</label>
+                                <div><b>{!v.FinContWrap.currUserName}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <label class="slds-form-element__label" style="margin-right: 0.2rem;">{!$Label.c.Finance_Opportunity}</label>
+                                <div><b>{!v.FinContWrap.oppName}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <lightning:combobox disabled="true" value="Initial Contract" label="{!$Label.c.Finance_Contract_Status}" options="{! v.contractStatusList }"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <label class="slds-form-element__label" style="margin-right: 0.2rem;">VIN</label><lightning:helptext  content="Vehicle should be added on the Opportunity" />
+                                <div><b>{!v.FinContWrap.vin}</b></div>
+                                <!-- <lightning:input aura:id="fieldValid" name="VIN" label="VIN" value="{!v.FinContWrap.vin}" required="{!v.FinContWrap.isWon}" messageWhenValueMissing="Please Complete this field"/> -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <c:CustomLookup objectAPIName="Contract_Field_Data__c"  fieldName="Name" searchtype="Contact_Data"  IconName="standard:people" fieldType="Product Type" selectedRecord="{!v.selectedProductType}" label="{!$Label.c.Finance_Product_type}" countryCode="{!v.countryCode}"/>
+                                <!-- <lightning:combobox aura:id="fieldValid" value="{!v.cont.Product_Type__c}" label="Product Type" placeholder="Select Product type" options="{! v.productTypeList }" required="true" messageWhenValueMissing="Please Complete this field" /> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <aura:if isTrue="{!v.userRegion != 'IN'}">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:combobox aura:id="fieldValid" value="{!v.cont.Finance_Product_Central__c}" label="{!$Label.c.Finance_Product_Sub_Type}" placeholder="Select Product Central" options="{! v.productCentralList }"/>
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <lightning:combobox value="{!v.cont.JLR_Subvention__c}" label="{!$Label.c.Finance_Subvention}" placeholder="Select Subvention" options="{! v.subventionList }"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <lightning:combobox value="{!v.cont.JLR_Subvention_Type__c}" label="{!$Label.c.FInance_Subvention_Type_Value}" placeholder="Select Subvention Type" options="{! v.subventionTypeList }"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aura:if isTrue="{!v.userRegion != 'IN'}">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <!-- <lightning:input aura:id="fieldValid" type="number" name="Financed_Amount" label="{!$Label.c.Finance_Financed_Amount}" value="{!v.cont.Amount_Financed__c}" step=".01" formatter="currency" required="true" messageWhenValueMissing="Please Complete this field"/> -->
+                                    <!-- included condition for required flag as part of CXPD-2365 : Contract Attributes Feedback. Contract information is not mandatory for Korea market -->
+                                    <lightning:input aura:id="fieldValid" type="number" name="Financed_Amount" label="{!$Label.c.Finance_Financed_Amount}" value="{!v.cont.Amount_Financed__c}" step=".01" formatter="currency" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" type="number" name="Transactional_Price" label="{!$Label.c.Finance_Transactional_Price}" value="{!v.cont.Invoice_Price__c}" step=".01" formatter="currency" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" type="number" name="Down_Payment" label="{!$Label.c.Finance_Down_Payment}" value="{!v.cont.Deposit__c}" step=".01" formatter="currency" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" type="number" name="Ballon_Buyback" label="{!$Label.c.Finance_Balloon_RV_or_Buybact}" value="{!v.cont.GMFV_Balloon__c}" step=".01" formatter="currency" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <aura:set attribute="else">
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <div class="slds-form-element__control">
+                                        <lightning:input aura:id="fieldValid" type="number" name="Financed_Amount" label="Financed Amount" value="{!v.cont.Amount_Financed__c}" step=".01" formatter="currency" required="true" messageWhenValueMissing="Please Complete this field"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <div class="slds-form-element__control">
+                                        <lightning:input aura:id="fieldValid" type="number" name="Down_Payment" label="{!$Label.c.Finance_Down_Payment}" value="{!v.cont.Deposit__c}" step=".01" formatter="currency" required="true" messageWhenValueMissing="Please Complete this field"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </aura:set>
+                </aura:if>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__control">
+                                    <label class="slds-form-element__label" style="margin-right: 0.2rem;">{!$Label.c.Finance_Terms_months}</label>
+                                    <lightning:input aura:id="fieldValid" name="input1" type="number" value="{!v.cont.ContractTerm}" onchange="{!c.handleDateChange}" variant="label-hidden" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <lightning:input aura:id="fieldValid" type="number" name="Monthly_Installment" label="{!$Label.c.Finance_Monthly_Payment_Installment}" value="{!v.cont.Instalment_Amount__c}" step=".01" formatter="currency" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <lightning:input aura:id="fieldValid" onchange="{!c.handleDateChange}" type="Date" value="{!v.cont.StartDate}" name="input1" label="{!$Label.c.Finance_Start_Date}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <label class="slds-form-element__label" style="margin-right: 0.2rem;">{!$Label.c.Finance_End_Date}</label>
+                            <div class="slds-form-element__control">
+                                {!v.cont.EndDate} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form__row">
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <div class="slds-form-element__control">
+                                <lightning:input aura:id="fieldValid" type="number"  step="0.01"  value="{!v.cont.APR__c}" name="Interest_Rate" label="{!$Label.c.Finance_Interest_Rate_Annual}" formatter="percent-fixed" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field" />
+                            </div>
+                        </div>
+                    </div>
+                    <aura:if isTrue="{!v.userRegion != 'IN'}">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" label="{!$Label.c.Finance_Total_Contract_Mileage_KM}" name="input1" type="number" value="{!v.cont.Total_Contract_Mileage__c}" required="{!v.disableContractMandatory}" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                        <aura:set attribute="else">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <div class="slds-form-element__control">
+                                        <lightning:combobox aura:id="fieldValid" value="{!v.cont.Loan_Sourcing__c}" required="true" label="Loan Sourcing" placeholder="Select Loan Sourcing" options="{!v.financeSourcingChanneList}" messageWhenValueMissing="Please Complete this field" />
+                                    </div>
+                                </div>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <aura:if isTrue="{!v.userRegion == 'IN'}">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" type="Date" value="{!v.cont.First_EMI_Due_Date__c}" name="input1" label="First EMI Due Date" required="true" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="fieldValid" type="Date" value="{!v.cont.Last_EMI_Due_Date__c}" name="input1" label="Last EMI Due Date" required="true" messageWhenValueMissing="Please Complete this field" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aura:if>
+            </lightning:accordionSection> 
+        </lightning:accordion>
+        <div class="slds-align_absolute-center" style="height:5rem">
+            <lightning:button variant="destructive" onclick="{! c.closeModal }" label="{!$Label.c.Cancel}" />
+            <lightning:button variant="Success" label="{!$Label.c.Save}" onclick="{! c.createContract }"/>
+        </div>
+    </div>
+    <div aura:id="toggle2">
+        <center style="margin-top: 150px;"><h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!v.message}</h2>
+            <br/> <lightning:button variant="Brand" onclick="{! c.closeModal }" label="Ok" /></center>
+    </div>
+    <div aura:id="togglePopupId" class="slds-hide">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_small slds-hyphenate">Select Finance Contact Contract</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" style="height: 300px;position: relative;" id="modal-content-id-1">
+                    <div aura:id="toggle4" class="slds-form-element__control">
+                        <label class="slds-form-element__label" style="margin-right: 0.2rem;">Finance Contract Holder</label>
+                        <force:inputField aura:id="finaccountLookup" value="{!v.contlkp.FCH_Finance_contract_holder_Account__c}"/>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral" 
+                                      label="Cancel"
+                                      title="Cancel"
+                                      onclick="{! c.closeSelectionPopup }"/>
+                    <lightning:button variant="brand" 
+                                      label="Select"
+                                      title="Select"
+                                      onclick="{! c.proceedSelectionPopup }"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+    <div aura:id="financeConfPopup" class="slds-hide">
+        <c:FinanceContractConfimrationPopup contractNumber="{!v.contractnumber}"/>
+    </div>
+</aura:component>

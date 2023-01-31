@@ -1,0 +1,118 @@
+<aura:component implements="force:hasRecordId,force:hasSObjectName,lightning:isUrlAddressable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" controller="GPC_ConsentManagementController">
+
+    <aura:attribute name="consentOptions" type="List" />
+
+    <!--<aura:attribute name="selectedOption" type="String" default="By Channel" />
+    <aura:attribute name="managementOptions" type="List" default="['By Channel', 'By Data Use Purpose &amp; Channel']" />-->
+    <aura:attribute name="legalBasisList" type="List" />
+    <aura:attribute name="userName" type="String" />
+    <aura:attribute name="editAccess" type="Boolean" default="false" />
+    <aura:attribute name="activeSections" type="List" default="['Email','Telephone','SMS','Post']" />
+    <!--<aura:attribute name="channelOnlyList" type="List" />   
+    <aura:attribute name="dontMarket" type="Boolean" default="false" />
+    <aura:attribute name="originalDontMarket" type="Boolean" default="false" />-->
+    <aura:attribute name="loading" type="Boolean" default="false" />
+
+    <!-- Error Handler Attributes -->
+    <aura:attribute name="message" type="String" description="Dynamic parameter value for component 'ui:message'"/> 
+    <aura:attribute name="messageSeverity" type="String" default="info" description="Dynamic parameter value for component 'ui:message'"/>
+    <aura:attribute name="isMessageSet" type="boolean" default="false" description="Controls the dynamic display of component 'ui:message'"/> 
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <lightning:card>
+       <aura:set attribute="actions">
+        <lightning:buttonIcon title="Refresh/Reset" variant="border-filled" alternativeText="Refresh/Reset" iconName="utility:refresh" onclick="{! c.doInit }" />
+            <!--<lightning:buttonGroup>
+                <aura:iteration items="{!v.managementOptions}" var="option">
+                    <lightning:button label="{!option}" value="{!option}" variant="{!if(v.selectedOption == option, 'brand', 'neutral')}" onclick="{! c.handleManagementOption }" />
+                </aura:iteration>
+            </lightning:buttonGroup>-->
+        </aura:set>
+
+        <aura:if isTrue="{! v.isMessageSet}">
+            <div class="slds-m-horizontal_x-small">
+                <ui:message severity="{!v.messageSeverity}" closable="true">
+                    {!v.message}
+                </ui:message>
+            </div>
+        </aura:if>
+
+        <aura:if isTrue="{! v.loading }">
+            <lightning:spinner size="large" />
+        </aura:if> 
+        
+        <!--<div style="float:right">
+            <lightning:layout >
+                <lightning:layoutItem padding="around-small">
+                    <lightning:input type="checkbox" label="Don’t Market" name="dontMarket" checked="{!v.dontMarket}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small">
+                    <lightning:button label="Confirm" title="Confirm" disabled="{!v.dontMarket == v.originalDontMarket}" onclick="{!c.handleDontMarket}" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>-->
+        <lightning:tabset>
+            <aura:iteration items="{!v.legalBasisList}" var="legalBasisOption">
+                <lightning:tab label="{!legalBasisOption.name}" id="{!legalBasisOption.id}">
+                    <div class="slds-m-left_small slds-m-bottom_small">
+                        <p>{!legalBasisOption.description}</p>
+                        <lightning:button name="{!legalBasisOption.id}" variant="brand-outline" label="{!$Label.c.GPC_OptIn_All_Topics}" title="{!$Label.c.GPC_OptIn_All_Topics}" disabled="{!or(!v.editAccess, legalBasisOption.optInTotal == legalBasisOption.totalOptions)}" onclick="{!c.handleOptAllChannelsIn}" />
+                        <lightning:button name="{!legalBasisOption.id}" variant="destructive-text" label="{!$Label.c.GPC_OptOut_All_Topics}" title="{!$Label.c.GPC_OptOut_All_Topics}" disabled="{!or(!v.editAccess, legalBasisOption.optOutTotal == legalBasisOption.totalOptions)}" onclick="{!c.handleOptAllChannelsOut}" />
+                    </div>
+                    <lightning:accordion allowMultipleSectionsOpen="true" activeSectionName="{!v.activeSections }" class="slds-box slds-box_xx-small slds-theme_shade">
+                        <aura:iteration items="{!legalBasisOption.channelList}" var="channel" indexVar="i">
+                            <aura:if isTrue="{!channel.pursposeList.length > 0}">
+                                <lightning:accordionSection name="{!channel.name}" label="{!channel.label}" >
+                                    <aura:set attribute="actions">
+                                        <lightning:button name="{!legalBasisOption.id+'_'+channel.name}" variant="brand-outline" label="{!$Label.c.GPC_OptIn_Channel_Topics}" title="{!$Label.c.GPC_OptIn_Channel_Topics}" disabled="{!or(!v.editAccess, channel.optInTotal == channel.pursposeList.length)}" onclick="{!c.handleOptAllIn}" />
+                                        <lightning:button name="{!legalBasisOption.id+'_'+channel.name}" variant="destructive-text" label="{!$Label.c.GPC_Optout_Channel_Topics}" title="{!$Label.c.GPC_Optout_Channel_Topics}" disabled="{!or(!v.editAccess, channel.optOutTotal == channel.pursposeList.length)}" onclick="{!c.handleOptAllOut}" />
+                                    </aura:set>
+                                    <aura:set attribute="body">
+                                        <table class="slds-table slds-table_bordered slds-no-row-hover slds-m-top_large">
+                                            <thead>
+                                                <tr class="slds-text-title_caps">
+                                                    <th scope="col"><div title="{!$Label.c.GPC_Data_Use_Purpose}">{!$Label.c.GPC_Data_Use_Purpose}</div></th>
+                                                    <th scope="col"><div title="{!$Label.c.GPC_Consent}">{!$Label.c.GPC_Consent}</div></th>
+                                                    <aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+                                                        <th scope="col"><div title="{!$Label.c.GPC_Capture_Date}">{!$Label.c.GPC_Capture_Date}</div></th>
+                                                        <th scope="col"><div title="{!$Label.c.GPC_Capture_By}">{!$Label.c.GPC_Capture_By}</div></th>
+                                                    </aura:if>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <aura:iteration items="{!channel.pursposeList}" var="purpose" indexVar="j">
+                                                    <tr>
+                                                        <td scope="row" style="white-space: normal">
+                                                            <b><ui:outputText  value="{!purpose.name}"/></b>
+                                                            <p>{!purpose.description}</p>
+                                                        </td>
+                                                        <td scope="row" style="white-space: normal;">
+                                                            <lightning:radioGroup name="{!legalBasisOption.id+'_'+channel.name+'_'+purpose.id}"
+                                                                                    options="{! v.consentOptions }"
+                                                                                    value="{! purpose.consent }"
+                                                                                    type="button" onchange="{! c.handleConsentChange }" 
+                                                                                    disabeld="{!!v.editAccess}" style="width:160px" />
+                                                        </td>
+                                                        <aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+                                                            <td scope="row" style="white-space: normal">
+                                                                <ui:outputText  value="{!purpose.captureDate}"/>
+                                                            </td>
+                                                            <td scope="row" style="white-space: normal">
+                                                                <ui:outputText  value="{!purpose.captureBy}"/>
+                                                            </td>
+                                                        </aura:if>
+                                                    </tr>        
+                                                </aura:iteration>                          
+                                            </tbody>
+                                        </table>      
+                                    </aura:set>
+                                </lightning:accordionSection>
+                            </aura:if>
+                        </aura:iteration>
+                    </lightning:accordion>
+                </lightning:tab>
+            </aura:iteration>
+        </lightning:tabset>
+    </lightning:card>
+</aura:component>

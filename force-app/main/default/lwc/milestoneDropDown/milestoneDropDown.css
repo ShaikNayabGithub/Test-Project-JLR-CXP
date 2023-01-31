@@ -1,0 +1,10 @@
+/**
+ * Created by caleb on 30/01/2020.
+ */
+
+.jlr-is-clickable{
+    cursor:pointer;
+}
+.jlr-errors {
+    color: red;
+}

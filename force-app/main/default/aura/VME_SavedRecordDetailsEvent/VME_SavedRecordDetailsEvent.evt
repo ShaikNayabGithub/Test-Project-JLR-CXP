@@ -1,0 +1,11 @@
+<aura:event type="COMPONENT" description="Event template" >
+	<aura:attribute name="recordDetails" type="VME_Campaign__c" />
+	<aura:attribute name="CompId" type="String" />
+	<aura:attribute name="RetailerId" type="String" />
+	<aura:attribute name="newSchemeId" type="String" />
+   	<aura:attribute name="revisedScheme" type="VME_Schemes__c" />
+	<aura:attribute name="VMEParameter" type="String" />
+	<aura:attribute name="containBaseScheme" type="boolean" />
+	<aura:attribute name="filters" type="boolean" />
+	<aura:attribute name="schemeApplicable" type="String"  />
+</aura:event>

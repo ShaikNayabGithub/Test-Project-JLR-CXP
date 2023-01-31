@@ -1,0 +1,179 @@
+<aura:component
+	controller="VerifyContactDataController"
+	implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+	access="global"
+>
+	<aura:attribute name="accountObj" type="Account" default="{'sobjectType' : 'Account'}" />
+    <aura:handler name="init" value="this" action="{!c.handleOnload}" />
+    <aura:handler event="force:refreshView" action="{!c.handleOnload}" />
+    
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>Personal Contact Information</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <table class="slds-table slds-table_resizable-cols slds-no-row-hover slds-table_cell-buffer slds-table_bordered" role="grid">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Contact Field">Contact Field</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Value">Value</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Last Verified">Last Verified Date</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Verified By (user name)">Verified By (user name)</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title=""></div>
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody class="slds-form_horizontal slds-form">
+                    <!-- Phone -->
+                    <tr aria-selected="false" class="slds-hint-parent">
+                        <td role="gridcell">
+                            Phone
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Phone }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Phone_Verified_Date__c }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Phone_Verified_By__r.Name }
+                        </td>
+                        <td role="gridcell">
+                            <aura:if isTrue="{!empty(v.accountObj.Phone_Verified_Date__c)}">
+                                <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>
+                    
+                    <!-- Mobile -->
+                    <tr aria-selected="false" class="slds-hint-parent">
+                        <td role="gridcell">
+                            Mobile
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.PersonMobilePhone }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Mobile_Verified_Date__c }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Mobile_Verified_By__r.Name }
+                        </td>
+                        <td role="gridcell">
+                            <aura:if isTrue="{!empty(v.accountObj.Mobile_Verified_Date__c)}">
+                                <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>
+                    
+                    <!-- HomePhone -->
+                    <tr aria-selected="false" class="slds-hint-parent">
+                        <td role="gridcell">
+                            Home Phone
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.PersonHomePhone }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.HomePhone_Verified_Date__c }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.HomePhone_Verified_By__r.Name }
+                        </td>
+                        <td role="gridcell">
+                            <aura:if isTrue="{!empty(v.accountObj.HomePhone_Verified_Date__c)}">
+                                <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>
+                    
+                    <!-- PersonEmail -->
+                    <tr aria-selected="false" class="slds-hint-parent">
+                        <td role="gridcell">
+                            Person Email
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.PersonEmail }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.PersonEmail_Verified_Date__c }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.PersonEmail_Verified_By__r.Name }
+                        </td>
+                        <td role="gridcell">
+                            <aura:if isTrue="{!empty(v.accountObj.PersonEmail_Verified_Date__c)}">
+                                <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>
+                    
+                    <!-- Email2 -->
+                    <tr aria-selected="false" class="slds-hint-parent">
+                        <td role="gridcell">
+                            Email 2
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Email2__pc }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Email2_Verified_Date__c }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Email2_Verified_By__r.Name }
+                        </td>
+                        <td role="gridcell">
+                            <aura:if isTrue="{!empty(v.accountObj.Email2_Verified_Date__c)}">
+                                <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>
+                    
+                    <!-- Email3 -->
+                    <tr aria-selected="false" class="slds-hint-parent">
+                        <td role="gridcell">
+                            Email 3
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Email3__pc }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Email3_Verified_Date__c }
+                        </td>
+                        <td role="gridcell">
+                            {! v.accountObj.Email3_Verified_By__r.Name }
+                        </td>
+                        <td role="gridcell">
+                            <aura:if isTrue="{!empty(v.accountObj.Email3_Verified_Date__c)}">
+                                <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+</aura:component>

@@ -1,0 +1,117 @@
+<aura:component controller="HomePageIconDash_LC_Controller" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="dashStats" type="Object" />
+    <aura:attribute name="salesmanager" type="boolean" default="false" />
+    <aura:registerEvent name="appEvent" type="c:HomeApplicationEvent"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="isFollowupsEnable" type="boolean" />
+    <aura:attribute name="isOverDuesEnable" type="boolean" />
+    <aura:attribute name="isSoldNewVehiclesEnable" type="boolean" />
+    <aura:attribute name="isTestDrivesEnable" type="boolean" />
+    <aura:attribute name="isApprovalsEnable" type="boolean" />
+    <aura:attribute name="isLeadsEnable" type="boolean" />
+    <aura:attribute name="showOppsXDaysOld" type="String"  />
+    <aura:attribute name="isOpportunityEnable" type="boolean" />
+
+    <!-- lightning:helptext added as per CXPD-1284, CXPD-1319 -->
+    <lightning:layout multipleRows="true">    
+        <aura:if isTrue="{!v.isLeadsEnable}">
+            <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            	<table>
+                	<tr>
+                        <td width="25%" class="innercell" style="text-align:right"><img src="{!$Resource.MENAHeaderIcons + '/Home/Icon_Assigned_Opportunities.png'}" class="imageClass" title="{!$Label.c.New_Assigned_Leads_Helptext}" alt="{!$Label.c.New_Leads}" /></td>
+                    	<td width="25%" class="innercell" style="text-align:center"><span class="stat">{!v.dashStats.Leads}</span></td>
+                    	<td class="innercell" style="text-align:left">
+                            <a id="{!$Label.c.New_Leads}" onclick="{!c.eventFire}">{!$Label.c.New_Leads}</a>&nbsp;<lightning:helptext content="{!$Label.c.New_Assigned_Leads_Helptext}"/>
+                        </td>
+                	</tr>
+            	</table>
+        	</lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.isOpportunityEnable}">
+            <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            	<table>
+                	<tr>
+                        <td width="25%" class="innercell" style="text-align:right"><img src="{!$Resource.MENAHeaderIcons + '/Home/Icon_Assigned_Opportunities.png'}" class="imageClass" title="{!$Label.c.New_Assigned_Opportunities_Helptext}" alt="{!$Label.c.New_Assigned_Opportunities}" /></td>
+                    	<td width="25%" class="innercell" style="text-align:center"><span class="stat">{!v.dashStats.AssignedOpportunities}</span></td>
+                    	<td class="innercell" style="text-align:left">
+                            <a id="{!$Label.c.New_Assigned_Opportunities}" onclick="{!c.eventFire}">{!$Label.c.New_Assigned_Opportunities}</a>&nbsp;<lightning:helptext content="{!$Label.c.New_Assigned_Opportunities_Helptext}"/>
+                        </td>
+                	</tr>
+            	</table>
+        	</lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.isFollowupsEnable}">
+        	<lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+	            <table>
+    	            <tr>
+                        <td width="25%" class="innercell" style="text-align:right"><img src="{!$Resource.MENAHeaderIcons + '/Home/Icon_FollowUpsToday.png'}" class="imageClass" title="{!$Label.c.Follow_Ups_Today_Helptext}" alt="{!$Label.c.Follow_Ups_Today}" /></td>
+                        <td width="25%" class="innercell" style="text-align:center"><span class="stat">{!v.dashStats.FollowUps}</span></td>
+                        <td class="innercell" style="text-align:left">
+                            <a id="{!$Label.c.Follow_Ups_Today}" onclick="{!c.eventFire}">{!$Label.c.Follow_Ups_Today}</a>&nbsp;<lightning:helptext content="{!$Label.c.Follow_Ups_Today_Helptext}"/>
+                        </td>
+	                </tr>
+    	        </table>
+        	</lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.isOverDuesEnable}">
+            <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            	<table>
+	                <tr>
+    	        		<td width="25%" class="innercell" style="text-align:right"><img src="{!$Resource.MENAHeaderIcons + '/Home/Icon_OverdueFollowUps.png'}" class="imageClass" title="{!$Label.c.Overdue_Follow_Ups_Helptext}" alt="{!$Label.c.Follow_Ups_Overdue}" /></td>
+        	            <td width="25%" class="innercell" style="text-align:center"><span class="{!if(v.dashStats.OverdueFollowUps>0, 'stat statred', 'stat')}">{!v.dashStats.OverdueFollowUps}</span></td>
+                        <td class="innercell" style="text-align:left">
+                            <a id="{!$Label.c.Follow_Ups_Overdue}" onclick="{!c.eventFire}">{!$Label.c.Follow_Ups_Overdue}</a>&nbsp;<lightning:helptext content="{!$Label.c.Overdue_Follow_Ups_Helptext}"/>
+                        </td>
+                	</tr>
+	            </table>
+    	    </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.isSoldNewVehiclesEnable}">
+            <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+	            <table>
+    	            <tr>
+                        <td width="25%" class="innercell" style="text-align:right"><img src="{!$Resource.MENAHeaderIcons + '/Home/Icon_SoldNewVehicle.png'}" class="imageClass" title="{!$Label.c.New_Vehicles_Sold_Helptext}" alt="{!$Label.c.New_Vehicles_Sold}" /></td>
+                        <td width="25%" class="innercell" style="text-align:center"><span class="stat">{!v.dashStats.NewSales}/{!v.dashStats.SalesTarget}</span></td>
+                        <td class="innercell" style="text-align:left">
+                            <aura:if isTrue="{!v.salesmanager}">
+                                <a id="salestargetboard" onclick="{!c.gotoTargets}">{!$Label.c.New_Vehicles_Sold}</a>&nbsp;<lightning:helptext content="{!$Label.c.New_Vehicles_Sold_Helptext}"/>
+                        		<aura:set attribute="else">{!$Label.c.New_Vehicles_Sold}&nbsp;<lightning:helptext content="{!$Label.c.New_Vehicles_Sold_Helptext}"/></aura:set>
+                            </aura:if>
+                        </td>
+	                </tr>
+    	        </table>
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.isTestDrivesEnable}">
+            <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+	            <table>
+    	            <tr>
+                        <td width="25%" class="innercell" style="text-align:right"><img src="{!$Resource.MENAHeaderIcons + '/Opportunity/Icon_LeadSource.png'}" class="imageClass" title="{!$Label.c.Booked_Test_Drives_Helptext}" alt="{!$Label.c.Booked_Test_Drives}" /></td>
+                        <td width="25%" class="innercell" style="text-align:center"><span class="stat">{!v.dashStats.totalTestDrives}/{!v.dashStats.TestDriveTarget}</span></td>
+                        <td class="innercell" style="text-align:left">
+                            <aura:if isTrue="{!v.salesmanager}">
+                                <a id="testdrivetargetboard" onclick="{!c.gotoTargets}">{!$Label.c.Booked_Test_Drives}</a>&nbsp;<lightning:helptext content="{!$Label.c.Booked_Test_Drives_Helptext}"/>
+                                <aura:set attribute="else">{!$Label.c.Booked_Test_Drives}&nbsp;<lightning:helptext content="{!$Label.c.Booked_Test_Drives_Helptext}"/></aura:set>
+                            </aura:if>
+                        </td>
+	                </tr>
+    	        </table>
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!and(v.salesmanager, v.isApprovalsEnable)}">
+            <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="6" largeDeviceSize="2" padding="around-small">
+            	<table>
+                    <tr>
+                        <td width="25%" class="innercell" style="text-align:right"><lightning:icon iconName="action:log_event" size="small" title="{!$Label.c.Approvals_Helptext}" alternativeText="{!$Label.c.Approvals}" /></td>
+                        <td width="25%" class="innercell" style="text-align:center"><span class="stat">{!v.dashStats.Approvals}</span></td>
+                        <td class="innercell" style="text-align:left">
+                            <a id="{!$Label.c.Approvals}" onclick="{!c.gotoApprovals}">{!$Label.c.Approvals}</a>&nbsp;<lightning:helptext content="{!$Label.c.Approvals_Helptext}"/>
+                        </td>
+                    </tr>
+                </table>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+    
+</aura:component>

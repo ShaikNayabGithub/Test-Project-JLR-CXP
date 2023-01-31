@@ -1,0 +1,83 @@
+<aura:component controller="VME_Category_Adjustment_Ctrl">
+  <aura:attribute name="isOpenSchemeComponent" type="Boolean" />
+  <aura:attribute name="VMESchemeObj" type="VME_Schemes__c" default="{'VME_Start_Date__c':' ','VME_Retailer__c':' ','VME_InActive__c' :false,'VME_Campaign__c':' ','CurrencyIsoCode':' ','VME_Scheme_Type__c':' '}" />
+  <aura:attribute name="tempVMESchemeObj" type="VME_Schemes__c" />
+  <aura:attribute name="minDate" type="Date" />
+  <aura:attribute name="parentVMECampaign" type="VME_Campaign__c" />
+  <aura:attribute name="nameOfRetailer" type="String" default=" " />
+   <aura:attribute name="parameter" type="String"/>
+  <aura:attribute name="userCurrency" type="String" />
+  <aura:registerEvent name="adjustVariantEvt" type="c:VME_OpenAdjustVariantModel" />
+  <aura:registerEvent name="cancelAdjustVariantEvt" type="c:VME_OpenAdjustVariantModel" />
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+  <aura:if isTrue="{!v.isOpenSchemeComponent}">
+    <!--###### MODAL BOX Start######-->
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <!-- ###### MODAL BOX HEADER Start ######-->
+        <header class="slds-modal__header">
+          <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+          <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Revise L3 VME Campaign</h2>
+        </header>
+        <!--###### MODAL BOX BODY Part Start######-->
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+          <div class="slds-align--absolute-center" style="position: relative;">
+            <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide" style="position: fixed !important;" />
+          </div>
+          <lightning:layout>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="4">
+              <lightning:input label="L3 Start Date" required="true" type="date" variant="standard" min="{!v.minDate}" value="{!v.VMESchemeObj.VME_Start_Date__c}" messageWhenValueMissing="Please fill the required field." max="{!v.parentVMECampaign.VME_End_Date__c}" aura:id="requiredField"></lightning:input>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="4">
+              <lightning:input label="L3 End Date" required="true" type="date" variant="standard" value="{!v.VMESchemeObj.VME_End_Date__c}" min="{!v.VMESchemeObj.VME_Start_Date__c}" max="{!v.parentVMECampaign.VME_End_Date__c}" messageWhenValueMissing="Please fill the required field." messageWhenRangeUnderflow="End date can't be less than to Start date" aura:id="requiredField"></lightning:input>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+          </lightning:layout>
+          <lightning:layout>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="4">
+              <lightning:input label="{!'P/U Amount ('+v.userCurrency+')'}" type="number" variant="standard" value="{!v.VMESchemeObj.VME_PU_Amount__c}" required="true" aura:id="requiredField" formatter="currency" maxlength="16" step="0.01" min="1" messageWhenValueMissing="Please fill the required field." messageWhenRangeUnderflow="P/U Amount can't be less than 1" messageWhenStepMismatch="Please fill up to two digit after decimal"></lightning:input>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="4">
+               <lightning:input label="Volume" type="number" variant="standard" value="{!v.VMESchemeObj.VME_Volume__c}" required="true" aura:id="requiredField"  maxlength="16" step="0" min="1" messageWhenValueMissing="Please fill the required field." messageWhenRangeUnderflow="Volume can't be less than 1" messageWhenStepMismatch="Please fill up to two digit after decimal"></lightning:input>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+          </lightning:layout>
+          <lightning:layout>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="4">
+              <lightning:input label="JLR Share" messageWhenValueMissing="Please fill the required field." type="number" variant="standard" value="{!v.VMESchemeObj.VME_JLR_Share__c}" required="true" aura:id="requiredField" max="100" messageWhenRangeOverflow="JLR share can't be greater than 100%"></lightning:input>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="4">
+           <!--    <lightning:input label="Retailer Contribution" messageWhenValueMissing="Please fill the required field." type="number" variant="standard" disabled ="true" formatter="currency"></lightning:input> -->
+                  <aura:if isTrue="{!v.tempVMESchemeObj.VME_Scheme_Type__c!='Base'}">
+                <lightning:input label="Retailer Name" disabled="true" type="text" variant="standard" value="{!v.nameOfRetailer}"></lightning:input>
+              </aura:if>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1"></lightning:layoutItem> 
+          </lightning:layout>
+          <lightning:layout>
+            <lightning:layoutItem size="1"></lightning:layoutItem>
+            <lightning:layoutItem size="4">
+                 <aura:if isTrue="{!v.tempVMESchemeObj.VME_Scheme_Type__c!='Base'}">
+              <lightning:textarea label="L3 Description" type="text" variant="standard" value="{!v.VMESchemeObj.VME_Level_3_Description__c}" required="{!if(v.tempVMESchemeObj.VME_Scheme_Type__c!='Base',true,false)}" disabled="{!if(v.tempVMESchemeObj.VME_Scheme_Type__c=='Base',true,false)}" aura:id="requiredField" messageWhenValueMissing="Please fill the required field."></lightning:textarea>
+            </aura:if>
+            </lightning:layoutItem>
+         
+          </lightning:layout>
+          <!--###### MODAL BOX FOOTER Part Start ######-->
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning:button variant="brand" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+          <lightning:button variant="brand" label="Save and Close" title="Save and Close" onclick="{! c.saveAndClose }" />
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+    <!--###### MODAL BOX Part END Here ######-->
+  </aura:if>
+</aura:component>

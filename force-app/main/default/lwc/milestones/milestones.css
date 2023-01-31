@@ -1,0 +1,119 @@
+/**
+ * Created by GrantMillgate-EasyTe on 14/10/2019.
+ */
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Regular.ttf');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Bold.ttf');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/CXP/s/sfsites/c/resource/FontGoogleWorkSans/WorkSans-Medium.ttf');
+    font-style: normal;
+    font-weight: 500;
+}
+
+body{
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+h1 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    text-align: left;
+    font-weight: 700;
+    font-size: 22px;
+    padding: 10px;
+}
+
+h2 {
+    text-transform: uppercase;
+    font-family: Work Sans,Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    color: #444444;
+    letter-spacing: 0;
+    line-height: 24px;
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+.jlr-milestones-container-wrapper {
+    margin: 10px;
+    background-color: #fff;    
+    box-shadow: 3px 3px #eee;
+    border: 1px solid #eee;
+    width: 310px;
+    float: right;
+}
+
+.jlr-milestones-container-wrapper .milestones-title{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+.jlr-milestones-container-wrapper .milestones-title h2{
+    font-weight: bold;
+    text-align: left;
+    padding-left: 20px;
+}
+
+
+.jlr-button-cell{
+    text-transform: uppercase;
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+    width: 80%;
+    cursor: pointer;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+.jlr-button-cell:first{
+    margin-top: 25px;
+}
+.jlr-button-cell:last{
+    margin-bottom: 25px;
+}
+
+.jlr-button-cell-inverse-colours{
+    background-color: #000;
+    color: white;
+}
+
+.jlr-spacer-vertical{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top-color: #E0E0E0;
+    border-bottom-style: solid;
+    border-top-width: thin;
+}
+
+.jlr-modal-container{
+    max-width: 400px;
+}
+
+.jlr-modal-background{
+    height : 100%;
+}
+
+.jlr-is-clickable{
+    cursor: pointer;
+}

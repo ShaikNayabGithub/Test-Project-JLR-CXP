@@ -1,0 +1,7 @@
+<aura:component controller="FinanceContractController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:method name="getPicklistValues" action="{!c.getPicklistValues}"> 
+        <aura:attribute name="objectName" type="String"/> 
+        <aura:attribute name="fieldName" type="String" /> 
+        <aura:attribute name="callback" type="Function" />
+    </aura:method>
+</aura:component>

@@ -1,0 +1,450 @@
+<!--
+- Created by GrantMillgate-EasyTe on 16/10/2019.
+-->
+
+<!----------------------------------------- Opportunity Spa -------------------------------------------->
+<template>
+    <template if:true={hasBeenRdad}>
+        <div class="slds-scoped-notification slds-media slds-media_center slds-theme_success" role="status">
+            <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-utility-success" title="success">
+                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                        <use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#success"></use>
+                    </svg>
+                    <span class="slds-assistive-text">success</span>
+                </span>
+            </div>
+            <div class="slds-media__body">
+                <p>
+                    Opportunity has been successfully RDA’d - Click <a href="javascript:void(0);" onclick={rdaClicked}>here</a> to view {rdaName}. You can no longer make any changes to this opportunity.
+                </p>
+            </div>
+        </div>
+    </template>
+
+    <div class="jlr-spa-wrapper" style="min-width: 960px; max-width: 1200px">
+
+        <!-- **************************** HEADER ****************************************************  -->
+        <div class="slds-grid slds-wrap jlr-opportunity-header">
+            <div class="slds-grid slds-wrap jlr-fill-width">
+
+
+                <!-- left summary -->
+                <div class="slds-col slds-size--6-of-12 slds-p-right--large">
+                    <!-- Row 1 -->
+                    <div class="slds-grid slds-wrap jlr-opportunity-header-row-lr">
+                        <div class="big-item">
+                            <div class="big-item-label">Opportunity</div>
+                            <div class="big-item-value">{opportunityName} - <strong><em>{opportunityStage}</em></strong></div>
+                        </div>
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                        <div class="big-item slds-col slds-size--4-of-12">
+                            <div class="big-item-label">Brand</div>
+                            <div class="big-item-value">{selectedProductBrand}</div>
+                        </div>
+                        <div class="big-item slds-col slds-size--8-of-12">
+                            <div class="big-item-label">Model</div>
+                            <div class="big-item-value">{selectedProductModel}</div>
+                        </div>
+                    </div>
+                    <!-- Row 3 -->
+                    <div class="slds-grid slds-wrap jlr-opportunity-header-row slds-border--top slds-border--bottom">
+                        <div class="slds-col slds-size--4-of-12">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Lead Source</span></div>
+                            <div class="slds-col slds-size--12-of-12 jlr-header-value"><span>{leadSource}</span></div>
+                        </div>
+                        <div class="slds-col slds-size--4-of-12">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Enquiry Type</span></div>
+                            <div class="slds-col slds-size--12-of-12 jlr-header-value"><span>{enquiryType}</span></div>
+                        </div>
+                        <div class="slds-col slds-size--4-of-12">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Initial Sales Type</span></div>
+                            <div class="slds-col slds-size--12-of-12 jlr-header-value"><span>{initialSalesType}</span></div>
+                        </div>
+                    </div>
+                    <template if:false={isPersonAccount}>
+                        <!-- Row 4 -->
+                        <div class="slds-grid slds-wrap jlr-opportunity-header-row slds-border_bottom">
+                            <div class="slds-col slds-size--4-of-12">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Primary Contact</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable" onclick={handelContactNameClick}><span>{primaryContactName}</span></div>
+                            </div>
+                            <div class="slds-col slds-size--8-of-12">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Account</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable" onclick={handleAccountNameClick}><span>{accountName}</span></div>
+                            </div>
+                        </div>
+                        <!-- Row 5 -->
+                        <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                            <div class="slds-col slds-size--4-of-12">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Mobile</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value"><span>{contactPhoneMobile}</span></div>
+                            </div>
+                            <div class="slds-col slds-size--8-of-12">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Email</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value">
+                                    <p class="slds-truncate slds-size--1-of-1" title={contactEmail}>
+                                        <a href={mailToLink}>{contactEmail}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={isPersonAccount}>
+                        <!-- Row 4 -->
+                        <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                            <div class="slds-col slds-size--4-of-12">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Account</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable" onclick={handleAccountNameClick}><span>{accountName}</span></div>
+                            </div>
+                            <div class="slds-col slds-size--4-of-12">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Mobile</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value"><span>{contactPhoneMobile}</span></div>
+                            </div>
+                            <div class="slds-col slds-size--4-of-12">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Email</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value">
+                                    <p class="slds-truncate slds-size--1-of-1" title={contactEmail}>
+                                        <a href={mailToLink}>{contactEmail}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <!-- Row 6 -->
+                    <div class="slds-grid slds-wrap jlr-opportunity-header-row slds-border--top slds-border--bottom">
+                        <div class="slds-col slds-size--4-of-12">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Stage</span></div>
+                            <div class="slds-col slds-size--12-of-12 jlr-header-value"><span>{opportunityStage}</span></div>
+                        </div>
+                        <div class="slds-col slds-size--4-of-12">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Closed date</span></div>
+                            <div class="slds-col slds-size--12-of-12 jlr-header-value"><span>{OpportunityClosedDate}</span></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right summary -->
+                <div class="slds-col slds-size--6-of-12">
+                    <!-- Row 1 -->
+                    <div class="slds-grid slds-wrap jlr-opportunity-header-row-r">
+                        <div class="slds-col slds-size--3-of-12 jlr-button-cell jlr-sale-type-new"
+                             onclick={handleSaleType_NewClick}>New
+                        </div>
+                        <div class="slds-col slds-size--3-of-12 jlr-button-cell jlr-sale-type-demo"
+                             onclick={handleSaleType_DemoClick}>Demo
+                        </div>
+                        <div class="slds-col slds-size--3-of-12 jlr-button-cell jlr-sale-type-apo"
+                             onclick={handleSaleType_ApoClick}>APO
+                        </div>
+                        <div class="slds-col slds-size--3-of-12 jlr-button-cell jlr-sale-type-pre-owned"
+                             onclick={handleSaleType_PreOwnedClick}>Pre-Owned
+                        </div>
+                    </div>
+                    <div class="slds-border_left">
+                        <!-- Row 2 -->
+                        <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Name</span></div>
+                            <template if:true={selectedProductName}>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value"
+                                     style="float: left; width: auto;">
+                                    <span>{selectedProductName}</span>
+                                </div>
+                                <div style="margin-top: 1.5px; margin-left: 4px" if:false={isClosed}>
+                                    <lightning-icon style="cursor: pointer;" onclick={handelProductDeleted} icon-name="utility:close" size="x-small" title='Click to Remove'></lightning-icon>
+                                </div>
+                            </template>
+                        </div>
+                        <!-- Row 2 -->
+                        <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Asset</span></div>
+                            <template if:true={selectedAssetName}>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable"
+                                     style="float: left; width: auto;"
+                                     onclick={handleSelectedAssetVinClick}>
+                                    <span>{selectedAssetName}</span>
+                                </div>
+                                <div style="margin-top: 1.5px; margin-left: 4px" if:false={hasBeenRdad}>
+                                    <lightning-icon style="cursor: pointer;" onclick={handelAssetDeleted} icon-name="utility:close" size="x-small" title='Click to Remove'></lightning-icon>
+                                </div>
+                            </template>
+                        </div>
+                        <!-- Row 4 -->
+                        <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                            <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Service Plan</span></div>
+                            <template if:true={selectedProductServicePlan}>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable"
+                                     style="float: left; width: auto; max-width: 95%;"
+                                     onclick={handleSelectedServicePlanClick}>
+                                    {selectedProductServicePlan} ({selectedProductServicePlanType})
+                                </div>
+                                <template if:false={hasBeenRdad}>
+                                    <div style="margin-top: 1.5px; margin-left: 4px" if:false={hasExistingOrComplimentaryServicePlan}>
+                                        <lightning-icon style="cursor: pointer;" onclick={handelServicePlanDeleted} icon-name="utility:close" size="x-small" title='Click to Remove'></lightning-icon>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                        <!-- Row 5 -->
+                        <template if:true={corporatePartner}>
+                            <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                                <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span>Corporate Partner</span></div>
+                                <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable">
+                                    {corporatePartner.Name}
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={corporatePartner}>
+                            <template if:false={isPersonAccount}>
+                                <div class="slds-grid slds-wrap jlr-opportunity-header-row">
+                                    <div class="slds-col slds-size--12-of-12 jlr-header-headings"><span> </span></div>
+                                    <div class="slds-col slds-size--12-of-12 jlr-header-value jlr-is-clickable">
+
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ***************************** BODY ******************************************************* -->
+
+        <!-- Body Container -->
+        <div class="slds-grid slds-wrap jlr-opportunity-info">
+
+            <!-- Main Content -->
+            <div class="slds-col slds-size--8-of-12">
+
+                <div class="header-line">
+                    <h1>Vehicle Management</h1>
+                </div>
+                <div class="slds-grid slds-wrap">
+
+                    <!-- Vehicle Selection -->
+                    <!-- Expand / Collapse -->
+                    <div class="slds-col slds-size--1-of-12 ">
+                        <div class="jlr-vehicle-selection-expand-button jlr-pointer"
+                             onclick={handleVehicleSelectionExpand}>
+                            <span><lightning-icon icon-name="utility:add"></lightning-icon></span>
+                        </div>
+                        <div class="jlr-vehicle-selection-collapse-button jlr-pointer jlr-hidden"
+                             onclick={handleVehicleSelectionCollapse}>
+                            <span><lightning-icon icon-name="utility:dash"></lightning-icon></span>
+                        </div>
+                    </div>
+                    <!-- Label -->
+                    <div class="slds-col slds-size--11-of-12 ">
+                        <h1>Vehicle Selector</h1>
+                    </div>
+
+                    <!-- Variant Selector -->
+                    <div class="slds-col slds-size--1-of-12 ">&nbsp;</div>
+                    <div class="slds-col slds-size--11-of-12 ">
+                        <div class="jlr-variant-selector jlr-hidden">
+                            <c-variant-selector
+                                if:true={opportunityId}
+                                opportunity-id={opportunityId}
+                                selected-make-id={selectedMakeId}
+                                selected-model-id={selectedModelId}
+                                selected-model-name={selectedProductModel}
+                                selected-variant-id={selectedVariantId}
+                                onupdate={connectedCallback}>
+                            </c-variant-selector>
+                        </div>
+                    </div>
+
+                    <!-- Asset Selection -->
+                    <template if:true={doShowAssetSelector}>
+                        <!-- Expand / Collapse -->
+                        <div class="slds-col slds-size--1-of-12 ">
+                            <div class="jlr-asset-selection-expand-button jlr-pointer"
+                                 onclick={handleAssetSelectionExpand}>
+                                <span><lightning-icon icon-name="utility:add"></lightning-icon></span>
+                            </div>
+                            <div class="jlr-asset-selection-collapse-button jlr-pointer jlr-hidden"
+                                 onclick={handleAssetSelectionCollapse}>
+                                <span><lightning-icon icon-name="utility:dash"></lightning-icon></span>
+                            </div>
+                        </div>
+
+                        <!-- Label -->
+                        <div class="slds-col slds-size--11-of-12 ">
+                            <h1>Asset Selector</h1>
+                        </div>
+
+                        <!-- Asset Selector -->
+                        <div class="slds-col slds-size--1-of-12">&nbsp;</div>
+                        <div class="slds-col slds-size--11-of-12 ">
+                            <div class="jlr-asset-selector jlr-hidden">
+                                <c-asset-selector
+                                        if:true={opportunityId}
+                                        opportunity-id={opportunityId}
+                                        variant-id={selectedVariantId}
+                                        sale-type={selectedSaleType}
+                                        onupdate={connectedCallback}
+                                        input-disabled={hasBeenRdad}
+                                ></c-asset-selector>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!--START PLANS -->
+                    <template if:true={doShowPlanSelector}>
+                        <!-- Expand / Collapse -->
+                        <div class="slds-col slds-size--1-of-12">
+                            <div class="jlr-plans-expand-button jlr-pointer" onclick={handlePlansExpand}>
+                                <span><lightning-icon icon-name="utility:add"></lightning-icon></span>
+                            </div>
+                            <div class="jlr-plans-collapse-button jlr-pointer jlr-hidden" onclick={handlePlansCollapse}>
+                                <span><lightning-icon icon-name="utility:dash"></lightning-icon></span>
+                            </div>
+                        </div>
+                        <!-- Label -->
+                        <div class="slds-col slds-size--11-of-12 ">
+                            <h1>Service Plan Selector</h1>
+                        </div>
+
+                        <!-- Plans -->
+                        <div class="slds-col slds-size--1-of-12">&nbsp;</div>
+                        <div class="slds-col slds-size--11-of-12">
+                            <div class="jlr-plans jlr-hidden">
+                                <c-service-plan-selector
+                                        corporate-partner={corporatePartner}
+                                        onserviceplanselected={handleServicePlanSelected}
+                                        selected-variant={selectedVariantComplex}
+                                        selected-service-plan-id={selectedServicePlanId}
+                                >
+                                </c-service-plan-selector>
+                            </div>
+
+                        </div>
+                    </template>
+
+                </div>
+                <div class="header-line">
+                    <h1>Utilities</h1>
+                </div>
+                <div class="slds-grid slds-wrap">
+
+                    <!--END PLANS-->
+                    <!-- Expand / Collapse -->
+                    <div class="slds-col slds-size--1-of-12 ">
+                        <div class="jlr-rda-validator-expand-button jlr-pointer"     onclick={handleRDAValidatorExpand}>
+                            <span><lightning-icon icon-name="utility:add"></lightning-icon></span>
+                        </div>
+                        <div class="jlr-rda-validator-collapse-button jlr-pointer jlr-hidden"  onclick={handleRDAValidatorCollapse}>
+                            <span><lightning-icon icon-name="utility:dash"></lightning-icon></span>
+                        </div>
+                    </div>
+                    <!-- Label -->
+                    <div class="slds-col slds-size--11-of-12 ">
+                        <div class="rda-container">
+                            <h1>Check RDA</h1>
+
+                            <div if:true={tickBoolValue}>
+                                <lightning-icon size="small" class="rda-item" icon-name="utility:success" alternative-text="Success!" variant="success"
+                                                title="success variant"></lightning-icon>
+                            </div>
+                            <div if:false={tickBoolValue}>
+                                <lightning-icon size="small" class="rda-item" icon-name="utility:error" alternative-text="Error!" variant="error" title="error variant">
+                                </lightning-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- rda validator -->
+                    <div class="slds-col slds-size--1-of-12 ">&nbsp;</div>
+                    <div class="slds-col slds-size--11-of-12 ">
+                        <div class="jlr-rda-validator jlr-hidden">
+                            <c-opp-validation-table
+
+                                    get-id-from-parent={opportunityId}
+                                    oncalltickevent={tickEvent}
+                                    table-refresh={validationTableRefresh}
+                            >
+                            </c-opp-validation-table>
+                        </div>
+                    </div>
+
+                    <!-- TRADE FORM -->
+                    <!-- Expand / Collapse -->
+                    <div class="slds-col slds-size--1-of-12 ">
+                        <div class="jlr-trade-form-expand-button jlr-pointer"     onclick={handleTradeFormExpand}>
+                            <span><lightning-icon icon-name="utility:add"></lightning-icon></span>
+                        </div>
+                        <div class="jlr-trade-form-collapse-button jlr-pointer jlr-hidden"  onclick={handleTradeFormCollapse}>
+                            <span><lightning-icon icon-name="utility:dash"></lightning-icon></span>
+                        </div>
+                    </div>
+                    <!-- Label -->
+                    <div class="slds-col slds-size--11-of-12 ">
+                        <div class="trade-form-container">
+                            <h1>Trade In Vehicle</h1>
+                        </div>
+                    </div>
+
+                    <!-- trade form -->
+                    <div class="slds-col slds-size--1-of-12 ">&nbsp;</div>
+                    <div class="slds-col slds-size--11-of-12 ">
+                        <div class="jlr-trade-form jlr-hidden">
+                            <c-opportunity-trade-form
+                                    if:true={opportunityId}
+                                    record-id={opportunityId}>
+                            </c-opportunity-trade-form>
+                        </div>
+                    </div>
+
+                    <!-- END TRADE FORM-->
+
+                </div>
+            </div>
+
+
+            <!-- Right Content -->
+            <div class="slds-col slds-size--4-of-12">
+                <!-- Side bar -->
+                <div class="jlr-layout-left-margin-spacer">
+                    <c-milestones
+                            if:true={opportunityId}
+                            opportunity-id={opportunityId}
+                            pricebook-id={pricebook2id}
+                            last-name={nameLast}
+                            selected-variant-id={selectedVariantId}
+                            is-person-account={isPersonAccount}
+                            disabled={hasBeenRdad}
+                            oncorporateaccountupdated={handleCorporateAccountUpdated}
+                            corporate-eligibility-enabled={corporateEligibilityEnabled}
+                            corporate-eligibility-message={corporateEligibilityMessage}
+                            oncallrefreshtableevent={refreshValidationTable}>
+                    </c-milestones>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template if:true={showDeleteConformationBox}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                        <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Delete Confirmation</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    Are you sure you want to remove this item?
+                </div>
+                <footer class="slds-modal__footer">
+                    <button onclick={handelDeleteCancel} class="slds-button slds-button_neutral">No</button>
+                    <button onclick={handelDeleteConformation} class="slds-button slds-button_brand">Yes</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

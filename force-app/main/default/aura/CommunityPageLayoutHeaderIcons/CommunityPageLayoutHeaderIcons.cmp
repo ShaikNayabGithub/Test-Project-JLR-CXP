@@ -1,0 +1,50 @@
+<aura:component implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="simpleRecord" type="Object" />
+    <aura:attribute name="recordType" type="String" default="Campaign" />
+    <aura:attribute name="iconField1" type="String" />
+    <aura:attribute name="iconField2" type="String" />
+    <aura:attribute name="iconField3" type="String" />
+    <aura:attribute name="icon1" type="String" default="utility:broadcast" />
+    <aura:attribute name="icon2" type="String" default="utility:broadcast" />
+    <aura:attribute name="icon3" type="String" default="utility:broadcast" />
+    <aura:attribute name="jlrIconBrand" type="boolean" default="false" />
+    <aura:attribute name="iconFields" type="String[]" default="['Id']" /> <!-- the fields to pull back from the database -->
+    <aura:attribute name="iconNames" type="String[]" /> <!-- the icons to display -->
+    <aura:attribute name="iconValues" type="String[]" /> <!-- the values to display -->
+    <aura:attribute name="communityRecordId" type="String" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.communityRecordId}" mode="VIEW" fields="{!v.iconFields}" targetFields="{!v.simpleRecord}" recordUpdated="{!c.displayValues}" />
+        
+    <lightning:layout>
+        <aura:if isTrue="{!and(v.iconFields[1] != null, v.iconNames[0] != null)}">
+            <lightning:layoutItem size="2" padding="around-small">
+                <span style="padding-right:4px"><lightning:icon iconName="{!v.iconNames[0]}" size="xx-small" /></span>
+                <lightning:formattedText value="{!v.iconValues[1]}" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!and(v.iconFields[2] != null, v.iconNames[1] != null)}">
+            <lightning:layoutItem size="2" padding="around-small">
+                <span style="padding-right:4px"><lightning:icon iconName="{!v.iconNames[1]}" size="xx-small" /></span>
+                <lightning:formattedText value="{!v.iconValues[2]}" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!and(v.iconFields[3] != null, v.iconNames[2] != null)}">
+            <lightning:layoutItem size="2" padding="around-small">
+                <span style="padding-right:4px"><lightning:icon iconName="{!v.iconNames[2]}" size="xx-small" /></span>
+                <lightning:formattedText value="{!v.iconValues[3]}" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!and(v.jlrIconBrand == true, v.simpleRecord.Brand__r.Name == 'Jaguar')}">
+            <lightning:layoutItem size="1" padding="around-small">
+                <img src="{!$Resource.LightningBrandJaguar}" />
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!and(v.jlrIconBrand == true, v.simpleRecord.Brand__r.Name == 'Land Rover')}">
+            <lightning:layoutItem size="1" padding="around-small">
+                <img src="{!$Resource.LightningBrandLandRover}" />
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+    
+</aura:component>

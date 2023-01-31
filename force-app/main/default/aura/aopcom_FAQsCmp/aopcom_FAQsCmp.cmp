@@ -1,0 +1,445 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:EventPaginator" action="{!c.pageChange}"/>
+	<aura:attribute name="page" type="integer" default="1"/>
+    <aura:attribute name="pages" type="integer"/>
+    <aura:attribute name="maxPage" type="integer"/>
+	<aura:attribute name="final" type="Boolean" default="false"/>
+    <aura:attribute name="inicio" type="Boolean" default="true"/>
+	<aura:attribute name="image900_452Url1" type="String" />
+    <aura:attribute name="image740_372Url1" type="String" />
+    <aura:attribute name="titleQuestion1" type="String" />
+    <aura:attribute name="descriptionQuestion1" type="String" />
+    <aura:attribute name="image900_452Url2" type="String" />
+    <aura:attribute name="image740_372Url2" type="String" />
+    <aura:attribute name="titleQuestion2" type="String" />
+    <aura:attribute name="descriptionQuestion2" type="String" />
+    <aura:attribute name="image900_452Url3" type="String" />
+    <aura:attribute name="image740_372Url3" type="String" />
+    <aura:attribute name="titleQuestion3" type="String" />
+    <aura:attribute name="descriptionQuestion3" type="String" />
+    <aura:attribute name="image900_452Url4" type="String" />
+    <aura:attribute name="image740_372Url4" type="String" />
+    <aura:attribute name="titleQuestion4" type="String" />
+    <aura:attribute name="descriptionQuestion4" type="String" />
+    <aura:attribute name="image900_452Url5" type="String" />
+    <aura:attribute name="image740_372Url5" type="String" />
+    <aura:attribute name="titleQuestion5" type="String" />
+    <aura:attribute name="descriptionQuestion5" type="String" />
+	<aura:attribute name="image900_452Url6" type="String" />
+    <aura:attribute name="image740_372Url6" type="String" />  
+	<aura:attribute name="titleQuestion6" type="String" />
+    <aura:attribute name="descriptionQuestion6" type="String" />
+    <aura:attribute name="image900_452Url7" type="String" />
+    <aura:attribute name="image740_372Url7" type="String" />  
+	<aura:attribute name="titleQuestion7" type="String" />
+    <aura:attribute name="descriptionQuestion7" type="String" />
+    <aura:attribute name="image900_452Url8" type="String" />
+    <aura:attribute name="image740_372Url8" type="String" />  
+	<aura:attribute name="titleQuestion8" type="String" />
+    <aura:attribute name="descriptionQuestion8" type="String" />
+    <aura:attribute name="image900_452Url9" type="String" />
+    <aura:attribute name="image740_372Url9" type="String" />  
+	<aura:attribute name="titleQuestion9" type="String" />
+    <aura:attribute name="descriptionQuestion9" type="String" />
+    <aura:attribute name="image900_452Url10" type="String" />
+    <aura:attribute name="image740_372Url10" type="String" />  
+	<aura:attribute name="titleQuestion10" type="String" />
+    <aura:attribute name="descriptionQuestion10" type="String" />
+    <aura:attribute name="image900_452Url11" type="String" />
+    <aura:attribute name="image740_372Url11" type="String" />  
+	<aura:attribute name="titleQuestion11" type="String" />
+    <aura:attribute name="descriptionQuestion11" type="String" />
+    <aura:attribute name="image900_452Url12" type="String" />
+    <aura:attribute name="image740_372Url12" type="String" />  
+	<aura:attribute name="titleQuestion12" type="String" />
+    <aura:attribute name="descriptionQuestion12" type="String" />
+    <aura:attribute name="image900_452Url13" type="String" />
+    <aura:attribute name="image740_372Url13" type="String" />  
+	<aura:attribute name="titleQuestion13" type="String" />
+    <aura:attribute name="descriptionQuestion13" type="String" />
+    <aura:attribute name="image900_452Url14" type="String" />
+    <aura:attribute name="image740_372Url14" type="String" />  
+	<aura:attribute name="titleQuestion14" type="String" />
+    <aura:attribute name="descriptionQuestion14" type="String" />
+    <aura:attribute name="image900_452Url15" type="String" />
+    <aura:attribute name="image740_372Url15" type="String" />  
+	<aura:attribute name="titleQuestion15" type="String" />
+    <aura:attribute name="descriptionQuestion15" type="String" />
+    <aura:attribute name="image900_452Url16" type="String" />
+    <aura:attribute name="image740_372Url16" type="String" />  
+	<aura:attribute name="titleQuestion16" type="String" />
+    <aura:attribute name="descriptionQuestion16" type="String" />
+    <aura:attribute name="image900_452Url17" type="String" />
+    <aura:attribute name="image740_372Url17" type="String" />  
+	<aura:attribute name="titleQuestion17" type="String" />
+    <aura:attribute name="descriptionQuestion17" type="String" />
+    <aura:attribute name="image900_452Url18" type="String" />
+    <aura:attribute name="image740_372Url18" type="String" />  
+	<aura:attribute name="titleQuestion18" type="String" />
+    <aura:attribute name="descriptionQuestion18" type="String" />
+    <aura:attribute name="image900_452Url19" type="String" />
+    <aura:attribute name="image740_372Url19" type="String" />  
+	<aura:attribute name="titleQuestion19" type="String" />
+    <aura:attribute name="descriptionQuestion19" type="String" />
+    <aura:attribute name="image900_452Url20" type="String" />
+    <aura:attribute name="image740_372Url20" type="String" />  
+	<aura:attribute name="titleQuestion20" type="String" />
+    <aura:attribute name="descriptionQuestion20" type="String" />
+    <aura:attribute name="image900_452Url21" type="String" />
+    <aura:attribute name="image740_372Url21" type="String" />  
+	<aura:attribute name="titleQuestion21" type="String" />
+    <aura:attribute name="descriptionQuestion21" type="String" />
+    <aura:attribute name="image900_452Url22" type="String" />
+    <aura:attribute name="image740_372Url22" type="String" />  
+	<aura:attribute name="titleQuestion22" type="String" />
+    <aura:attribute name="descriptionQuestion22" type="String" />
+    <aura:attribute name="image900_452Url23" type="String" />
+    <aura:attribute name="image740_372Url23" type="String" />  
+	<aura:attribute name="titleQuestion23" type="String" />
+    <aura:attribute name="descriptionQuestion23" type="String" />
+    <aura:attribute name="image900_452Url24" type="String" />
+    <aura:attribute name="image740_372Url24" type="String" />  
+	<aura:attribute name="titleQuestion24" type="String" />
+    <aura:attribute name="descriptionQuestion24" type="String" />
+    <aura:attribute name="image900_452Url25" type="String" />
+    <aura:attribute name="image740_372Url25" type="String" />  
+	<aura:attribute name="titleQuestion25" type="String" />
+    <aura:attribute name="descriptionQuestion25" type="String" />
+    <aura:attribute name="next" type="String" />
+    <aura:attribute name="previous" type="String" />
+    <aura:attribute name="AWSUrl" type="String" />
+    
+    <div class="content-wrapper">
+        <div class="section">
+            <div class="media-column-blocks media-column-blocks--alternate">
+               <div class="media-column-block">
+                       <aura:renderIf isTrue="{!v.page == 1}">
+                            <aura:renderIf isTrue="{!v.titleQuestion1 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url1}" ><img srcset="{!v.AWSUrl+v.image740_372Url1}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion1}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion1}"/>
+                                </div>
+                            </aura:renderIf>
+                  		</aura:renderIf>
+               			<aura:renderIf isTrue="{!v.page == 2}">
+                            <aura:renderIf isTrue="{!v.titleQuestion6 !='' }">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url6}" ><img srcset="{!v.AWSUrl+v.image740_372Url6}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion6}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion6}"/>
+                                </div>
+                                <!--<aura:set attribute="else">
+                                     {!v.pages = 1}
+                    			</aura:set>-->
+                            </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 3}">
+                            <aura:renderIf isTrue="{!v.titleQuestion11 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url11}" ><img srcset="{!v.AWSUrl+v.image740_372Url11}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion11}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion11}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+                        <aura:renderIf isTrue="{!v.page == 4}">
+                            <aura:renderIf isTrue="{!v.titleQuestion16 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url16}" ><img srcset="{!v.AWSUrl+v.image740_372Url16}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion16}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion16}"/>
+                                </div>	
+                            </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 5}">
+                            <aura:renderIf isTrue="{!v.titleQuestion21 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url21}" ><img srcset="{!v.AWSUrl+v.image740_372Url21}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion21}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion21}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+                   		<!--[if IE 9]><video style="display: none;"><![endif]-->
+                        <!--[if IE 9]></video><![endif]-->
+                </div>     
+                <div class="media-column-block">
+                        <aura:renderIf isTrue="{!v.page == 1}">
+                            <aura:renderIf isTrue="{!v.titleQuestion2 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url2}" ><img srcset="{!v.AWSUrl+v.image740_372Url2}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion2}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion2}"/>
+                                </div>
+                              </aura:renderIf>
+                  		</aura:renderIf>
+               			<aura:renderIf isTrue="{!v.page == 2}">
+                            <aura:renderIf isTrue="{!v.titleQuestion7 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url7}" ><img srcset="{!v.AWSUrl+v.image740_372Url7}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion7}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion7}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 3}">
+                            <aura:renderIf isTrue="{!v.titleQuestion12 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url12}" ><img srcset="{!v.AWSUrl+v.image740_372Url12}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion12}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion12}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+                        <aura:renderIf isTrue="{!v.page == 4}">
+                            <aura:renderIf isTrue="{!v.titleQuestion17 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url17}" ><img srcset="{!v.AWSUrl+v.image740_372Url17}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion17}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion17}"/>
+                                </div>		
+                            </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 5}">
+                            <aura:renderIf isTrue="{!v.titleQuestion22 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url22}" ><img srcset="{!v.AWSUrl+v.image740_372Url22}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion22}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion22}"/>
+                                </div>
+                                </aura:renderIf>
+						</aura:renderIf>
+                   		<!--[if IE 9]><video style="display: none;"><![endif]-->
+                        <!--[if IE 9]></video><![endif]-->
+                </div> 
+                <div class="media-column-block">
+                        <aura:renderIf isTrue="{!v.page == 1}">
+                            <aura:renderIf isTrue="{!v.titleQuestion3 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url3}" ><img srcset="{!v.AWSUrl+v.image740_372Url3}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion3}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion3}"/>
+                                </div>
+                            </aura:renderIf>
+                  		</aura:renderIf>
+               			<aura:renderIf isTrue="{!v.page == 2}">
+                            <aura:renderIf isTrue="{!v.titleQuestion8 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url8}" ><img srcset="{!v.AWSUrl+v.image740_372Url8}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion8}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion8}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 3}">
+                            <aura:renderIf isTrue="{!v.titleQuestion13 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url13}" ><img srcset="{!v.AWSUrl+v.image740_372Url13}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion13}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion13}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+                        <aura:renderIf isTrue="{!v.page == 4}">
+                             <aura:renderIf isTrue="{!v.titleQuestion18 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url18}" ><img srcset="{!v.AWSUrl+v.image740_372Url18}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion18}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion18}"/>
+                                </div>		
+                             </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 5}">
+                            <aura:renderIf isTrue="{!v.titleQuestion23 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url23}" ><img srcset="{!v.AWSUrl+v.image740_372Url23}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion23}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion23}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+                   		<!--[if IE 9]><video style="display: none;"><![endif]-->
+                        <!--[if IE 9]></video><![endif]-->
+                </div> 
+                
+                <div class="media-column-block">
+                        <aura:renderIf isTrue="{!v.page == 1}">
+                            <aura:renderIf isTrue="{!v.titleQuestion4 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url4}" ><img srcset="{!v.AWSUrl+v.image740_372Url4}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion4}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion4}"/>
+                                </div>
+                                </aura:renderIf>
+                  		</aura:renderIf>
+               			<aura:renderIf isTrue="{!v.page == 2}">
+                             <aura:renderIf isTrue="{!v.titleQuestion9 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url9}" ><img srcset="{!v.AWSUrl+v.image740_372Url9}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion9}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion9}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 3}">
+                             <aura:renderIf isTrue="{!v.titleQuestion14 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url14}" ><img srcset="{!v.AWSUrl+v.image740_372Url14}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion14}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion14}"/>
+                                </div>
+                            </aura:renderIf>
+						</aura:renderIf>
+                        <aura:renderIf isTrue="{!v.page == 4}">
+                            <aura:renderIf isTrue="{!v.titleQuestion19 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url19}" ><img srcset="{!v.AWSUrl+v.image740_372Url19}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion19}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion19}"/>
+                                </div>	
+                            </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 5}">
+                            <aura:renderIf isTrue="{!v.titleQuestion24 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url24}" ><img srcset="{!v.AWSUrl+v.image740_372Url24}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion24}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion24}"/>
+                                </div>
+                           </aura:renderIf>
+						</aura:renderIf>
+                   		<!--[if IE 9]><video style="display: none;"><![endif]-->
+                        <!--[if IE 9]></video><![endif]-->
+                </div>       
+                <div class="media-column-block">
+                        <aura:renderIf isTrue="{!v.page == 1}">
+                            <aura:renderIf isTrue="{!v.titleQuestion5 != ''}">
+                            	<div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url5}" ><img srcset="{!v.AWSUrl+v.image740_372Url5}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion5}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion5}"/>
+                                </div>
+                            </aura:renderIf>
+                  		</aura:renderIf>
+               			<aura:renderIf isTrue="{!v.page == 2}">
+                            <aura:renderIf isTrue="{!v.titleQuestion10 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url10}" ><img srcset="{!v.AWSUrl+v.image740_372Url10}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion10}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion10}"/>
+                                </div>
+                           </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 3}">
+                            <aura:renderIf isTrue="{!v.titleQuestion15 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url15}" ><img srcset="{!v.AWSUrl+v.image740_372Url15}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion15}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion15}"/>
+                                </div>
+                           </aura:renderIf>
+						</aura:renderIf>
+                        <aura:renderIf isTrue="{!v.page == 4}">
+                            <aura:renderIf isTrue="{!v.titleQuestion20 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url20}" ><img srcset="{!v.AWSUrl+v.image740_372Url20}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion20}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion20}"/>
+                                </div>	
+                           </aura:renderIf>
+						</aura:renderIf>
+						<aura:renderIf isTrue="{!v.page == 5}">
+                            <aura:renderIf isTrue="{!v.titleQuestion25 != ''}">
+                                <div class="media-column-block__media">
+                                    <img class="media-container__media-poster" src="{!v.AWSUrl+v.image900_452Url25}" ><img srcset="{!v.AWSUrl+v.image740_372Url25}" alt=""/></img>
+                                </div>                    
+                                <div class="media-column-block__content">
+                                    <h2 class="media-column-block__heading">{!v.titleQuestion25}</h2>
+                                    <aura:unescapedHtml value="{!v.descriptionQuestion25}"/>
+                                </div>
+                           </aura:renderIf>
+						</aura:renderIf>
+                   		<!--[if IE 9]><video style="display: none;"><![endif]-->
+                        <!--[if IE 9]></video><![endif]-->
+                </div>       
+			</div>            
+   	 	</div><!-- .section -->
+        
+
+        <div class="container">
+			<div class="form__form-group text-center">
+				
+                <aura:renderIf isTrue="{!v.inicio}">
+                    <a class="button button--secondary button--center" disabled="true">{!v.previous}</a>
+                    <aura:renderIf isTrue="{!v.final}">
+                         <a class="button button--secondary button--center"  disabled="true">{!v.next}</a>                        
+                    	<aura:set attribute="else">
+                            <a class="button button--secondary button--center" onclick="{!c.nextPage}">{!v.next}</a>
+                        </aura:set>
+                    </aura:renderIf>
+                    <aura:set attribute="else">
+                    <a class="button button--secondary button--center" onclick="{!c.previousPage}">{!v.previous}</a>
+                    <aura:renderIf isTrue="{!v.final}">
+                        <a class="button button--secondary button--center" disabled="true">{!v.next}</a>
+                        <aura:set attribute="else">
+                        	<a class="button button--secondary button--center" onclick="{!c.nextPage}">{!v.next}</a>
+                        </aura:set>
+                    </aura:renderIf>
+                    </aura:set>
+				</aura:renderIf>
+                  
+			</div>
+
+		</div> 
+	</div>
+</aura:component>

@@ -1,0 +1,68 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="ListViewTaskController" >
+	
+   
+
+    <aura:attribute name="taskTitle" type="String" default="Over Due Tasks" />
+     <aura:attribute name="whereQueryProp" type="String" default=" Where Subject = 'Qualification'  " />
+     <aura:attribute name="limitNumProp" type="String" default=" LIMIT 10  " />
+     <aura:attribute name="justMineProp" type="Boolean" default="true" />
+    <aura:attribute name="taskList" type="Object[]" />
+    <aura:attribute name="approvalProcessNames" type="String" default="" />
+    <aura:attribute name="showApprove" type="boolean" default="false" />
+    <aura:attribute name="showReject" type="boolean" default="false" />
+    <aura:attribute name="approvalWorkitem" type="String" />
+    <aura:attribute name="approvalComment" type="String" default="" />
+        <aura:attribute name="spinner" type="boolean" default="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+     <aura:if isTrue="{!v.spinner}">
+                                          <lightning:spinner aura:id="mySpinner" alternativeText="Loading alternative" title="Finding Tasks" />
+    </aura:if>
+    <div style="padding:18px; background-color:#fafafa; width:100%"><span class="slds-text-heading_small">{!v.taskTitle +' (' +v.taskList.length+')'}</span></div>
+	<aura:if isTrue="{!v.taskList.length > 0}">
+     <div class="slds-scrollable_y slds-scrollable_x" style=" overflow:auto; min-height: 10.5rem; height: auto; max-height: 30.5rem;">
+		<table class="slds-table slds-table_bordered" style="width:100%" role="grid">
+            <thead>
+            	<tr style="height:40px; overflow:auto;">
+                    <aura:if isTrue="{!v.justMineProp == false}">
+                     <th aria-label="Owner" aria-sort="ascending" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Owner">Assigned To</span>
+                    </th>
+                    </aura:if>
+                    <th aria-label="Date" aria-sort="ascending" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Date">Due Date</span>
+                    </th>
+                	<th aria-label="Opportunity" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Opportunity">Subject</span>
+                    </th>  
+                    <th aria-label="Requested By" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Requested By">Related to</span>
+                    </th>     
+                    <th aria-label="Comments" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                    	<span title="Comments">Description</span>
+                    </th>
+                    <th aria-label="Action" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col"></th>  
+                </tr>
+            </thead>
+            <tbody  style="overflow:auto;" >
+            	<aura:iteration items="{!v.taskList}" var="tsk">
+                <tr  style="overflow:auto;" aria-selected="false" class="slds-hint-parent" >  
+                    <aura:if isTrue="{!v.justMineProp == false}">
+                     <td  role="gridcell"><div class="slds-cell-wrap" title="{!tsk.Owner.Name}">{!tsk.Owner.Name}</div></td>
+                    </aura:if>
+                	<td  role="gridcell"><div class="slds-truncate" title="{!tsk.ActivityDate}"><lightning:formattedDateTime value="{!tsk.ActivityDate}" year="numeric" month="numeric" day="numeric"                     /> </div></td>                   
+                    <td  role="gridcell"><div class="slds-truncate" title="{!tsk.Subject}"><a href="{!'/CXP/s/task/' + tsk.Id}" onclick="{!c.navigateToRecord}">{!tsk.RecordType.Name} - {!tsk.Subject}</a></div></td>   
+                    <td  role="gridcell"><div class="slds-truncate" title="{!tsk.WhatId}">{!tsk.What.Type} - {!tsk.What.Name}</div></td>   
+                    <td  role="gridcell"><div class="slds-cell-wrap" title="{!tsk.Description}">{!tsk.Description}</div></td>
+                   
+                </tr>
+	            </aura:iteration>
+    	    </tbody>
+    	</table>
+    </div>
+    
+        <aura:set attribute="else">
+        <p class="para"> No Tasks Found</p>
+      
+    </aura:set>
+    </aura:if>
+</aura:component>

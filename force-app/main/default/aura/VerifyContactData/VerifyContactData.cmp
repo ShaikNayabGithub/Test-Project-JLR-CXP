@@ -1,0 +1,145 @@
+<!-- <aura:component implements="force:lightningQuickAction" > -->
+<aura:component
+	controller="VerifyContactDataController"
+	implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+	access="global"
+>
+	<aura:handler name="init" value="this" action="{!c.doInit}" />
+	<aura:attribute name="accountObj" type="Account" default="{'sobjectType' : 'Account'}" />
+    <aura:attribute name="message" type="String" default="" />
+    <aura:attribute name="checkboxMap" type="Map" default="{}"/>
+    
+    <aura:attribute name="IsPhoneVerified" type="boolean" default="false" />
+    <aura:attribute name="IsMobileVerified" type="boolean" default="false" />
+    <aura:attribute name="IsHomePhoneVerified" type="boolean" default="false" />
+    <aura:attribute name="IsPersonEmailVerified" type="boolean" default="false" />
+    <aura:attribute name="IsEmail2Verified" type="boolean" default="false" />
+    <aura:attribute name="IsEmail3Verified" type="boolean" default="false" />
+    
+    <aura:attribute name="enableSave" type="boolean" default="false" />
+    
+    <aura:html tag="style">     
+        .slds-modal__content {  
+        	overflow-y: hidden !important;  
+        } 
+    </aura:html>
+    
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>Account Contact Information</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <aura:if isTrue="{!not(empty(v.message))}">
+                <div class="slds-notify slds-notify_alert" role="alert">{!v.message}</div>
+            </aura:if>
+            
+            <table class="slds-table slds-table_resizable-cols slds-no-row-hover" role="grid">
+                <tbody class="slds-form_horizontal slds-form">
+                    <!-- Phone -->
+                    <tr>
+                        <td role="gridcell">
+                            <lightning:input name="Phone" value="{! v.accountObj.Phone }" label="Phone" onblur="{!c.enableAction}" />
+                        </td>
+                        <td role="gridcell">
+                            <button class="slds-button" data-name="Phone" data-verified="{!v.IsPhoneVerified}" onclick="{!c.toggleVerify}">
+								<aura:if isTrue="{!not(v.IsPhoneVerified)}">
+                                    <lightning:icon size="small" iconName="utility:info" variant="warning"  />
+                                    <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                                </aura:if>
+                            </button>
+                        </td>              
+                    </tr>
+                    
+                    <!-- Mobile -->
+                    <tr>
+                        <td role="gridcell">
+                            <lightning:input name="PersonMobilePhone" value="{! v.accountObj.PersonMobilePhone }" label="Mobile" onblur="{!c.enableAction}" />
+                        </td>
+                        <td role="gridcell">
+                            <button class="slds-button" data-name="Mobile" data-verified="{!v.IsMobileVerified}" onclick="{!c.toggleVerify}">
+								<aura:if isTrue="{!not(v.IsMobileVerified)}">
+                                    <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                    <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                                </aura:if>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- HomePhone -->
+                    <tr>
+                        <td role="gridcell">
+                            <lightning:input name="PersonHomePhone" value="{! v.accountObj.PersonHomePhone }" label="Home Phone" onblur="{!c.enableAction}" />
+                        </td>
+                        <td role="gridcell">
+                            <button class="slds-button" data-name="HomePhone" data-verified="{!v.IsHomePhoneVerified}" onclick="{!c.toggleVerify}">
+								<aura:if isTrue="{!not(v.IsHomePhoneVerified)}">
+                                    <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                    <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                                </aura:if>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- PersonEmail -->
+                    <tr>
+                        <td role="gridcell">
+                            <lightning:input name="PersonEmail" value="{! v.accountObj.PersonEmail }" label="Person Email" onblur="{!c.enableAction}" />
+                        </td>
+                        <td role="gridcell">
+                            <button class="slds-button" data-name="PersonEmail" data-verified="{!v.IsPersonEmailVerified}" onclick="{!c.toggleVerify}">
+								<aura:if isTrue="{!not(v.IsPersonEmailVerified)}">
+                                    <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                    <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                                </aura:if>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- Email2 -->
+                    <tr>
+                        <td role="gridcell">
+                            <lightning:input name="Email2__pc" value="{! v.accountObj.Email2__pc }" label="Email 2" onblur="{!c.enableAction}" />
+                        </td>
+                        <td role="gridcell">
+                            <button class="slds-button" data-name="Email2" data-verified="{!v.IsEmail2Verified}" onclick="{!c.toggleVerify}">
+								<aura:if isTrue="{!not(v.IsEmail2Verified)}">
+                                    <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                    <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                                </aura:if>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- Email3 -->
+                    <tr>
+                        <td role="gridcell">
+                            <lightning:input name="Email3__pc" value="{! v.accountObj.Email3__pc }" label="Email 3" onblur="{!c.enableAction}" />
+                        </td>
+                        <td role="gridcell">
+                            <button class="slds-button" data-name="Email3" data-verified="{!v.IsEmail3Verified}" onclick="{!c.toggleVerify}">
+								<aura:if isTrue="{!not(v.IsEmail3Verified)}">
+                                    <lightning:icon size="small" iconName="utility:info" variant="warning" />
+                                    <aura:set attribute="else"> <lightning:icon size="small" iconName="utility:success" variant="success" /> </aura:set>
+                                </aura:if>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- Verify Button -->
+                    <tr>
+                        <td class="slds-text-align_center" role="gridcell" colspan="3">
+                            <lightning:button variant="brand" label="Save" title="Save" onclick="{!c.updateAccount}" class="slds-m-left_x-small" disabled="{!not(v.enableSave)}"></lightning:button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+</aura:component>

@@ -1,0 +1,7 @@
+<aura:event type="COMPONENT" description="Event template" >
+	<aura:attribute name="openModel" type="boolean" />
+	<aura:attribute name="endedSchemeData" type="VME_Schemes__c" />
+	<aura:attribute name="VMECampParent" type="VME_Campaign__c" />
+	<aura:attribute name="VMECampUpdatedWrapper" type="VME_Category_Adjustment_Ctrl.VMECampaignWrapper" />
+	<aura:attribute name="CompName" type="String" />
+</aura:event>
